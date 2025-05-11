@@ -9,6 +9,9 @@ services:
       - DOMAIN=example.com
       - FRONTEND_URI=https://example.com/
       - PORT=3001
+      - DB_USER=docker
+      - DB_PASSWORD=docker
+      - DB_NAME=app
     command: go run cmd/server/main.go
     ports:
       - "3030:3001"
@@ -31,6 +34,7 @@ services:
     restart: always
     tty: true
     volumes:
+      - ./sql/database.sql:/docker-entrypoint-initdb.d/init.sql
       - ./prod-data/sql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
