@@ -1,12 +1,19 @@
-CREATE DATABASE app;
-
+-- Create user and database
 CREATE USER docker WITH PASSWORD 'docker';
+CREATE DATABASE app OWNER docker;
 
-GRANT ALL PRIVILEGES ON DATABASE app TO docker;
+-- Connect to app database
+\c app
 
--- Grant the necessary permissions to the docker user
+-- Optional: Make sure docker owns the schema
+ALTER SCHEMA public OWNER TO docker;
+
+-- Grant privileges on schema and future objects
 GRANT USAGE, CREATE ON SCHEMA public TO docker;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO docker;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO docker;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO docker;
 
--- Ensure future tables created by any user will be accessible
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO docker;
+-- Ensure future tables/sequences/etc. are accessible
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docker;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO docker;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO docker;

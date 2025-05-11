@@ -9,7 +9,7 @@ services:
       - DOMAIN=example.com
       - FRONTEND_URI=https://example.com/
       - PORT=3001
-      - DB_USER=docker
+      - DB_USER=postgres
       - DB_PASSWORD=docker
       - DB_NAME=app
     command: go run cmd/server/main.go
@@ -29,7 +29,6 @@ services:
 
   db:
     container_name: fofx-go-gin-prod-db
-    platform: linux/x86_64
     image: postgres:latest 
     restart: always
     tty: true
