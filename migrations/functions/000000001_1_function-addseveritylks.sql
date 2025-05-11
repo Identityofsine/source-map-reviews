@@ -14,8 +14,8 @@ BEGIN
         RAISE EXCEPTION 'Severity name, description, and level cannot be NULL';
     END IF;
 
-    IF severity_level < 0 OR severity_level > 3 THEN
-        RAISE EXCEPTION 'Severity level must be between 0 and 3';
+    IF severity_level < 0 THEN
+        RAISE EXCEPTION 'Severity level must be above 0';
     END IF;
 
     SELECT COUNT(*) INTO severity_count FROM public.severity_lks WHERE name = severity_name;

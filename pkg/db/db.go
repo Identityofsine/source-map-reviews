@@ -98,7 +98,7 @@ func Get() *sql.DB {
 	return database
 }
 
-func Query[T interface{}](query string, obj any, placeholders ...any) (*[]T, DatabaseError) {
+func Query[T interface{}](query string, placeholders ...any) (*[]T, DatabaseError) {
 	db, err := Connect()
 	//close
 	if err != nil {
@@ -109,10 +109,8 @@ func Query[T interface{}](query string, obj any, placeholders ...any) (*[]T, Dat
 		return nil, NewDatabaseError("db", "Error executing query", r_err.Error(), 500)
 	}
 	defer rows.Close()
-	if obj == nil {
-		return nil, nil
-	}
 	results := []any{}
+	obj := new(T)
 	for rows.Next() {
 		//copy the object
 		c := reflect.New(reflect.TypeOf(obj).Elem()).Interface()
