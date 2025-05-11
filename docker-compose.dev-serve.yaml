@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  api:
+    container_name: gl-backend-dev-serve
+    environment:
+      - GO_ENV=development
+      - URI=https://api.dev.grapplelogs.fofx.zip/
+      - DOMAIN=dev.grapplelogs.fofx.zip
+      - FRONTEND_URI=https://dev.grapplelogs.fofx.zip
+      - PORT=3112
+    ports:
+      - "3112:3001"
+  db:
+    container_name: gl-db-dev-serve
+    ports:
+      - "3299:3306"
+    volumes:
+      - ./dev-data/sql:/var/lib/mysql
+      - ./sql/database.sql:/docker-entrypoint-initdb.d/init.sql
+  mongodb:
+    container_name: gl-mongodb-dev-serve
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./dev-data/mongodb:/data/db

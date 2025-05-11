@@ -1,0 +1,12 @@
+data/
+data
+./data/
+./*-data
+./*-data/
+./prod-data/
+./prod-data
+./dev-data/
+./dev-data
+
+prod-data/
+dev-data/

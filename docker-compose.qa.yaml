@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  api:
+    container_name: gl-backend-qa
+    environment:
+      - GO_ENV=qa
+      - URI=https://api.qa.grapplelogs.fofx.zip/
+      - DOMAIN=qa.grapplelogs.fofx.zip
+      - FRONTEND_URI=https://qa.grapplelogs.fofx.zip
+      - PORT=3001
+  db:
+    container_name: gl-db-qa
+    volumes:
+      - ./qa-data/sql:/var/lib/mysql
+      - ./sql/database.sql:/docker-entrypoint-initdb.d/init.sql
+  mongodb:
+    container_name: gl-mongodb-qa
+    volumes:
+      - ./qa-data/mongodb:/data/db
