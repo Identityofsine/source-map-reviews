@@ -29,8 +29,10 @@ func main() {
 
 	cronTest := &TestCron{}
 	cron.AddCron(cronTest)
-
 	cronInstance.Start()
+
+	SetupRouter()
+
 	select {} // Block forever
 
 }
