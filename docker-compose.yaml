@@ -30,18 +30,18 @@ services:
   db:
     container_name: fofx-go-gin-prod-db
     platform: linux/x86_64
-    image: mariadb:latest 
+    image: postgres:latest 
     restart: always
     tty: true
     volumes:
       - ./sql/database.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./prod-data/sql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_PASSWORD: docker
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 10s
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 3
+      start_period: 10s
+
 

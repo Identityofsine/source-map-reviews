@@ -3,31 +3,30 @@ package db
 import (
 	"database/sql"
 	_ "errors"
+	"fmt"
 	_ "fmt"
+	_ "github.com/lib/pq" // This is important! The underscore is to import the package for side-effects
+	"github.com/pressly/goose"
 	"log"
 	"os"
 	"reflect"
 	"strings"
-
-	"github.com/go-sql-driver/mysql"
-	"github.com/pressly/goose"
 )
 
-var cfg = mysql.Config{
-	User:                 os.Getenv("DB_USER"),
-	Passwd:               os.Getenv("DB_PASSWORD"),
-	Net:                  "tcp",
-	Addr:                 "db:3306",
-	DBName:               os.Getenv("DB_NAME"),
-	AllowNativePasswords: true,
-	//turn on date parsing
-	ParseTime: true,
-}
+var cfg = fmt.Sprintf(
+	"user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
+	os.Getenv("DB_USER"),
+	os.Getenv("DB_PASSWORD"),
+	os.Getenv("DB_NAME"),
+	"db",   // e.g., "db" if using Docker Compose
+	"5432", // e.g., "5432"
+)
+
 var database *sql.DB = nil
 
 func Connect() (*sql.DB, DatabaseError) {
 	if database == nil {
-		db, err := sql.Open("mysql", cfg.FormatDSN())
+		db, err := sql.Open("postgres", cfg)
 		if err != nil {
 			return nil, NewDatabaseError("db", "Error connecting to database", err.Error(), 500)
 		}
@@ -50,27 +49,34 @@ func Migrate() DatabaseError {
 		return err
 	}
 
-	if err := goose.SetDialect("mysql"); err != nil {
+	if err := goose.SetDialect("postgres"); err != nil {
 		return NewDatabaseError("db", "Error setting dialect", err.Error(), 500)
 	}
 
-	log.Printf("[DB:INFO] Migrating database %s", cfg.DBName)
+	log.Printf("[DB:INFO] Migrating database %s", os.Getenv("DB_NAME"))
+
+	log.Printf("[DB:INFO] Running migrations in functions")
+	if err := goose.Up(db, "./migrations/functions"); err != nil {
+		log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/functions")
+		return NewDatabaseError("db", "Error running migrations in functions", err.Error(), 500)
+	}
+
 	log.Printf("[DB:INFO] Running migrations in init")
 	if err := goose.Up(db, "./migrations/init"); err != nil {
-		log.Fatalf("[DB:ERROR] %s", err)
+		log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/init")
 		return NewDatabaseError("db", "Error running migrations in init", err.Error(), 500)
 	}
 
 	log.Printf("[DB:INFO] Running migrations in changelogs")
 	if err := goose.Up(db, "./migrations/changelogs"); err != nil {
-		log.Fatalf("[DB:ERROR] %s", err)
+		log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/changelogs")
 		return NewDatabaseError("db", "Error running migrations in changelogs", err.Error(), 500)
 	}
 
 	if env == "development" {
 		log.Printf("[DB:INFO] Running migrations in localonly")
 		if err := goose.Up(db, "./migrations/localonly"); err != nil {
-			log.Fatalf("[DB:ERROR] %s", err)
+			log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/changelogs")
 			return NewDatabaseError("db", "Error running migrations in localonly", err.Error(), 500)
 		}
 	}

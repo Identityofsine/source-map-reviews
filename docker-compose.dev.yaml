@@ -15,6 +15,6 @@ services:
   db:
     container_name: fofx-go-gin-dev-db
     ports:
-      - "3399:3306"
+      - "5432:5432"
     volumes:
       - ./dev-data/sql:/var/lib/mysql

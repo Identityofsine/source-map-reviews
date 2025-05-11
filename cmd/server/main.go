@@ -21,6 +21,11 @@ func main() {
 	if derr != nil {
 		log.Fatalf("Error connecting to database: %v", derr)
 	}
+	// Run migrations
+	derr = db.Migrate()
+	if derr != nil {
+		log.Fatalf("Error running migrations: %v", derr.Error())
+	}
 
 	log.Println("Starting application...")
 
