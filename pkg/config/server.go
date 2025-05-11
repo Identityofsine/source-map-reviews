@@ -1,9 +1,8 @@
 package config
 
 import (
+	"fmt"
 	"os"
-
-	yaml "gopkg.in/yaml.v3"
 )
 
 //This file contains the logic that is responsible for details
@@ -11,6 +10,7 @@ import (
 //This is primarily used in the health component of the web application
 
 type ServerDetails struct {
+	ConfigFile
 	ServerName  string `yaml:"server_name"`
 	Version     string `yaml:"version"`
 	Iteration   string `yaml:"iteration"`
@@ -21,11 +21,12 @@ type ServerDetails struct {
 }
 
 func GetServerDetails() *ServerDetails {
-	if config, err := loadConfig(); err == nil {
+	if config, err := loadConfig[*ServerDetails]("server"); err == nil {
 		config.Environment = getEnvironment()
 		config.BuildDate = getBuildDate()
 		return config
 	} else {
+		fmt.Printf("Error loading server config: %v\n", err)
 		return &ServerDetails{
 			ServerName:  "unknown",
 			Version:     "x.x.x",
@@ -52,21 +53,4 @@ func getBuildDate() string {
 		return "unknown"
 	}
 	return buildDate
-}
-
-func loadConfig() (*ServerDetails, error) {
-	config := &ServerDetails{}
-	file, err := os.Open("server.yaml")
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	decoder := yaml.NewDecoder(file)
-	err = decoder.Decode(config)
-	if err != nil {
-		return nil, err
-	}
-
-	return config, nil
 }
