@@ -9,12 +9,12 @@ services:
       - DOMAIN=localhost
       - FRONTEND_URI=http://localhost:3000/
       - PORT=3001
-    command: nodemon -L --legacy-watch --exec go run main/init/app.go --signal SIGTERM
+    command: nodemon -L --legacy-watch --exec go run cmd/server/main.go --signal SIGTERM
     ports:
-      - "3001:3001"
+      - "3030:3001"
   db:
     container_name: fofx-go-gin-dev-db
     ports:
-      - "3299:3306"
+      - "3399:3306"
     volumes:
       - ./dev-data/sql:/var/lib/mysql

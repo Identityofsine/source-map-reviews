@@ -11,7 +11,7 @@ services:
       - PORT=3001
     command: go run cmd/server/main.go
     ports:
-      - "3001:3001"
+      - "3030:3001"
     build: 
       context: .
       dockerfile: Dockerfile
