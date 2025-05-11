@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	. "github.com/identityofsine/fofx-go-gin-api-template/cmd/router"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cron"
 )
 
@@ -31,7 +32,8 @@ func main() {
 	cron.AddCron(cronTest)
 	cronInstance.Start()
 
-	SetupRouter()
+	router := SetupRouter()
+	router.Run(":8080")
 
 	select {} // Block forever
 
