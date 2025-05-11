@@ -7,6 +7,7 @@ import (
 
 func MapServerDetailsToHealth(serverDetails *ServerDetails) *Health {
 	return &Health{
+		ServerName:  serverDetails.ServerName,
 		BuildDate:   serverDetails.BuildDate,
 		Version:     serverDetails.Version,
 		Commit:      serverDetails.Commit,

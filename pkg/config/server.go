@@ -22,6 +22,7 @@ type ServerDetails struct {
 
 func GetServerDetails() *ServerDetails {
 	if config, err := loadConfig(); err == nil {
+		config.Environment = getEnvironment()
 		config.BuildDate = getBuildDate()
 		return config
 	} else {
@@ -31,10 +32,18 @@ func GetServerDetails() *ServerDetails {
 			Iteration:   "-1",
 			Commit:      "unknown",
 			Branch:      "unknown",
-			Environment: "unknown",
+			Environment: getEnvironment(),
 			BuildDate:   getBuildDate(),
 		}
 	}
+}
+
+func getEnvironment() string {
+	env := os.Getenv("GO_ENV")
+	if env == "" {
+		return "development"
+	}
+	return env
 }
 
 func getBuildDate() string {

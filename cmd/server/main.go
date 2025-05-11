@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"time"
 
 	. "github.com/identityofsine/fofx-go-gin-api-template/cmd/router"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cron"
+	"github.com/joho/godotenv"
 )
 
 type TestCron struct {
@@ -25,7 +28,12 @@ func (c *TestCron) Execute() error {
 }
 
 func main() {
-	fmt.Printf("Hello, World!\n")
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	log.Println("Starting application...")
 	cronInstance := cron.GetCron()
 
 	cronTest := &TestCron{}
@@ -33,7 +41,7 @@ func main() {
 	cronInstance.Start()
 
 	router := SetupRouter()
-	router.Run(":8080")
+	router.Run(":" + os.Getenv("PORT"))
 
 	select {} // Block forever
 
