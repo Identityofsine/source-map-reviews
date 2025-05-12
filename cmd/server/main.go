@@ -5,6 +5,7 @@ import (
 	"os"
 
 	. "github.com/identityofsine/fofx-go-gin-api-template/cmd/router"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/buildinfo/service"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cron"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
@@ -15,6 +16,10 @@ func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	if _, err := GetBuildInfo(); err != nil {
+		storedlogs.LogFatal("Error getting build info: %v", err)
 	}
 
 	// Connect to the database

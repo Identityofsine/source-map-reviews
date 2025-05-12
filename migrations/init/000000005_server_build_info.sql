@@ -11,17 +11,15 @@ CREATE TABLE IF NOT EXISTS buildinfo (
 	PRIMARY KEY (version, commit_hash)
 );
 
-INSERT INTO buildinfo (version, commit_hash, build_date, environment)
-VALUES ('1.0.0', 'n/a', '', 'dev'); 
 
  -- Step 1: Add the new columns
 ALTER TABLE logs
-ADD COLUMN version VARCHAR(20) NOT NULL,
-ADD COLUMN commit_hash VARCHAR(128) NOT NULL;
+ADD COLUMN version VARCHAR(20),
+ADD COLUMN commit_hash VARCHAR(128);
 
 -- Step 2: Add the foreign key constraint
 ALTER TABLE logs
-ADD CONSTRAINT fk_logs_buildinfos
+ADD CONSTRAINT fk_logs_buildinfo
 FOREIGN KEY (version, commit_hash)
-REFERENCES buildinfos (version, commit_hash);
+REFERENCES buildinfo (version, commit_hash);
 

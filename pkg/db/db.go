@@ -112,19 +112,28 @@ func Query[T interface{}](query string, placeholders ...any) (*[]T, DatabaseErro
 	results := []any{}
 	obj := new(T)
 	for rows.Next() {
-		//copy the object
 		c := reflect.New(reflect.TypeOf(obj).Elem()).Interface()
-		s := reflect.ValueOf(c).Elem()
-		numCols := s.NumField()
-		cols := make([]interface{}, numCols)
-		for i := 0; i < numCols; i++ {
-			f := s.Field(i)
-			cols[i] = f.Addr().Interface()
+		v := reflect.ValueOf(c).Elem()
+
+		var cols []interface{}
+
+		if v.Kind() == reflect.Struct {
+			numCols := v.NumField()
+			cols = make([]interface{}, numCols)
+			for i := 0; i < numCols; i++ {
+				f := v.Field(i)
+				cols[i] = f.Addr().Interface()
+			}
+		} else {
+			// Non-struct: scan directly into the single value
+			cols = []interface{}{v.Addr().Interface()}
 		}
+
 		err := rows.Scan(cols...)
 		if err != nil {
 			return nil, NewDatabaseError("db", "Error scanning row", err.Error(), 500)
 		}
+
 		results = append(results, c)
 	}
 	dtos := make([]T, 0)
