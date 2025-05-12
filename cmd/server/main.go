@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	. "github.com/identityofsine/fofx-go-gin-api-template/cmd/router"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cron"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	"github.com/joho/godotenv"

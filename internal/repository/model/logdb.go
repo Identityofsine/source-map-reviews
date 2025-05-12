@@ -1,25 +1,23 @@
 package model
 
 import (
-	"time"
-
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"time"
 )
 
 type LogDB struct {
-	name      string
-	db        string
-	level     string
-	message   string
-	timestamp time.Time
+	Id        int
+	Severity  string
+	Message   string
+	CreatedAt time.Time
 }
 
-func getLogs() []LogDB {
+func GetLogs() ([]LogDB, db.DatabaseError) {
 	query := "SELECT * FROM public.logs"
-	rows, err := db.Query[LogDB](query, nil)
+	rows, err := db.Query[LogDB](query)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	return *rows
+	return *rows, err
 }

@@ -127,7 +127,7 @@ func Query[T interface{}](query string, placeholders ...any) (*[]T, DatabaseErro
 		}
 		results = append(results, c)
 	}
-	dtos := make([]T, len(results))
+	dtos := make([]T, 0)
 	for _, u := range results {
 		castedObject := *u.(*T)
 		dtos = append(dtos, castedObject)
