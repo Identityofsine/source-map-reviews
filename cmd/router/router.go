@@ -3,6 +3,8 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	healthController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/health/controller"
+	logsController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs/controller"
+
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/middlewares"
 )
 
@@ -26,4 +28,5 @@ func setupRoutes(engine *gin.Engine) {
 
 	//inject your routes here:
 	healthController.HealthRoute.UseRouter(api)
+	logsController.LogsRoute.UseRouter(api)
 }

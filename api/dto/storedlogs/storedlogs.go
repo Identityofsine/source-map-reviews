@@ -15,3 +15,20 @@ func Map(object LogDB) Log {
 		Timestamp: object.CreatedAt,
 	}
 }
+
+func MapAll(objects []LogDB) []Log {
+	logs := make([]Log, len(objects))
+	for i, object := range objects {
+		logs[i] = Map(object)
+	}
+	return logs
+}
+
+func ReverseMap(object Log) LogDB {
+	return LogDB{
+		Id:        object.ID,
+		Severity:  object.Severity,
+		Message:   object.Message,
+		CreatedAt: object.Timestamp,
+	}
+}
