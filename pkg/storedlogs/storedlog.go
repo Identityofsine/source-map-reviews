@@ -77,4 +77,5 @@ func LogFatal(log string, err error) {
 	sendToSinks(logObject)
 	l.Fatalf("[%s] FATAL: \n"+log, logObject.Timestamp.Format(time.RFC3339), err)
 	panic(fmt.Sprintf("[%s] FATAL: "+log, logObject.Timestamp.Format(time.RFC3339)))
+
 }
