@@ -20,11 +20,12 @@ func GenericAuthHandler(provider auth.Authenticator, c *gin.Context) {
 	}
 
 	// Call the provider's Authenticate method
-	if !provider.Authenticate(requestBody) {
+	if token, err := provider.Authenticate(requestBody); err != nil || token == nil {
 		c.JSON(401, gin.H{"error": "Unauthorized"})
 		return
+	} else {
+		// If authentication is successful, return a success response
+		c.JSON(200, token)
 	}
 
-	// If authentication is successful, return a success response
-	c.JSON(200, gin.H{"message": "Authenticated successfully"})
 }
