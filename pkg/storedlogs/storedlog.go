@@ -5,6 +5,7 @@ import (
 	"time"
 
 	l "github.com/charmbracelet/log"
+	cfg "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs/sinks"
 )
@@ -18,6 +19,8 @@ var (
 )
 
 func sendToSinks(log Log) {
+	log.Version = cfg.GetServerDetails().Version
+	log.Commit = cfg.GetServerDetails().Commit
 	for _, sink := range sinks {
 		err := sink.StoreLog(log)
 		if err != nil {
