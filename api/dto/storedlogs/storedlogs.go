@@ -1,6 +1,9 @@
 package storedlogs
 
 import (
+	"database/sql"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/health/service"
+
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs/model"
 )
@@ -13,6 +16,8 @@ func Map(object LogDB) Log {
 		Severity:  object.Severity,
 		Message:   object.Message,
 		Timestamp: object.CreatedAt,
+		Version:   object.Version.String,
+		Commit:    object.Commit.String,
 	}
 }
 
@@ -25,10 +30,13 @@ func MapAll(objects []LogDB) []Log {
 }
 
 func ReverseMap(object Log) LogDB {
+	buildInfo := service.GetHealth()
 	return LogDB{
 		Id:        object.ID,
 		Severity:  object.Severity,
 		Message:   object.Message,
 		CreatedAt: object.Timestamp,
+		Version:   sql.NullString{Valid: true, String: buildInfo.Version},
+		Commit:    sql.NullString{Valid: true, String: buildInfo.Commit},
 	}
 }

@@ -71,7 +71,7 @@ func LogError(log string, err error) {
 func LogFatal(log string, err error) {
 	logObject := Log{
 		Severity:  "FATAL",
-		Message:   log,
+		Message:   fmt.Sprintf(log, err),
 		Timestamp: time.Now(),
 	}
 	sendToSinks(logObject)

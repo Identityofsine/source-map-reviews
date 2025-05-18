@@ -1,8 +1,10 @@
 package model
 
 import (
-	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"database/sql"
 	"time"
+
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 )
 
 type LogDB struct {
@@ -10,6 +12,8 @@ type LogDB struct {
 	Severity  string
 	Message   string
 	CreatedAt time.Time
+	Version   sql.NullString
+	Commit    sql.NullString
 }
 
 func GetLogs() ([]LogDB, db.DatabaseError) {
@@ -24,8 +28,8 @@ func GetLogs() ([]LogDB, db.DatabaseError) {
 }
 
 func SaveLogs(logDB LogDB) db.DatabaseError {
-	query := "INSERT INTO public.logs (severity, message, created_at) VALUES ($1, $2, $3)"
-	_, err := db.Query[LogDB](query, logDB.Severity, logDB.Message, logDB.CreatedAt)
+	query := "INSERT INTO public.logs (severity, message, created_at, version, commit_hash) VALUES ($1, $2, $3, $4, $5)"
+	_, err := db.Query[LogDB](query, logDB.Severity, logDB.Message, logDB.CreatedAt, logDB.Version, logDB.Commit)
 	if err != nil {
 		return err
 	}
