@@ -12,8 +12,8 @@ type TokenDB struct {
 	CreatedAt    string
 }
 
-func GetTokens() ([]TokenDB, error) {
-	query := "SELECT * FROM public.tokens"
+func GetTokens() ([]TokenDB, db.DatabaseError) {
+	query := "SELECT * FROM public.authtokens"
 	rows, err := db.Query[TokenDB](query)
 	if err != nil {
 		return nil, err
@@ -21,8 +21,8 @@ func GetTokens() ([]TokenDB, error) {
 	return *rows, nil
 }
 
-func GetTokenByUserId(userId string) (TokenDB, error) {
-	query := "SELECT * FROM public.tokens WHERE user_id = $1"
+func GetTokenByUserId(userId string) (TokenDB, db.DatabaseError) {
+	query := "SELECT * FROM public.authtokens WHERE user_id = $1"
 	rows, err := db.Query[TokenDB](query, userId)
 	if err != nil {
 		return TokenDB{}, err
@@ -33,8 +33,8 @@ func GetTokenByUserId(userId string) (TokenDB, error) {
 	return (*rows)[0], nil
 }
 
-func UpdateToken(tokenDB TokenDB) error {
-	query := "UPDATE public.tokens SET access_token = $1, refresh_token = $2, expires_at = $3, refreshed_at = $4 WHERE user_id = $5"
+func UpdateToken(tokenDB TokenDB) db.DatabaseError {
+	query := "UPDATE public.authtokens SET access_token = $1, refresh_token = $2, expires_at = $3, refreshed_at = $4 WHERE user_id = $5"
 	_, err := db.Query[TokenDB](query, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.UserId)
 	if err != nil {
 		return err
@@ -42,8 +42,8 @@ func UpdateToken(tokenDB TokenDB) error {
 	return nil
 }
 
-func SaveToken(tokenDB TokenDB) error {
-	query := "INSERT INTO public.tokens (user_id, access_token, refresh_token, expires_at, refreshed_at, created_at) VALUES ($1, $2, $3, $4, $5, $6)"
+func SaveToken(tokenDB TokenDB) db.DatabaseError {
+	query := "INSERT INTO public.authtokens (user_id, access_token, refresh_token, expires_at, refreshed_at, created_at) VALUES ($1, $2, $3, $4, $5, $6)"
 	_, err := db.Query[TokenDB](query, tokenDB.UserId, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.CreatedAt)
 	if err != nil {
 		return err
@@ -51,8 +51,8 @@ func SaveToken(tokenDB TokenDB) error {
 	return nil
 }
 
-func DeleteToken(userId string) error {
-	query := "DELETE FROM public.tokens WHERE user_id = $1"
+func DeleteToken(userId string) db.DatabaseError {
+	query := "DELETE FROM public.authtokens WHERE user_id = $1"
 	_, err := db.Query[TokenDB](query, userId)
 	if err != nil {
 		return err
@@ -60,8 +60,8 @@ func DeleteToken(userId string) error {
 	return nil
 }
 
-func DeleteAllTokens() error {
-	query := "DELETE FROM public.tokens"
+func DeleteAllTokens() db.DatabaseError {
+	query := "DELETE FROM public.authtokens"
 	_, err := db.Query[TokenDB](query)
 	if err != nil {
 		return err

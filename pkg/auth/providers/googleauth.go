@@ -1,7 +1,7 @@
 package providers
 
 import (
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 )
 
 type GoogleAuthProvider struct {
@@ -16,7 +16,11 @@ func (obj *GoogleAuthProvider) validate(args AuthenticatorArgs) bool {
 	return true
 }
 
-func (obj *GoogleAuthProvider) authenticate(args AuthenticatorArgs) bool {
+func (obj *GoogleAuthProvider) Authenticate(args AuthenticatorArgs) bool {
 
-	return obj.validate(args)
+	return !obj.validate(args)
+}
+
+func (obj *GoogleAuthProvider) Name() string {
+	return "Google"
 }

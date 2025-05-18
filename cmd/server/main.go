@@ -18,10 +18,6 @@ func main() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	if _, err := GetBuildInfo(); err != nil {
-		storedlogs.LogFatal("Error getting build info: %v", err)
-	}
-
 	// Connect to the database
 	_, derr := db.Connect()
 	if derr != nil {
@@ -31,6 +27,10 @@ func main() {
 	derr = db.Migrate()
 	if derr != nil {
 		log.Fatalf("Error running migrations: %v", derr.Error())
+	}
+
+	if _, err := GetBuildInfo(); err != nil {
+		storedlogs.LogFatal("Error getting build info: %v", err)
 	}
 
 	storedlogs.LogInfo("Starting application")

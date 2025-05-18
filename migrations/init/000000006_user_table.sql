@@ -8,9 +8,13 @@ CREATE TABLE IF NOT EXISTS authentication_method_lks (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO authentication_method_lks (name, description) VALUES
+('internal', 'Password-based authentication'),
+('google', 'OAuth2/Google-based authentication');
+
 CREATE TABLE IF NOT EXISTS users (
 	id SERIAL PRIMARY KEY,
-	username varchar(255) NOT NULL,
+	username varchar(255) NOT NULL UNIQUE,
 	password varchar(255),
 	authentication_method varchar(20) NOT NULL,
 	verified boolean DEFAULT false,
