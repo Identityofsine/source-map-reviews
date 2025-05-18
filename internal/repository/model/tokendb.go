@@ -4,7 +4,7 @@ import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
 type TokenDB struct {
 	Id           string
-	UserId       string
+	UserId       int64
 	AccessToken  string
 	RefreshToken string
 	ExpiresAt    string

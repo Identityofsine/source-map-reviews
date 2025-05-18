@@ -20,11 +20,11 @@ func GenericRegisterHandler(provider register.Registerable, c *gin.Context) {
 	}
 
 	// Call the provider's Authenticate method
-	if err := provider.Register(requestBody); err != nil {
-		c.JSON(401, gin.H{"error": "Unauthorized"})
+	if derr := provider.Register(requestBody); derr != nil {
+		c.JSON(401, gin.H{"message": "There was an error", "error": derr.Error()})
 		return
 	}
 
 	// If authentication is successful, return a success response
-	c.JSON(200, gin.H{"message": "Authenticated successfully"})
+	c.JSON(200, gin.H{"message": "Registeration successful"})
 }

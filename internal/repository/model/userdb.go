@@ -3,7 +3,7 @@ package model
 import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
 type UserDB struct {
-	Id                   string `json:"id"`
+	Id                   int64  `json:"id"`
 	Username             string `json:"username"`
 	Password             string `json:"password"`
 	AuthenticationMethod string `json:"authentication_method"`
@@ -19,16 +19,16 @@ func CreateUser(username, password, authMethod string) db.DatabaseError {
 	return err
 }
 
-func GetUserByUsername(username string) UserDB {
+func GetUserByUsername(username string) (*UserDB, db.DatabaseError) {
 	query := "SELECT * FROM users WHERE username = $1"
 	rows, err := db.Query[UserDB](query, username)
 	if err != nil {
-		return UserDB{}
+		return nil, err
 	}
 	if len(*rows) == 0 {
-		return UserDB{}
+		return nil, db.NewDatabaseError("GetUserByUsername", "User not found", "user-not-found", 404)
 	}
-	return (*rows)[0]
+	return &(*rows)[0], nil
 }
 
 func GetUserById(id string) UserDB {

@@ -2,7 +2,7 @@ package model
 
 type Token struct {
 	Id           string `json:"id"`
-	UserId       string `json:"user_id"`
+	UserId       int64  `json:"user_id"`
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 	ExpiresAt    string `json:"expires_at"`

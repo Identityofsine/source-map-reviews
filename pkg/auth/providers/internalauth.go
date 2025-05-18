@@ -1,8 +1,15 @@
 package providers
 
 import (
+	userDto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/user"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
+	userService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
+	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	tokenService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 
 //Internal Auth works as a system to authenticate users directly with the system.
@@ -25,14 +32,32 @@ func (obj *InternalAuthProvider) validate(args AuthenticatorArgs) bool {
 	return true
 }
 
-func (obj *InternalAuthProvider) Authenticate(args AuthenticatorArgs) bool {
+func (obj *InternalAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, db.DatabaseError) {
 	if valid := obj.validate(args); !valid {
-		return false
+		return nil, db.NewDatabaseError("InternalAuthProvider::Authenticate", "args is nil", "args-nil", 400)
 	}
 
-	tokenService.CreateLoginToken(args["username"].(string))
+	userdb, derr := userdb.GetUserByUsername(args["username"].(string))
+	if derr != nil || userdb == nil {
+		return nil, derr
+	}
 
-	return true
+	user := userDto.Map(*userdb)
+
+	if userService.IsPasswordsEqual(user, User{
+		Username: args["username"].(string),
+		Password: args["password"].(string),
+	}) == false {
+		return nil, db.NewDatabaseError("error comparing passwords", "passwords do not match", "passwords-do-not-match", 401)
+	}
+
+	token, err := tokenService.CreateLoginToken(user.ID)
+	if err != nil {
+		storedlogs.LogError("error creating token", err)
+		return nil, db.NewDatabaseError("error creating token", "error creating token", "error-creating-token", 500)
+	}
+
+	return token, nil
 }
 
 func (obj *InternalAuthProvider) Name() string {

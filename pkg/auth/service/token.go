@@ -9,6 +9,7 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
+	"github.com/identityofsine/fofx-go-gin-api-template/util"
 )
 
 func CreateToken(secretMap map[string]any, expiration time.Duration) (*SingleToken, error) {
@@ -22,6 +23,7 @@ func CreateToken(secretMap map[string]any, expiration time.Duration) (*SingleTok
 	generic_map := make(map[string]any)
 	generic_map["iss"] = serverName
 	generic_map["exp"] = time.Now().Add(expiration).Unix()
+	generic_map = util.MergeMap(generic_map, secretMap)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(generic_map))
 	token_string, err := token.SignedString([]byte(config.SecretKey))
@@ -38,10 +40,10 @@ func CreateToken(secretMap map[string]any, expiration time.Duration) (*SingleTok
 	return &tkn, nil
 }
 
-func CreateAccessToken(userId string) (*SingleToken, error) {
+func CreateAccessToken(userId int64) (*SingleToken, error) {
 	config := GetAuthSettings()
 	accessTokenExpiration := time.Duration(config.AccessTokenExpiration) * time.Second
-	accessToken, err := CreateToken(map[string]any{"user_id": userId}, accessTokenExpiration)
+	accessToken, err := CreateToken(map[string]any{"user_id": userId, "mode": "access"}, accessTokenExpiration)
 	if err != nil {
 		return nil, err
 	}
@@ -49,10 +51,10 @@ func CreateAccessToken(userId string) (*SingleToken, error) {
 	return accessToken, nil
 }
 
-func CreateRefreshToken(userId string) (*SingleToken, error) {
+func CreateRefreshToken(userId int64) (*SingleToken, error) {
 	config := GetAuthSettings()
 	refreshTokenExpiration := time.Duration(config.RefreshTokenExpiration) * time.Second
-	refreshToken, err := CreateToken(map[string]any{"user_id": userId}, refreshTokenExpiration)
+	refreshToken, err := CreateToken(map[string]any{"user_id": userId, "mode": "refresh"}, refreshTokenExpiration)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +62,7 @@ func CreateRefreshToken(userId string) (*SingleToken, error) {
 	return refreshToken, nil
 }
 
-func CreateLoginToken(userId string) (*Token, error) {
+func CreateLoginToken(userId int64) (*Token, error) {
 	accessToken, err := CreateAccessToken(userId)
 	if err != nil {
 		return nil, err
