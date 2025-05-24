@@ -12,7 +12,8 @@ type route Routeable
 
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	authProviders := auth.GetAuthProviders()
-	loginGroup := router.Group("/login")
+	authRoute := router.Group("/auth")
+	loginGroup := authRoute.Group("/login")
 	{
 		for _, provider := range authProviders {
 			provider := provider

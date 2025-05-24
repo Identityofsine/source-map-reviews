@@ -33,6 +33,18 @@ func GetTokenByUserId(userId string) (TokenDB, db.DatabaseError) {
 	return (*rows)[0], nil
 }
 
+func GetTokenByRefreshToken(refreshToken string) (TokenDB, db.DatabaseError) {
+	query := "SELECT * FROM public.authtokens WHERE refresh_token = $1"
+	rows, err := db.Query[TokenDB](query, refreshToken)
+	if err != nil {
+		return TokenDB{}, err
+	}
+	if len(*rows) == 0 {
+		return TokenDB{}, nil
+	}
+	return (*rows)[0], nil
+}
+
 func UpdateToken(tokenDB TokenDB) db.DatabaseError {
 	query := "UPDATE public.authtokens SET access_token = $1, refresh_token = $2, expires_at = $3, refreshed_at = $4 WHERE user_id = $5"
 	_, err := db.Query[TokenDB](query, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.UserId)
