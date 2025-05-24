@@ -5,8 +5,10 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	tokendto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/token"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
@@ -89,4 +91,32 @@ func CreateLoginToken(userId int64) (*Token, error) {
 	}
 
 	return &loginToken, nil
+}
+
+func RenewLoginToken(token Token, user User) (*Token, AuthError) {
+
+	if isTokenValid := VerifyUserIsAuthenticated(user, token, TOKEN_TYPE_REFRESH); !isTokenValid {
+
+		err := NewAuthError("RenewLoginToken", "User is not authenticated or token is invalid", "user-not-authenticated-or-token-invalid", 401)
+
+		storedlogs.LogError("RenewLoginToken: User is not authenticated or token is invalid", err)
+
+		return nil, err
+	}
+
+	//delete the old token
+	derr := DeleteTokenByRefreshToken(token.RefreshToken)
+	if derr != nil {
+		err := NewAuthError("RenewLoginToken", "Failed to delete old token", "failed-to-delete-old-token", 500)
+		storedlogs.LogError("RenewLoginToken: Failed to delete old token", err)
+		return nil, err
+	}
+
+	newToken, err := CreateLoginToken(user.ID)
+	if err != nil {
+		storedlogs.LogError("RenewLoginToken: Failed to create new login token", err)
+		return nil, NewAuthError("RenewLoginToken", "Failed to create new login token", "failed-to-create-new-login-token", 500)
+	}
+
+	return newToken, nil
 }

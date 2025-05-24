@@ -12,11 +12,17 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 )
 
-func VerifyUserIsAuthenticated(user User, token Token) bool {
+func VerifyUserIsAuthenticated(user User, token Token, tokenType string) bool {
 	if user.ID == 0 {
 		return false
 	}
-	claims, err := VerifyToken(token.AccessToken)
+
+	token_str := token.AccessToken
+	if tokenType == TOKEN_TYPE_REFRESH {
+		token_str = token.RefreshToken
+	}
+
+	claims, err := VerifyToken(token_str)
 	if err != nil {
 		return false
 	}

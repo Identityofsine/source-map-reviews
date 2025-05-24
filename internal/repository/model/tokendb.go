@@ -63,7 +63,25 @@ func SaveToken(tokenDB TokenDB) db.DatabaseError {
 	return nil
 }
 
-func DeleteToken(userId string) db.DatabaseError {
+func DeleteTokenById(tokenId string) db.DatabaseError {
+	query := "DELETE FROM public.authtokens WHERE id = $1"
+	_, err := db.Query[TokenDB](query, tokenId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteTokenByRefreshToken(refreshToken string) db.DatabaseError {
+	query := "DELETE FROM public.authtokens WHERE refresh_token = $1"
+	_, err := db.Query[TokenDB](query, refreshToken)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteTokenByUser(userId string) db.DatabaseError {
 	query := "DELETE FROM public.authtokens WHERE user_id = $1"
 	_, err := db.Query[TokenDB](query, userId)
 	if err != nil {
