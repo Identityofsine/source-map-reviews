@@ -96,13 +96,11 @@ func CreateLoginToken(userId int64) (*Token, error) {
 
 func RenewLoginToken(token Token, user User) (*Token, AuthError) {
 
-	if isTokenValid := VerifyUserIsAuthenticated(user, token, TOKEN_TYPE_REFRESH); !isTokenValid {
+	if authError := VerifyUserIsAuthenticated(user, token, TOKEN_TYPE_REFRESH); authError != nil {
 
-		err := NewAuthError("RenewLoginToken", "User is not authenticated or token is invalid", "user-not-authenticated-or-token-invalid", 401)
+		storedlogs.LogError("RenewLoginToken: User is not authenticated or token is invalid", authError)
 
-		storedlogs.LogError("RenewLoginToken: User is not authenticated or token is invalid", err)
-
-		return nil, err
+		return nil, authError
 	}
 
 	//delete the old token

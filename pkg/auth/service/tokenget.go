@@ -12,9 +12,9 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 )
 
-func VerifyUserIsAuthenticated(user User, token Token, tokenType string) bool {
+func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthError {
 	if user.ID == 0 {
-		return false
+		return NewAuthError("VerifyUserIsAuthenticated", "User is not authenticated", "user-not-authenticated", 401)
 	}
 
 	token_str := token.AccessToken
@@ -24,33 +24,31 @@ func VerifyUserIsAuthenticated(user User, token Token, tokenType string) bool {
 
 	claims, err := VerifyToken(token_str)
 	if err != nil {
-		return false
+		return err
 	}
 	if claims["user_id"] == nil {
-		return false
+		return NewAuthError("VerifyUserIsAuthenticated", "Token does not contain user_id", "token-missing-user-id", 401)
 	} else if claims["user_id"].(float64) != float64(user.ID) {
-		return false
+		return NewAuthError("VerifyUserIsAuthenticated", "User ID in token does not match authenticated user", "user-id-mismatch", 401)
 	} else if claims["user_id"].(float64) == float64(user.ID) {
-		return true
+		return nil
 	}
 
-	return false
-
+	return NewAuthError("VerifyUserIsAuthenticated", "User ID in token does not match authenticated user", "user-id-mismatch", 401)
 }
 
 // VerifyToken solely verifies that the token is valid and not expired.
 // This function does not check if the user is authenticated or not; that is, it does not check if the user ID is the same.
 func VerifyToken(token_string string) (jwt.MapClaims, AuthError) {
 
-	secret := GetAuthSettings().SecretKey
+	secret := []byte(GetAuthSettings().SecretKey)
 	//trim spaces
 	token, err := jwt.Parse(token_string, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 	if err != nil {
-		return nil, NewAuthError("auth", "Error verifying token", err.Error(), 401)
+		return nil, NewAuthError("auth", err.Error(), "parsing-failed", 401)
 	}
-
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
 		return nil, NewAuthError("auth", "Error verifying token", "Token is invalid", 401)
@@ -74,4 +72,14 @@ func GetTokenByRefresh(refreshToken string) (*Token, error) {
 	}
 	token := tokendto.Map(tokenDB)
 	return &token, nil
+}
+
+func GetAccessTokenFromHeader(header string) (string, AuthError) {
+	if header == "" {
+		return "", NewAuthError("GetAccessTokenFromHeader", "Authorization header is required", "authorization-header-required", 400)
+	}
+	if len(header) < 7 || header[:7] != "Bearer " {
+		return "", NewAuthError("GetAccessTokenFromHeader", "Authorization header must start with 'Bearer '", "invalid-authorization-header", 400)
+	}
+	return header[7:], nil
 }

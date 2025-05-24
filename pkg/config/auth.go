@@ -11,8 +11,8 @@ import (
 
 type AuthSettings struct {
 	ConfigFile
-	AccessTokenExpiration  int `yaml:"access_token"`
-	RefreshTokenExpiration int `yaml:"refresh_token"`
+	AccessTokenExpiration  int `yaml:"accessTokenExpiration"`
+	RefreshTokenExpiration int `yaml:"refreshTokenExpiration"`
 	SecretKey              string
 }
 
