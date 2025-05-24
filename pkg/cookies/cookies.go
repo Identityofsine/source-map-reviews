@@ -1,12 +1,16 @@
 package cookies
 
-import "github.com/gin-gonic/gin"
+import (
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Cookies struct {
 	context *gin.Context
 }
 
-func newCookies(c *gin.Context) *Cookies {
+func NewCookies(c *gin.Context) *Cookies {
 	return &Cookies{
 		context: c,
 	}
@@ -18,6 +22,21 @@ func (c *Cookies) Get(name string) (string, error) {
 		return "", err
 	}
 	return value, nil
+}
+
+func (c *Cookies) GetInt(name string) (int, error) {
+
+	value, err := c.Get(name)
+	if err != nil {
+		return 0, err
+	}
+
+	intValue, err := strconv.Atoi(value)
+	if err != nil {
+		return 0, err
+	}
+
+	return intValue, nil
 }
 
 func (c *Cookies) Set(name, value string, maxAge int) error {
