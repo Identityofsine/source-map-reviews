@@ -44,6 +44,11 @@ func (c *Cookies) Set(name, value string, maxAge int) error {
 	return nil
 }
 
+func (c *Cookies) SetInt(name string, value int64, maxAge int) error {
+	strValue := strconv.FormatInt(value, 10)
+	return c.Set(name, strValue, maxAge)
+}
+
 func (c *Cookies) SetIfNotExists(name, value string, maxAge int) error {
 	// Check if the cookie already exists
 	if _, err := c.Get(name); err == nil {

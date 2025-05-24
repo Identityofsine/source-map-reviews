@@ -10,6 +10,7 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
 )
@@ -88,8 +89,8 @@ func CreateLoginToken(userId int64) (*Token, error) {
 	derr := SaveToken(loginTokenDB)
 	if derr != nil {
 		return nil, derr
-	}
 
+	}
 	return &loginToken, nil
 }
 
@@ -119,4 +120,22 @@ func RenewLoginToken(token Token, user User) (*Token, AuthError) {
 	}
 
 	return newToken, nil
+}
+
+func StoreTokenIntoCookies(token Token, cookies *cookies.Cookies) error {
+	authConfig := GetAuthSettings()
+
+	if err := cookies.SetInt("user_id", token.UserId, authConfig.RefreshTokenExpiration); err != nil {
+		return err
+	}
+
+	if err := cookies.Set("access_token", token.AccessToken, authConfig.AccessTokenExpiration); err != nil {
+		return err
+	}
+
+	if err := cookies.Set("refresh_token", token.RefreshToken, authConfig.RefreshTokenExpiration); err != nil {
+		return err
+	}
+
+	return nil
 }

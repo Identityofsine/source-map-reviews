@@ -7,6 +7,7 @@ import (
 	AuthConstants "github.com/identityofsine/fofx-go-gin-api-template/internal/constants/auth"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
+	AuthService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
@@ -14,6 +15,7 @@ import (
 
 func GenericAuthHandler(provider auth.Authenticator, c *gin.Context) {
 	storedlogs.LogInfo("POST: /auth/login/" + strings.ToLower(provider.Name()))
+	cookies := cookies.NewCookies(c)
 
 	// Get the request body
 	var requestBody AuthenticatorArgs
@@ -28,6 +30,7 @@ func GenericAuthHandler(provider auth.Authenticator, c *gin.Context) {
 		return
 	} else {
 		// If authentication is successful, return a success response
+		AuthService.StoreTokenIntoCookies(*token, cookies)
 		c.JSON(200, token)
 	}
 }
@@ -39,16 +42,18 @@ func RefershTokenHandler(c *gin.Context) {
 
 	userId, err := cookies.GetInt("user_id")
 	if err != nil || userId == 0 {
-		storedlogs.LogError("RefreshTokenHandler: No user ID found in cookies", err)
 		c.JSON(401, gin.H{"error": "Unauthorized"})
 		return
 	}
 
 	accessToken := c.GetHeader(AuthConstants.AUTHORIZATION_HEADER)
+	if accessToken == "" {
+		c.JSON(400, gin.H{"error": "Authorization header is required"})
+		return
+	}
 
 	refreshToken, err := cookies.Get("refresh_token")
 	if err != nil || refreshToken == "" {
-		storedlogs.LogError("RefreshTokenHandler: No refresh token found in cookies", err)
 		c.JSON(401, gin.H{"error": "Unauthorized"})
 		return
 	}
@@ -58,6 +63,14 @@ func RefershTokenHandler(c *gin.Context) {
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}
+
+	if token, err = AuthService.RenewLoginToken(token); err != nil {
+		storedlogs.LogError("Error renewing login token", err)
+		c.JSON(500, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	AuthService.StoreTokenIntoCookies(token, cookies)
 
 	c.JSON(200, token)
 
