@@ -110,3 +110,13 @@ func DeleteAllTokens() db.DatabaseError {
 	}
 	return nil
 }
+
+// DeleteTokensWhen should never be run using any user input; this should be directly controlled by the application logic.
+func DeleteTokensWhen(condition string, args ...interface{}) db.DatabaseError {
+	query := "DELETE FROM public.authtokens WHERE " + condition
+	_, err := db.Query[TokenDB](query, args...)
+	if err != nil {
+		return err
+	}
+	return nil
+}

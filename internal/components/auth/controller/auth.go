@@ -20,20 +20,27 @@ func GenericAuthHandler(provider auth.Authenticator, c *gin.Context) {
 	cookies := cookies.NewCookies(c)
 
 	// Get the request body
-	var requestBody AuthenticatorArgs
-	if err := c.ShouldBindJSON(&requestBody); err != nil {
+	var requestContent map[string]interface{}
+	if err := c.ShouldBindJSON(&requestContent); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid request body"})
 		return
 	}
 
+	requestBody := NewAuthenticatorArgs()
+	requestBody.Keys = requestContent
+	requestBody.Context = c
+
 	// Call the provider's Authenticate method
-	if token, err := provider.Authenticate(requestBody); err != nil || token == nil {
-		c.JSON(401, gin.H{"error": "Unauthorized"})
+	if token, err := provider.Authenticate(requestBody); err != nil {
+		c.JSON(err.Code, err)
 		return
-	} else {
+	} else if token != nil {
 		// If authentication is successful, return a success response
 		AuthService.StoreTokenIntoCookies(*token, cookies)
 		c.JSON(200, token)
+	} else {
+		//assume that the Authenticator ended up redirecting
+		return
 	}
 }
 

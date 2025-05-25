@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/types/router"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 )
 
 type route Routeable
@@ -21,6 +22,13 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 			loginGroup.POST("/"+providerName, func(c *gin.Context) {
 				GenericAuthHandler(provider, c)
 			})
+			oAuth, ok := provider.(auth.OAuthAuthenticator)
+			if ok {
+				loginGroup.GET("/"+providerName+"/redirect", func(c *gin.Context) {
+					redirectURL := oAuth.GenerateAuthURL(serverConfig.WebServerConfig.URI + "api/v1/auth/" + providerName)
+					c.Redirect(302, redirectURL)
+				})
+			}
 		}
 	}
 
@@ -34,5 +42,6 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 }
 
 var (
-	AuthRoute = route{}
+	AuthRoute    = route{}
+	serverConfig = config.GetServerDetails()
 )

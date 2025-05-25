@@ -12,12 +12,12 @@ type route Routeable
 
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	registerProviders := register.GetRegisterProviders()
-	loginGroup := router.Group("/register")
+	registerGroup := router.Group("/register")
 	{
 		for _, provider := range registerProviders {
 			provider := provider
 			providerName := strings.ToLower(provider.Name())
-			loginGroup.POST("/"+providerName, func(c *gin.Context) {
+			registerGroup.POST("/"+providerName, func(c *gin.Context) {
 				GenericRegisterHandler(provider, c)
 			})
 		}

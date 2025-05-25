@@ -6,7 +6,8 @@ import (
 
 	. "github.com/identityofsine/fofx-go-gin-api-template/cmd/router"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/buildinfo/service"
-	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cron"
+	cronjobs "github.com/identityofsine/fofx-go-gin-api-template/pkg/cron/jobs"
+	cron "github.com/identityofsine/fofx-go-gin-api-template/pkg/cron/services"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	"github.com/joho/godotenv"
@@ -35,8 +36,7 @@ func main() {
 
 	storedlogs.LogInfo("Starting application")
 
-	cronInstance := cron.GetCron()
-	cronInstance.Start()
+	cron.AddJob(cronjobs.GetAuthTokenDeleteJob())
 
 	router := SetupRouter()
 	router.Run(":" + os.Getenv("PORT"))

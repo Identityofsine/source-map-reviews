@@ -9,10 +9,17 @@ import (
 //of the server, such as the version, branch, commit, and build date.
 //This is primarily used in the health component of the web application
 
+type GoogleAuthSecrets struct {
+	ClientID     string `yaml:"clientId"`
+	ClientSecret string
+	Scopes       []string `yaml:"scopes"`
+}
+
 type AuthSettings struct {
 	ConfigFile
-	AccessTokenExpiration  int `yaml:"accessTokenExpiration"`
-	RefreshTokenExpiration int `yaml:"refreshTokenExpiration"`
+	AccessTokenExpiration  int               `yaml:"accessTokenExpiration"`
+	RefreshTokenExpiration int               `yaml:"refreshTokenExpiration"`
+	GoogleAuthSecrets      GoogleAuthSecrets `yaml:"google"`
 	SecretKey              string
 }
 
@@ -25,6 +32,7 @@ func GetAuthSettings() *AuthSettings {
 		return cachedConfig
 	}
 	if config, err := loadConfig[*AuthSettings]("auth"); err == nil {
+		config.GoogleAuthSecrets.ClientSecret = os.Getenv("GOOGLE_SECRET_KEY")
 		config.SecretKey = getSecretKey()
 		cachedConfig = config
 		return config

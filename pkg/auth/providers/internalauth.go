@@ -25,7 +25,7 @@ func (obj *InternalAuthProvider) validate(args AuthenticatorArgs) bool {
 	if args == nil {
 		return false
 	}
-	if args["username"] == nil || args["password"] == nil {
+	if args.Keys["username"] == nil || args.Keys["password"] == nil {
 		return false
 	}
 
@@ -37,7 +37,7 @@ func (obj *InternalAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, d
 		return nil, db.NewDatabaseError("InternalAuthProvider::Authenticate", "args is nil", "args-nil", 400)
 	}
 
-	userdb, derr := userdb.GetUserByUsername(args["username"].(string))
+	userdb, derr := userdb.GetUserByUsername(args.Keys["username"].(string))
 	if derr != nil || userdb == nil {
 		return nil, derr
 	}
@@ -45,8 +45,8 @@ func (obj *InternalAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, d
 	user := userDto.Map(*userdb)
 
 	if userService.IsPasswordsEqual(user, User{
-		Username: args["username"].(string),
-		Password: args["password"].(string),
+		Username: args.Keys["username"].(string),
+		Password: args.Keys["password"].(string),
 	}) == false {
 		return nil, db.NewDatabaseError("error comparing passwords", "passwords do not match", "passwords-do-not-match", 401)
 	}

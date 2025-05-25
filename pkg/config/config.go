@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
 )
 
@@ -26,6 +27,7 @@ func (c *ConfigFile) Print() {
 // of the server, such as the version, branch, commit, and build date.
 // This also
 func loadConfig[T Config](configName string) (T, error) {
+	godotenv.Load(".env")
 	var config T
 	file, err := os.Open(fmt.Sprintf("config/%s.yaml", configName))
 	if err != nil {
