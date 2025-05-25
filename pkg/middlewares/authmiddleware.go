@@ -45,6 +45,8 @@ func validateToken(c *gin.Context) {
 		return
 	}
 
+	token.AccessToken = accessToken
+
 	// Verify the token
 	aerr = AuthService.VerifyUserIsAuthenticated(*user, *token, Token.TOKEN_TYPE_ACCESS)
 	if aerr != nil {

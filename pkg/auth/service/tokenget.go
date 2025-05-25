@@ -11,6 +11,7 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 )
 
 func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthError {
@@ -28,7 +29,22 @@ func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthErr
 		return err
 	}
 
-	//TODO: check if the token is in the database and is not revoked
+	var dbToken TokenDB
+	var derr db.DatabaseError
+
+	if tokenType == TOKEN_TYPE_ACCESS {
+		dbToken, derr = GetTokenByAccessToken(token_str)
+	} else if tokenType == TOKEN_TYPE_REFRESH {
+		dbToken, derr = GetTokenByRefreshToken(token_str)
+	} else {
+		return NewAuthError("VerifyUserIsAuthenticated", "Invalid token type", "invalid-token-type", 400)
+	}
+
+	if derr != nil {
+		return NewAuthError("VerifyUserIsAuthenticated", derr.Message, derr.Err, derr.Code)
+	} else if dbToken.Id == "" {
+		return NewAuthError("VerifyUserIsAuthenticated", "Token not found in database", "token-not-found", 404)
+	}
 
 	if claims["user_id"] == nil {
 		return NewAuthError("VerifyUserIsAuthenticated", "Token does not contain user_id", "token-missing-user-id", 401)

@@ -21,9 +21,21 @@ func GetTokens() ([]TokenDB, db.DatabaseError) {
 	return *rows, nil
 }
 
-func GetTokenByUserId(userId string) (TokenDB, db.DatabaseError) {
+func GetTokenByUserId(userId string) ([]TokenDB, db.DatabaseError) {
 	query := "SELECT * FROM public.authtokens WHERE user_id = $1"
 	rows, err := db.Query[TokenDB](query, userId)
+	if err != nil {
+		return nil, err
+	}
+	if len(*rows) == 0 {
+		return nil, db.NewDatabaseError("GetTokenByUserId", "No tokens found for user", "no-tokens-found", 404)
+	}
+	return (*rows), nil
+}
+
+func GetTokenByAccessToken(accessToken string) (TokenDB, db.DatabaseError) {
+	query := "SELECT * FROM public.authtokens WHERE access_token = $1"
+	rows, err := db.Query[TokenDB](query, accessToken)
 	if err != nil {
 		return TokenDB{}, err
 	}
