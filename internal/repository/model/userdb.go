@@ -19,6 +19,22 @@ func CreateUser(username, password, authMethod string) db.DatabaseError {
 	return err
 }
 
+func CreateUserByUserDb(user *UserDB) db.DatabaseError {
+	query := "INSERT INTO users (username, password, authentication_method, verified) VALUES ($1, $2, $3, $4, $5)"
+
+	_, err := db.Query[UserDB](query, user.Username, user.Password, user.AuthenticationMethod, user.Verified)
+	if err != nil {
+		return db.NewDatabaseError("CreateUserByUserDb", "Failed to create user", "create-user-failed", 500)
+	}
+
+	user, err = GetUserByUsername(user.Username) // Ensure the user is created and can be retrieved
+	if err != nil {
+		return db.NewDatabaseError("CreateUserByUserDb", "Failed to retrieve created user", "retrieve-created-user-failed", 500)
+	}
+
+	return err
+}
+
 func GetUserByUsername(username string) (*UserDB, db.DatabaseError) {
 	query := "SELECT * FROM users WHERE username = $1"
 	rows, err := db.Query[UserDB](query, username)
