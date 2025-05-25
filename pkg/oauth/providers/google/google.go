@@ -3,7 +3,6 @@ package google
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	AuthConstants "github.com/identityofsine/fofx-go-gin-api-template/internal/constants/auth"
 	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
@@ -82,7 +81,7 @@ func Process(args AuthenticatorArgs) (*Token, db.DatabaseError) {
 
 	//lets log in the user
 	user, derr := userdb.GetUserByUsername(googleUser.Email)
-	if derr != nil {
+	if derr != nil && derr.Code != 404 {
 		return nil, derr
 	} else if user == nil {
 		user = &userdb.UserDB{
@@ -109,9 +108,5 @@ func GenerateAuthURL(originalPath string) string {
 	if oauthConfig == nil {
 		return ""
 	}
-
-	fmt.Println(originalPath)
-	oauthConfig.RedirectURL = originalPath // Set the redirect URL to the login path
-
 	return oauthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
 }

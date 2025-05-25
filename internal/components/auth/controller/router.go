@@ -19,14 +19,18 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 		for _, provider := range authProviders {
 			provider := provider
 			providerName := strings.ToLower(provider.Name())
-			loginGroup.POST("/"+providerName, func(c *gin.Context) {
-				GenericAuthHandler(provider, c)
-			})
 			oAuth, ok := provider.(auth.OAuthAuthenticator)
 			if ok {
+				loginGroup.GET("/"+providerName, func(c *gin.Context) {
+					GenericAuthHandler(provider, c)
+				})
 				loginGroup.GET("/"+providerName+"/redirect", func(c *gin.Context) {
 					redirectURL := oAuth.GenerateAuthURL(serverConfig.WebServerConfig.URI + "api/v1/auth/" + providerName)
 					c.Redirect(302, redirectURL)
+				})
+			} else {
+				loginGroup.POST("/"+providerName, func(c *gin.Context) {
+					GenericAuthHandler(provider, c)
 				})
 			}
 		}

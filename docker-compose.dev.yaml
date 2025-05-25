@@ -5,9 +5,9 @@ services:
     container_name: fofx-go-gin-dev
     environment:
       - GO_ENV=development
-      - URI=http://localhost:3001/
+      - URI=http://localhost:3030/
       - DOMAIN=localhost
-      - FRONTEND_URI=http://localhost:3000/
+      - FRONTEND_URI=http://localhost:4200/
       - PORT=3001
     command: nodemon -L --legacy-watch --exec go run cmd/server/main.go --signal SIGTERM
     ports:

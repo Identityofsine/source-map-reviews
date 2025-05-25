@@ -20,10 +20,26 @@ func GenericAuthHandler(provider auth.Authenticator, c *gin.Context) {
 	cookies := cookies.NewCookies(c)
 
 	// Get the request body
-	var requestContent map[string]interface{}
-	if err := c.ShouldBindJSON(&requestContent); err != nil {
-		c.JSON(400, gin.H{"error": "Invalid request body"})
+	// check if the request is a post or get request
+	if c.Request.Method != "POST" && c.Request.Method != "GET" {
+		c.JSON(405, gin.H{"error": "Method not allowed", "message": "Only POST and GET methods are allowed"})
 		return
+	}
+
+	var requestContent map[string]interface{}
+	if c.Request.Method == "POST" {
+		if err := c.ShouldBindJSON(&requestContent); err != nil {
+			c.JSON(400, gin.H{"error": "Invalid request body"})
+			return
+		}
+	} else {
+		// For GET requests, we can use query parameters
+		requestContent = make(map[string]interface{})
+		for key, values := range c.Request.URL.Query() {
+			if len(values) > 0 {
+				requestContent[key] = values[0] // Use the first value for simplicity
+			}
+		}
 	}
 
 	requestBody := NewAuthenticatorArgs()
