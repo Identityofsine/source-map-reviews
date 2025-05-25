@@ -137,3 +137,20 @@ func StoreTokenIntoCookies(token Token, cookies *cookies.Cookies) error {
 
 	return nil
 }
+
+func DeleteTokenInCookies(cookies *cookies.Cookies) error {
+
+	if err := cookies.Delete("user_id"); err != nil {
+		return err
+	}
+
+	if err := cookies.Delete("access_token"); err != nil {
+		return err
+	}
+
+	if err := cookies.Delete("refresh_token"); err != nil {
+		return err
+	}
+
+	return nil
+}

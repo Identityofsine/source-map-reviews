@@ -34,6 +34,7 @@ func setupRoutes(engine *gin.Engine) {
 	registerController.RegisterRoute.UseRouter(api)
 
 	api.Use(middlewares.UseAuthenticationEnforcementMiddleware().Middleware)
+
 	healthController.HealthRoute.UseRouter(api)
 	logsController.LogsRoute.UseRouter(api)
 }

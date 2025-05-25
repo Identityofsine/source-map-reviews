@@ -23,6 +23,7 @@ func GetUserByUserId(userId int64) (*User, error) {
 	}
 }
 
+// TODO: write RouteError
 func GetUserByCookies(cookies *cookies.Cookies) (*User, error) {
 	// This function should interact with the user repository to fetch the user by cookies.
 	// For now, we will return a dummy user for demonstration purposes.

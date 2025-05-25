@@ -2,7 +2,11 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
+	UserService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
+	Token "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
+	AuthService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 )
 
 type authmiddleware struct {
@@ -17,6 +21,36 @@ func UseAuthenticationEnforcementMiddleware() *authmiddleware {
 }
 
 func validateToken(c *gin.Context) {
-	storedlogs.LogInfo("Validating token")
+	cookies := cookies.NewCookies(c)
+	// Check if the user is authenticated
+	var aerr AuthError
+	accessToken := c.GetHeader("Authorization")
+	accessToken, aerr = AuthService.GetAccessTokenFromHeader(accessToken)
+	if accessToken == "" || aerr != nil {
+		c.AbortWithStatusJSON(aerr.Code, aerr)
+		return
+	}
+
+	//get the user
+	user, err := UserService.GetUserByCookies(cookies)
+	if err != nil || user == nil {
+		aerr = NewAuthError("validateToken", "Not authenticated", "user-not-authed", 401)
+		c.AbortWithStatusJSON(aerr.Code, aerr)
+		return
+	}
+
+	token, aerr := AuthService.GetTokenFromCookies(cookies)
+	if aerr != nil {
+		c.AbortWithStatusJSON(aerr.Code, aerr)
+		return
+	}
+
+	// Verify the token
+	aerr = AuthService.VerifyUserIsAuthenticated(*user, *token, Token.TOKEN_TYPE_ACCESS)
+	if aerr != nil {
+		c.AbortWithStatusJSON(aerr.Code, aerr)
+		return
+	}
+
 	c.Next()
 }

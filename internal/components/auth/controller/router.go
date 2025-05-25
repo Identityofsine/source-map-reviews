@@ -24,7 +24,11 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 		}
 	}
 
+	//refresh
 	authRoute.GET("/refresh", RefershTokenHandler)
+
+	//logout
+	authRoute.GET("/logout", LogoutHandler)
 
 	return router
 }

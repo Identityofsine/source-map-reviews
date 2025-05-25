@@ -10,6 +10,7 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 )
 
 func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthError {
@@ -26,6 +27,9 @@ func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthErr
 	if err != nil {
 		return err
 	}
+
+	//TODO: check if the token is in the database and is not revoked
+
 	if claims["user_id"] == nil {
 		return NewAuthError("VerifyUserIsAuthenticated", "Token does not contain user_id", "token-missing-user-id", 401)
 	} else if claims["user_id"].(float64) != float64(user.ID) {
@@ -72,6 +76,35 @@ func GetTokenByRefresh(refreshToken string) (*Token, error) {
 	}
 	token := tokendto.Map(tokenDB)
 	return &token, nil
+}
+
+func GetTokenFromCookies(cookies *cookies.Cookies) (*Token, AuthError) {
+	if cookies == nil {
+		return nil, NewAuthError("GetTokensFromCookies", "Cookies are nil", "cookies-nil", 400)
+	}
+
+	accessToken, err := cookies.Get("access_token")
+	if err != nil || accessToken == "" {
+		return nil, NewAuthError("GetTokensFromCookies", "Access token is required", "access-token-required", 401)
+	}
+
+	refreshToken, err := cookies.Get("refresh_token")
+	if err != nil || refreshToken == "" {
+		return nil, NewAuthError("GetTokensFromCookies", "Refresh token is required", "refresh-token-required", 401)
+	}
+
+	userId, err := cookies.GetInt("user_id")
+	if err != nil || userId <= 0 {
+		return nil, NewAuthError("GetTokensFromCookies", "User ID is required in cookies", "user-id-required", 401)
+	}
+
+	token := &Token{
+		UserId:       int64(userId),
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}
+
+	return token, nil
 }
 
 func GetAccessTokenFromHeader(header string) (string, AuthError) {

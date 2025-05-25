@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	UserService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
 	AuthConstants "github.com/identityofsine/fofx-go-gin-api-template/internal/constants/auth"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	AuthService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
@@ -76,4 +77,38 @@ func RefershTokenHandler(c *gin.Context) {
 
 	c.JSON(200, token)
 
+}
+
+func LogoutHandler(c *gin.Context) {
+	storedlogs.LogInfo("POST: /auth/logout")
+	cookies := cookies.NewCookies(c)
+
+	// Get the user from cookies
+	user, err := UserService.GetUserByCookies(cookies)
+	if err != nil || user == nil {
+		c.JSON(401, gin.H{"message": "Unauthorized", "error": "not-authorized"})
+		return
+	}
+
+	// Get the token from cookies
+	token, aerr := AuthService.GetTokenFromCookies(cookies)
+	if aerr != nil {
+		c.JSON(aerr.Code, gin.H{"message": aerr.Message, "error": aerr.Err})
+		return
+	}
+
+	// Delete the token from the database
+	derr := DeleteTokenByRefreshToken(token.RefreshToken)
+	if derr != nil {
+		storedlogs.LogError("LogoutHandler: Failed to delete token from database", err)
+		c.JSON(derr.Code, gin.H{"message": "Failed to delete token from database", "error": err.Error()})
+		return
+	}
+
+	// Delete the token
+	if derr := AuthService.DeleteTokenInCookies(cookies); derr != nil {
+		c.JSON(500, gin.H{"message": "Failed to delete token", "error": derr.Error()})
+		return
+	}
+	c.JSON(200, gin.H{"message": "Logged out successfully"})
 }
