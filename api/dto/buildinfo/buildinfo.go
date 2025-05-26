@@ -1,4 +1,4 @@
-package storedlogs
+package buildinfo
 
 import (
 	"time"
