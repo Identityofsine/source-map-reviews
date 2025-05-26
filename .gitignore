@@ -1,4 +1,3 @@
-
 data/
 data
 ./data/
@@ -11,3 +10,4 @@ data
 
 prod-data/
 dev-data/
+auth.yaml
