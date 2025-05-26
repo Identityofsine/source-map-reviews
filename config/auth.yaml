@@ -3,7 +3,7 @@ refreshTokenExpiration: 604800 # 7 days
 # The secret key used to sign the JWT is stored in
 # the environment variable JWT_SECRET_KEY
 google:
-  clientId: "901717066315-j8urbdotjq11f66nsakcpergd7kt8odh.apps.googleusercontent.com"
+  clientId: "your-client-id.apps.googleusercontent.com"
   scopes:
     - "https://www.googleapis.com/auth/userinfo.email"
     - "https://www.googleapis.com/auth/userinfo.profile"
