@@ -95,6 +95,12 @@ func Process(args AuthenticatorArgs) (*Token, db.DatabaseError) {
 		}
 	}
 
+	// Create a record of their token in the database
+	derr = userdb.UpdateOrCreateUserOAuthToken(user.Id, token.AccessToken, token.RefreshToken, AuthConstants.AUTHORIZATION_METHOD_GOOGLE, token.Expiry.Format("2006-01-02 15:04:05"))
+	if derr != nil {
+		return nil, db.NewDatabaseError("GoogleAuthProvider::Authenticate", "failed to create user OAuth token", "failed-to-create-user-oauth-token", 500)
+	}
+
 	// Create a token for the user
 	internalToken, err := tokenService.CreateLoginToken(user.Id)
 	if err != nil {
@@ -108,5 +114,6 @@ func GenerateAuthURL(originalPath string) string {
 	if oauthConfig == nil {
 		return ""
 	}
+	oauth2.SetAuthURLParam("prompt", "consent")
 	return oauthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
 }
