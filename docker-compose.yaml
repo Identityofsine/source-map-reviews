@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  api:
+    container_name: fofx-go-gin-prod 
+    environment:
+      - GO_ENV=production
+      - URI=https://api.example.com/
+      - DOMAIN=example.com
+      - FRONTEND_URI=https://example.com/
+      - PORT=3001
+      - DB_USER=postgres
+      - DB_PASSWORD=docker
+      - DB_NAME=app
+    command: go run cmd/server/main.go
+    ports:
+      - "3030:3001"
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart:
+      always
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: fofx-go-gin-prod-db
+    image: postgres:latest 
+    restart: always
+    tty: true
+    volumes:
+      - ./sql/database.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_PASSWORD: docker
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+
