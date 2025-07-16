@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  api:
+    container_name: fofx-go-gin-dev
+    environment:
+      - GO_ENV=development
+      - URI=http://localhost:3030/
+      - DOMAIN=localhost
+      - FRONTEND_URI=http://localhost:4200/
+      - PORT=3001
+    command: nodemon -L --legacy-watch --exec go run cmd/server/main.go --signal SIGTERM
+    ports:
+      - "3030:3001"
+  db:
+    container_name: fofx-go-gin-dev-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dev-data/sql:/var/lib/mysql

@@ -1,0 +1,5 @@
+version: "0.0.1"
+server_name: "fofx-go-gin"
+iteration: 1
+commit: "9da0d09"
+branch: "main"
