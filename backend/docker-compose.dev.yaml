@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    container_name: fofx-go-gin-dev
+    container_name: fofx-de_archive-dev
     environment:
       - GO_ENV=development
       - URI=http://localhost:3030/
@@ -13,12 +13,12 @@ services:
     ports:
       - "3030:3001"
   db:
-    container_name: fofx-go-gin-dev-db
+    container_name: fofx-de_archive-dev-db
     ports:
       - "5432:5432"
     volumes:
-      - dev-data:/var/lib/postgresql/data
+      - de_archive-dev:/var/lib/postgresql/data
 
 
 volumes:
-  dev-data:
+  de_archive-dev:

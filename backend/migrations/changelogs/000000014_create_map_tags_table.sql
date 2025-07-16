@@ -23,7 +23,7 @@ select public.create_table(
    options => '{
        "schema": "public",
        "add_soft_delete": false,
-       "add_timestamps": false,
+       "add_timestamps": true,
        "unique_constraints": ["lk_tag, map_name"],
        "comment": "Junction table linking maps to tags",
        "if_not_exists": true,

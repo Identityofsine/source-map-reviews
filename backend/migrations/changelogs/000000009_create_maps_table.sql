@@ -11,7 +11,7 @@ select public.create_table(
    options => '{
        "schema": "public",
        "add_soft_delete": false,
-       "add_timestamps": false,
+       "add_timestamps": true,
        "primary_key": "map_name",
        "comment": "Table for storing map files with their names and paths",
        "if_not_exists": true,

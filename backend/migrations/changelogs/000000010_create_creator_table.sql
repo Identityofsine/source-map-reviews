@@ -12,7 +12,7 @@ select public.create_table(
        "schema": "public",
        "add_id": false,
        "add_soft_delete": false,
-       "add_timestamps": false,
+       "add_timestamps": true,
        "primary_key": "creator_id",
        "comment": "Table for storing map creators",
        "if_not_exists": true,
