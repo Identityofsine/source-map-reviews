@@ -3,6 +3,7 @@ package mapgetservice
 import (
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapmodel"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/maptags"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model/lk_tagdb"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model/mapdb"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model/maptagdb"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
@@ -43,31 +44,60 @@ func GetMaps() (*[]mapmodel.Map, db.DatabaseError) {
 
 	}
 
-	return &maps, nil
+	newMaps, err := populateAllMaps(&maps)
+
+	return newMaps, err
 }
 
 func populateAllMaps(maps *[]mapmodel.Map) (*[]mapmodel.Map, db.DatabaseError) {
 	newMaps := make([]mapmodel.Map, len(*maps))
-	for _, mapobj := range *maps {
-		mapobj, err := populateMap(mapobj)
-		newMaps = append(newMaps, *mapobj)
+	for i, mapobj := range *maps {
+		populated, err := populateMap(&mapobj)
 		if err != nil {
-			return nil, err
+			return maps, err
 		}
+		newMaps[i] = *populated
 	}
 	return &newMaps, nil
 }
 
-func populateMap(mapobj mapmodel.Map) (*mapmodel.Map, db.DatabaseError) {
+func populateMap(mapobj *mapmodel.Map) (*mapmodel.Map, db.DatabaseError) {
 
-	dbs, err := maptagdb.GetMapTagsByMapName(mapobj.MapName)
+	if mapobj.Tags == nil || len(mapobj.Tags) == 0 {
+		return mapobj, nil
+	}
+
+	tagNames := util.Map[maptags.MapTags, string](mapobj.Tags, func(item maptags.MapTags) string {
+		return item.TagName
+	})
+
+	dbs, err := lk_tagdb.GetLkTagsByLkTags(tagNames)
 	if err != nil {
 		return nil, err
 	}
 
-	mapTags := dbmapper.MapAllDbFields[maptagdb.MapTagDb, maptags.MapTags](*dbs)
+	if dbs == nil || len(*dbs) == 0 {
+		return mapobj, nil
+	}
 
-	mapobj.Tags = *mapTags
+	tagDbs := util.MapBy(
+		*dbs,
+		func(item lk_tagdb.LkTagDb) string {
+			return item.LkTag
+		},
+		func(item lk_tagdb.LkTagDb) lk_tagdb.LkTagDb {
+			return item
+		},
+	)
 
-	return &mapobj, nil
+	for i, tag := range mapobj.Tags {
+		tagDb, ok := tagDbs[tag.TagName]
+		if !ok {
+			continue
+		}
+		mapobj.Tags[i].TagDescription = tagDb.Description
+		mapobj.Tags[i].TagDescriptionShort = tagDb.ShortDescription
+	}
+
+	return mapobj, nil
 }
