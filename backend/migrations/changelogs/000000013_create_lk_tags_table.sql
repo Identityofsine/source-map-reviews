@@ -7,6 +7,7 @@ select public.create_table(
    table_name => 'lk_tags',
    columns => 'lk_tag VARCHAR(100) NOT NULL,
                description TEXT,
+               short_description TEXT
                ',
    options => '{
        "schema": "public",
