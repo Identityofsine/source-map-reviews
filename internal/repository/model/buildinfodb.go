@@ -41,7 +41,7 @@ func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (Buil
 }
 
 func DoesVersionExist(version string, commitHash string) (bool, db.DatabaseError) {
-	query := "SELECT EXISTS(SELECT 1 FROM buildinfo WHERE version = $1 AND commit_hash = $2)"
+	query := "SELECT EXISTS(SELECT 1 FROM public.buildinfo WHERE version = $1 AND commit_hash = $2)"
 	rows, err := db.Query[bool](query, version, commitHash)
 
 	if err != nil {

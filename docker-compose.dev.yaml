@@ -17,4 +17,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./dev-data/sql:/var/lib/mysql
+      - dev-data:/var/lib/postgresql/data
+
+
+volumes:
+  dev-data:

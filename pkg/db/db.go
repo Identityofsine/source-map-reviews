@@ -5,12 +5,13 @@ import (
 	_ "errors"
 	"fmt"
 	_ "fmt"
-	_ "github.com/lib/pq" // This is important! The underscore is to import the package for side-effects
-	"github.com/pressly/goose"
 	"log"
 	"os"
 	"reflect"
 	"strings"
+
+	_ "github.com/lib/pq" // This is important! The underscore is to import the package for side-effects
+	"github.com/pressly/goose"
 )
 
 var cfg = fmt.Sprintf(
@@ -55,18 +56,22 @@ func Migrate() DatabaseError {
 
 	log.Printf("[DB:INFO] Migrating database %s", os.Getenv("DB_NAME"))
 
+	// Use a separate goose version table for each migration folder
+	goose.SetTableName("goose_db_version_functions")
 	log.Printf("[DB:INFO] Running migrations in functions")
 	if err := goose.Up(db, "./migrations/functions"); err != nil {
 		log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/functions")
 		return NewDatabaseError("db", "Error running migrations in functions", err.Error(), 500)
 	}
 
+	goose.SetTableName("goose_db_version")
 	log.Printf("[DB:INFO] Running migrations in init")
 	if err := goose.Up(db, "./migrations/init"); err != nil {
 		log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/init")
 		return NewDatabaseError("db", "Error running migrations in init", err.Error(), 500)
 	}
 
+	goose.SetTableName("goose_db_version_changelogs")
 	log.Printf("[DB:INFO] Running migrations in changelogs")
 	if err := goose.Up(db, "./migrations/changelogs"); err != nil {
 		log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/changelogs")
@@ -74,9 +79,10 @@ func Migrate() DatabaseError {
 	}
 
 	if env == "development" {
+		goose.SetTableName("goose_db_version_localonly")
 		log.Printf("[DB:INFO] Running migrations in localonly")
 		if err := goose.Up(db, "./migrations/localonly"); err != nil {
-			log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/changelogs")
+			log.Fatalf("[DB:ERROR] %s in %s", err, "./migrations/localonly")
 			return NewDatabaseError("db", "Error running migrations in localonly", err.Error(), 500)
 		}
 	}
