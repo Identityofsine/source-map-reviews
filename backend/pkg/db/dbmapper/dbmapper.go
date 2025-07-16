@@ -2,6 +2,17 @@ package dbmapper
 
 import "reflect"
 
+func MapAllDbFields[in any, out any](input []in) *[]out {
+	outs := make([]out, 0, len(input))
+	for _, inp := range input {
+		if outValue := MapDbFields[in, out](inp); outValue != nil {
+			outs = append(outs, *outValue)
+		}
+	}
+
+	return &outs
+}
+
 // MapToDb maps fields from an input struct to an output struct using reflection.
 func MapDbFields[in any, out any](input in) *out {
 
