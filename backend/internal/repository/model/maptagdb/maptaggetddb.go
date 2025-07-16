@@ -35,7 +35,7 @@ func GetMapTagsByMapNames(mapNames []string) (*map[string][]MapTagDb, db.Databas
 	placeholders := make([]string, len(mapNames))
 	args := make([]interface{}, len(mapNames))
 	for i, name := range mapNames {
-		placeholders[i] = "?"
+		placeholders[i] = fmt.Sprintf("$%d", i+1) // PostgreSQL style
 		args[i] = name
 	}
 	query := fmt.Sprintf("SELECT * FROM "+table+" WHERE map_name IN (%s)", strings.Join(placeholders, ","))

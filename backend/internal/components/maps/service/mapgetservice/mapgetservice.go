@@ -26,22 +26,24 @@ func GetMaps() (*[]mapmodel.Map, db.DatabaseError) {
 		return nil, err
 	}
 
-	// Flatten all map values into a single slice
-	var allTags []maptagdb.MapTagDb
-	for _, tagSlice := range *tagsMap {
-		allTags = append(allTags, tagSlice...)
-	}
-	tagsList := util.GroupIntoLists[maptagdb.MapTagDb](allTags, func(item maptagdb.MapTagDb) string {
-		return item.MapName
-	})
+	maps := make([]mapmodel.Map, len(mapNames))
 
-	// Map the database models to the application models
-	maps := dbmapper.MapAllDbFullFields[mapdb.MapDb, mapmodel.Map](*dbs, tagsList)
-	if maps == nil {
-		return nil, db.NewDatabaseError("GetMaps", "Mapping failed", "mapping-failed", 500)
+	for i, dbMap := range *dbs {
+
+		if tags, ok := (*tagsMap)[dbMap.MapName]; ok {
+			newTags := dbmapper.MapAllDbFields[maptagdb.MapTagDb, maptags.MapTags](tags)
+			mutatedMap := dbmapper.MapDbFullFields[mapdb.MapDb, mapmodel.Map](dbMap, newTags)
+			if mutatedMap == nil {
+				return nil, db.NewDatabaseError("GetMaps", "Failed to map db fields to model", "mapper-failed", 500)
+			}
+			maps[i] = *mutatedMap
+		} else {
+			maps[i] = *dbmapper.MapDbFields[mapdb.MapDb, mapmodel.Map](dbMap)
+		}
+
 	}
 
-	return maps, nil
+	return &maps, nil
 }
 
 func populateAllMaps(maps *[]mapmodel.Map) (*[]mapmodel.Map, db.DatabaseError) {

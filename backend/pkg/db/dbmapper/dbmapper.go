@@ -70,16 +70,17 @@ func MapDbFullFields[in any, out any](input in, object ...any) *out {
 			continue
 		}
 
-		// Find the matching object by tag name
+		// Find the matching object by type
 		for _, obj := range object {
 			objValue := reflect.ValueOf(obj)
-			// If the field is a slice, assign if types match
-			if field.Type.Kind() == reflect.Slice && objValue.Type().AssignableTo(field.Type) {
-				outputValue.Field(i).Set(objValue)
-				break
+
+			// Accept both pointer and non-pointer values
+			if objValue.Kind() == reflect.Ptr && !objValue.IsNil() {
+				objValue = objValue.Elem()
 			}
-			// If the field is a struct, assign if types match
-			if field.Type.Kind() == reflect.Struct && objValue.Type().AssignableTo(field.Type) {
+
+			// Set if assignable to the field
+			if objValue.Type().AssignableTo(field.Type) {
 				outputValue.Field(i).Set(objValue)
 				break
 			}
@@ -87,16 +88,6 @@ func MapDbFullFields[in any, out any](input in, object ...any) *out {
 	}
 
 	return output
-}
-
-func MapAllDbFullFields[in any, out any](input []in, object ...any) *[]out {
-	outs := make([]out, 0, len(input))
-	for _, inp := range input {
-		if outValue := MapDbFullFields[in, out](inp, object...); outValue != nil {
-			outs = append(outs, *outValue)
-		}
-	}
-	return &outs
 }
 
 func getReflectionValues[in any](obj in, tag string) map[string]reflect.Value {
