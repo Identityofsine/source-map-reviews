@@ -1,7 +1,10 @@
 package dbmapper
 
-import "reflect"
+import (
+	"reflect"
+)
 
+// MapAllDbFields maps fields from a slice of input structs to a slice of output structs using reflection.
 func MapAllDbFields[in any, out any](input []in) *[]out {
 	outs := make([]out, 0, len(input))
 	for _, inp := range input {
@@ -17,34 +20,122 @@ func MapAllDbFields[in any, out any](input []in) *[]out {
 func MapDbFields[in any, out any](input in) *out {
 
 	// Use reflection to map fields from input to output
-	inputValue := reflect.ValueOf(input)
-	if inputValue.Kind() != reflect.Struct {
-		return nil
+	mapFields := getReflectionValues[in](input, "db")
+	if mapFields == nil {
+		return nil // Return nil if input is not a struct or has no db tags
 	}
 
 	// Ensure input is a struct
 	output, outputValue := createReflectValue[out]()
 
+	//change the output type fields that are matched by db tag
+
+	if output == nil || outputValue == nil {
+		return nil // Return nil if output is not a pointer or is Nil
+	}
+	// Set the fields in the output struct using the reflection map
+	if outputValue.Kind() != reflect.Struct {
+		return nil // Return nil if output is not a Struct
+	}
+
+	setReflectValues(output, mapFields)
+
+	return output
+}
+
+// MapDbFullFields maps all fields from a stream of input structs, the following objects will be subject to nested mapping
+func MapDbFullFields[in any, out any](input in, object ...any) *out {
+	// Map the basic fields
+	output := MapDbFields[in, out](input)
+	if output == nil {
+		return nil
+	}
+
+	// If no nested objects, return the mapped struct
+	if len(object) == 0 {
+		return output
+	}
+
+	// Get the output struct as a reflect.Value
+	outputValue := reflect.ValueOf(output).Elem()
+	if outputValue.Kind() != reflect.Struct {
+		return nil
+	}
+
+	// For each field in the output struct, check for dbobj tag
+	for i := 0; i < outputValue.NumField(); i++ {
+		field := outputValue.Type().Field(i)
+		dbobjTag := field.Tag.Get("dbobj")
+		if dbobjTag == "" {
+			continue
+		}
+
+		// Find the matching object by tag name
+		for _, obj := range object {
+			objValue := reflect.ValueOf(obj)
+			// If the field is a slice, assign if types match
+			if field.Type.Kind() == reflect.Slice && objValue.Type().AssignableTo(field.Type) {
+				outputValue.Field(i).Set(objValue)
+				break
+			}
+			// If the field is a struct, assign if types match
+			if field.Type.Kind() == reflect.Struct && objValue.Type().AssignableTo(field.Type) {
+				outputValue.Field(i).Set(objValue)
+				break
+			}
+		}
+	}
+
+	return output
+}
+
+func MapAllDbFullFields[in any, out any](input []in, object ...any) *[]out {
+	outs := make([]out, 0, len(input))
+	for _, inp := range input {
+		if outValue := MapDbFullFields[in, out](inp, object...); outValue != nil {
+			outs = append(outs, *outValue)
+		}
+	}
+	return &outs
+}
+
+func getReflectionValues[in any](obj in, tag string) map[string]reflect.Value {
+
+	// Use reflection to map fields from input to output
+	inputValue := reflect.ValueOf(obj)
+	if inputValue.Kind() != reflect.Struct {
+		return nil
+	}
+
 	mapFields := make(map[string]reflect.Value)
 
 	for i := 0; i < inputValue.NumField(); i++ {
 		field := inputValue.Type().Field(i)
-		dbTag := field.Tag.Get("db")
+		dbTag := field.Tag.Get(tag)
 		if dbTag == "" {
 			continue // Skip fields without a db tag
 		}
 		mapFields[dbTag] = inputValue.Field(i)
 	}
 
-	//change the output type fields that are matched by db tag
+	return mapFields
+
+}
+
+func setReflectValues[in any](output in, reflectionMap map[string]reflect.Value) *in {
+	// Use reflection to set fields in the output struct
+	outputValue := reflect.ValueOf(output).Elem()
+	if outputValue.Kind() != reflect.Struct {
+		return nil // Return nil if output is not a struct
+	}
+
 	for i := 0; i < outputValue.NumField(); i++ {
-		oType := reflect.TypeOf(output).Elem()
-		field := oType.Field(i)
+		field := outputValue.Type().Field(i)
 		dbTag := field.Tag.Get("db")
 		if dbTag == "" {
-			continue // Skip fields without a db Tag
+			continue // Skip fields without a db tag
 		}
-		if value, ok := mapFields[dbTag]; ok {
+		if value, ok := reflectionMap[dbTag]; ok {
 			if outputValue.FieldByName(field.Name).CanSet() {
 				outputValue.FieldByName(field.Name).Set(value)
 			} else {
@@ -53,7 +144,7 @@ func MapDbFields[in any, out any](input in) *out {
 		}
 	}
 
-	return output
+	return &output
 }
 
 func createReflectValue[IN any]() (*IN, *reflect.Value) {

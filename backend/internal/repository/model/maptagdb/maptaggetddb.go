@@ -1,0 +1,52 @@
+package maptagdb
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/util"
+)
+
+const (
+	table = "map_tags"
+)
+
+// GetMapTags retrieves all map-tag links from the map_tags table
+func GetMapTags() (*[]MapTagDb, db.DatabaseError) {
+	dbs, err := db.Query[MapTagDb]("SELECT * from " + table)
+	if err != nil {
+		return nil, err
+	}
+	return dbs, nil
+}
+
+// GetMapTagsByMapName retrieves all map-tag links from the map_tags table for a given map name
+func GetMapTagsByMapName(mapName string) (*[]MapTagDb, db.DatabaseError) {
+	dbs, err := db.Query[MapTagDb]("SELECT * from "+table+" where map_name = ?", mapName)
+	if err != nil {
+		return nil, err
+	}
+	return dbs, nil
+}
+
+func GetMapTagsByMapNames(mapNames []string) (*map[string][]MapTagDb, db.DatabaseError) {
+
+	placeholders := make([]string, len(mapNames))
+	args := make([]interface{}, len(mapNames))
+	for i, name := range mapNames {
+		placeholders[i] = "?"
+		args[i] = name
+	}
+	query := fmt.Sprintf("SELECT * FROM "+table+" WHERE map_name IN (%s)", strings.Join(placeholders, ","))
+
+	dbs, err := db.Query[MapTagDb](query, args...)
+	if err != nil {
+		return nil, err
+	}
+	grouped := util.GroupBy[MapTagDb](*dbs, func(item MapTagDb) string {
+		return item.MapName
+	})
+
+	return &grouped, nil
+}
