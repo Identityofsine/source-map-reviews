@@ -12,6 +12,8 @@ const (
 	table = "map_tags"
 )
 
+type MapTagRelationshipDbs = map[string][]MapTagDb
+
 // GetMapTags retrieves all map-tag links from the map_tags table
 func GetMapTags() (*[]MapTagDb, db.DatabaseError) {
 	dbs, err := db.Query[MapTagDb]("SELECT * from " + table)
@@ -30,7 +32,7 @@ func GetMapTagsByMapName(mapName string) (*[]MapTagDb, db.DatabaseError) {
 	return dbs, nil
 }
 
-func GetMapTagsByMapNames(mapNames []string) (*map[string][]MapTagDb, db.DatabaseError) {
+func GetMapTagsByMapNames(mapNames []string) (*MapTagRelationshipDbs, db.DatabaseError) {
 
 	placeholders := make([]string, len(mapNames))
 	args := make([]interface{}, len(mapNames))

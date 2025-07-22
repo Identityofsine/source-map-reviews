@@ -1,4 +1,4 @@
-package lk_tagdb
+package lktagdb
 
 import (
 	"fmt"

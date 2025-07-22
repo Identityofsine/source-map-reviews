@@ -1,4 +1,4 @@
-package lk_tagdb
+package lktagdb
 
 // LkTagDb represents a row in the lk_tags lookup table for tag definitions
 // Matches schema in 000000013_create_lk_tags_table.sql

@@ -1,5 +1,6 @@
 package util
 
+// GroupBy groups items by a key function and returns a map where the keys are the results of the key function and the values are slices of items that share the same key.
 func GroupBy[T any](items []T, key func(T) string) map[string][]T {
 	grouped := make(map[string][]T)
 	for _, item := range items {
