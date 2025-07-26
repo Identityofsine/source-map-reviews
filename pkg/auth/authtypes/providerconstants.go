@@ -1,4 +1,4 @@
-package types
+package authtypes
 
 const (
 	AUTH_METHOD_INTERNAL = "internal"
