@@ -2,7 +2,7 @@ package user
 
 import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 )
 
 func Map(object UserDB) User {

@@ -3,7 +3,7 @@ package buildinfo
 import (
 	"time"
 
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/buildinfo/model"
 )
 

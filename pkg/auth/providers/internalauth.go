@@ -4,7 +4,7 @@ import (
 	userDto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/user"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
 	userService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
-	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	repository "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	tokenService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
@@ -37,7 +37,7 @@ func (obj *InternalAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, d
 		return nil, db.NewDatabaseError("InternalAuthProvider::Authenticate", "args is nil", "args-nil", 400)
 	}
 
-	userdb, derr := userdb.GetUserByUsername(args.Keys["username"].(string))
+	userdb, derr := repository.GetUserByUsername(args.Keys["username"].(string))
 	if derr != nil || userdb == nil {
 		return nil, derr
 	}

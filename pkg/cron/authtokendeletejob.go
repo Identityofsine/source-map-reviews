@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	dbModels "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	dbModels "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 

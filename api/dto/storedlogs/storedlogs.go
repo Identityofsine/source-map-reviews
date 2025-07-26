@@ -3,7 +3,7 @@ package storedlogs
 import (
 	"database/sql"
 
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs/model"
 )
 

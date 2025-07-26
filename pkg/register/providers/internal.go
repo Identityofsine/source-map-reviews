@@ -3,7 +3,7 @@ package providers
 import (
 	"errors"
 
-	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	authTypeLks "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/register/types"
 	validators "github.com/identityofsine/fofx-go-gin-api-template/pkg/register/validator/providers"

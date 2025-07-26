@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	tokendto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/token"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	AuthConstants "github.com/identityofsine/fofx-go-gin-api-template/internal/constants/auth"
-	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	tokenService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"

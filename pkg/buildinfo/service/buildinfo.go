@@ -5,7 +5,7 @@ import (
 
 	buildInfoProvider "github.com/identityofsine/fofx-go-gin-api-template/api/dto/buildinfo"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/health/service"
-	dto "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	dto "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/buildinfo/model"
 )
 
