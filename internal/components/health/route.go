@@ -1,4 +1,4 @@
-package controller
+package health
 
 import "github.com/gin-gonic/gin"
 import (
@@ -11,7 +11,7 @@ type route Routeable
 //of the health component of this web application
 
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
-	router.GET("/health", GetServerHealth)
+	router.GET("/health", getServerHealth)
 	return router
 }
 

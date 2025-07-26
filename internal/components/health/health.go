@@ -1,4 +1,4 @@
-package model
+package health
 
 type Health struct {
 	ServerName  string `json:"server_name"`

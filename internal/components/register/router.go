@@ -1,4 +1,4 @@
-package controller
+package register
 
 import (
 	"strings"
@@ -18,7 +18,7 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 			provider := provider
 			providerName := strings.ToLower(provider.Name())
 			registerGroup.POST("/"+providerName, func(c *gin.Context) {
-				GenericRegisterHandler(provider, c)
+				genericRegisterHandler(provider, c)
 			})
 		}
 	}

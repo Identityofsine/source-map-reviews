@@ -1,15 +1,15 @@
-package controller
+package register
 
 import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/identityofsine/fofx-go-gin-api-template/pkg/register"
+	registerPkg "github.com/identityofsine/fofx-go-gin-api-template/pkg/register"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/register/types"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 
-func GenericRegisterHandler(provider register.Registerable, c *gin.Context) {
+func genericRegisterHandler(provider registerPkg.Registerable, c *gin.Context) {
 	storedlogs.LogInfo("POST: /register/" + strings.ToLower(provider.Name()))
 
 	// Get the request body
