@@ -5,6 +5,7 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapsearchform"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/service/mapgetservice"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 
@@ -21,6 +22,33 @@ func GetMaps(c *gin.Context) {
 
 	c.JSON(200, maps)
 
+}
+
+func GetMap(c *gin.Context) {
+	storedlogs.LogInfo("GET: /maps/:mapName")
+
+	mapName := c.Param("mapName")
+	if mapName == "" {
+		err := routeexception.NewRouteError(
+			nil,
+			"Map name is required",
+			"map-name-required",
+			exception.CODE_BAD_REQUEST,
+		)
+		storedlogs.LogError("Map name is required", err)
+		c.JSON(exception.CODE_BAD_REQUEST, err)
+		return
+	}
+
+	// Call the service to get a specific map
+	mapData, err := mapgetservice.GetMap(mapName)
+	if err != nil {
+		storedlogs.LogError("Error getting map: %v", err)
+		c.JSON(err.Code, err)
+		return
+	}
+
+	c.JSON(200, mapData)
 }
 
 func SearchMaps(c *gin.Context) {

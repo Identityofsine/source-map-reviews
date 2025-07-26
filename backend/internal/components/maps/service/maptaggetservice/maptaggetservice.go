@@ -59,7 +59,7 @@ func GetTagsByMaps(mapsObject []mapmodel.Map) (MapTagRelationship, routeexceptio
 		)
 	}
 
-	if len(*tags) == 0 {
+	if tags == nil || len(*tags) == 0 {
 		return nil, exception.ResourceNotFound
 	}
 

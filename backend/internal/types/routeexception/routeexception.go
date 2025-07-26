@@ -3,7 +3,8 @@ package routeexception
 import "fmt"
 
 type routeerror struct {
-	Exception error
+	// Exception should be hidden from the user, but can be logged for debugging
+	Exception error  `json:"-"`
 	Message   string `json:"message"`
 	Err       string `json:"error"`
 	Code      int    `json:"code"`

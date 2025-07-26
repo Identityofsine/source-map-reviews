@@ -10,6 +10,7 @@ type route Routeable
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	registerGroup := router.Group("/maps")
 	registerGroup.GET("/", GetMaps)
+	registerGroup.GET("/:mapName", GetMap)
 	registerGroup.POST("/search", SearchMaps)
 
 	return router
