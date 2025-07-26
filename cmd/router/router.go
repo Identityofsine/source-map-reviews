@@ -3,8 +3,8 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/auth"
-	healthController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/health/controller"
-	registerController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/register/controller"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/health"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/register"
 	logsController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs/controller"
 
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/middlewares"
@@ -31,10 +31,10 @@ func setupRoutes(engine *gin.Engine) {
 	//inject your routes here:
 	//login
 	auth.AuthRoute.UseRouter(api)
-	registerController.RegisterRoute.UseRouter(api)
+	register.RegisterRoute.UseRouter(api)
 
 	api.Use(middlewares.UseAuthenticationEnforcementMiddleware().Middleware)
 
-	healthController.HealthRoute.UseRouter(api)
+	health.HealthRoute.UseRouter(api)
 	logsController.LogsRoute.UseRouter(api)
 }

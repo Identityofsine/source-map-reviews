@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/cron/types"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	cron "github.com/robfig/cron/v3"
 )
