@@ -8,12 +8,12 @@ import (
 )
 
 type LogDB struct {
-	Id        int
-	Severity  string
-	Message   string
-	CreatedAt time.Time
-	Version   sql.NullString
-	Commit    sql.NullString
+	Id        int            `db:"id"`
+	Severity  string         `db:"severity"`
+	Message   string         `db:"message"`
+	CreatedAt time.Time      `db:"created_at"`
+	Version   sql.NullString `db:"version"`
+	Commit    sql.NullString `db:"commit_hash"`
 }
 
 func GetLogs() ([]LogDB, db.DatabaseError) {

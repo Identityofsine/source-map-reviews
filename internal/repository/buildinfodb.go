@@ -7,11 +7,11 @@ import (
 )
 
 type BuildInfoDb struct {
-	Version     string    `json:"version"`
-	CommitHash  string    `json:"commit_hash"`
-	BuildDate   time.Time `json:"build_date"`
-	Environment string    `json:"environment"`
-	CreatedAt   time.Time `json:"created_at"`
+	Version     string    `json:"version" db:"version"`
+	CommitHash  string    `json:"commit_hash" db:"commit_hash"`
+	BuildDate   time.Time `json:"build_date" db:"build_date"`
+	Environment string    `json:"environment" db:"environment"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
 
 func GetBuildInfo() ([]BuildInfoDb, db.DatabaseError) {

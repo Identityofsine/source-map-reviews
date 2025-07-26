@@ -3,12 +3,12 @@ package repository
 import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
 type UserOAuthTokenDB struct {
-	UserId       int64  `json:"user_id"`
-	AccessToken  string `json:"access_token"`  // OAuth access token
-	RefreshToken string `json:"refresh_token"` // OAuth refresh token, if applicable
-	Source       string `json:"source"`        // e.g., "google", "github", etc.
-	CreatedAt    string `json:"created_at"`
-	ExpiresAt    string `json:"expires_at"`
+	UserId       int64  `json:"user_id" db:"user_id"`             // User ID associated with the OAuth token
+	AccessToken  string `json:"access_token" db:"access_token"`   // OAuth access token
+	RefreshToken string `json:"refresh_token" db:"refresh_token"` // OAuth refresh token, if applicable
+	Source       string `json:"source" db:"source"`               // e.g., "google", "github", etc.
+	CreatedAt    string `json:"created_at" db:"created_at"`       // Timestamp when the token was created
+	ExpiresAt    string `json:"expires_at" db:"expires_at"`       // Timestamp when the token expires
 }
 
 func CreateUserOAuthToken(userId int64, accessToken, refreshToken, source, expires_at string) db.DatabaseError {

@@ -3,11 +3,11 @@ package repository
 import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
 type UserDB struct {
-	Id                   int64  `json:"id"`
-	Username             string `json:"username"`
-	Password             string `json:"password"`
-	AuthenticationMethod string `json:"authentication_method"`
-	Verified             bool   `json:"verified"`
+	Id                   int64  `json:"id" db:"id"`
+	Username             string `json:"username" db:"username"`
+	Password             string `json:"password" db:"password"`
+	AuthenticationMethod string `json:"authentication_method db:"authentication_method"`
+	Verified             bool   `json:"verified" db:"verified"`
 }
 
 // logic

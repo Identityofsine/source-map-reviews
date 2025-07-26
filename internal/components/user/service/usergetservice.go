@@ -3,11 +3,11 @@ package service
 import (
 	"strconv"
 
-	dto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/user"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 )
 
 func GetUserByUserId(userId int64) (*User, error) {
@@ -18,8 +18,8 @@ func GetUserByUserId(userId int64) (*User, error) {
 	if userDb := GetUserById(intId); userDb.Id == 0 {
 		return nil, db.NewDatabaseError("GetUserByUserId", "User not found", "user-not-found", 404)
 	} else {
-		user := dto.Map(userDb)
-		return &user, nil
+		user := dbmapper.MapDbFields[UserDB, User](userDb)
+		return user, nil
 	}
 }
 

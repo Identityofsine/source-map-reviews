@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	tokendto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/token"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
@@ -13,6 +12,7 @@ import (
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 )
 
 func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthError {
@@ -91,8 +91,8 @@ func GetTokenByRefresh(refreshToken string) (*Token, error) {
 	if tokenDB.Id == "" {
 		return nil, nil
 	}
-	token := tokendto.Map(tokenDB)
-	return &token, nil
+	token := dbmapper.MapDbFields[TokenDB, Token](tokenDB)
+	return token, nil
 }
 
 func GetTokenFromCookies(cookies *cookies.Cookies) (*Token, AuthError) {

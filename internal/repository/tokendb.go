@@ -3,13 +3,13 @@ package repository
 import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
 type TokenDB struct {
-	Id           string
-	UserId       int64
-	AccessToken  string
-	RefreshToken string
-	ExpiresAt    string
-	RefreshedAt  string
-	CreatedAt    string
+	Id           string `db:"id"`
+	UserId       int64  `db:"user_id"`
+	AccessToken  string `db:"access_token"`
+	RefreshToken string `db:"refresh_token"`
+	ExpiresAt    string `db:"expires_at"`
+	RefreshedAt  string `db:"refreshed_at"`
+	CreatedAt    string `db:"created_at"`
 }
 
 func GetTokens() ([]TokenDB, db.DatabaseError) {
