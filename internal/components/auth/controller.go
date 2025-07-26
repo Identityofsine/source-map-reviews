@@ -8,9 +8,9 @@ import (
 	AuthConstants "github.com/identityofsine/fofx-go-gin-api-template/internal/constants/auth"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	AuthService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )

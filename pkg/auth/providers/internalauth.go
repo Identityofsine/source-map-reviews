@@ -24,6 +24,7 @@ func (obj *InternalAuthProvider) validate(args authtypes.AuthenticatorArgs) bool
 	//check if args is nil or what we expect from a google auth request
 	if args == nil {
 		return false
+
 	}
 	if args.Keys["username"] == nil || args.Keys["password"] == nil {
 		return false

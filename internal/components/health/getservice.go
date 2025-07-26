@@ -1,11 +1,18 @@
 package health
 
 import (
-	. "github.com/identityofsine/fofx-go-gin-api-template/api/dto/health"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 )
 
-func getHealth() Health {
-	// We store this value in the environment variable
-	return *MapServerDetailsToHealth(GetServerDetails())
+func GetHealth() Health {
+	return *MapServerDetailsToHealth(*GetServerDetails())
+}
+
+func MapServerDetailsToHealth(serverDetails ServerDetails) *Health {
+	return &Health{
+		Version:     serverDetails.Version,
+		Commit:      serverDetails.Commit,
+		BuildDate:   serverDetails.BuildDate,
+		Environment: serverDetails.Environment,
+	}
 }

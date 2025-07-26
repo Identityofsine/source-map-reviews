@@ -7,7 +7,7 @@ import (
 // GET /api/v1/health
 func getServerHealth(c *gin.Context) {
 	// Get the environment variable from the request context
-	serverHealth := getHealth()
+	serverHealth := GetHealth()
 	c.JSON(200, serverHealth)
 	return
 }

@@ -1,9 +1,10 @@
 package middlewares
 
 import (
+	"time"
+
 	corslib "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	corsdto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/cors"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 )
 
@@ -24,8 +25,20 @@ type cors struct {
 
 // CreateCors is a constructor function that creates a new CORS middleware; taking in a list of valid origins
 func UseCors() *cors {
-	config := corsdto.GetCorsConfigFromYaml(*config.GetCorsConfig())
+	config := config.GetCorsConfig()
+	configObject := getCorsConfigFromYaml(*config)
 	return &cors{
-		Middleware: corslib.New(config),
+		Middleware: corslib.New(configObject),
+	}
+}
+
+func getCorsConfigFromYaml(config config.CorsConfig) corslib.Config {
+	return corslib.Config{
+		AllowOrigins:     config.AllowOrigins,
+		AllowMethods:     config.AllowMethods,
+		AllowHeaders:     config.AllowHeaders,
+		ExposeHeaders:    config.ExposeHeaders,
+		AllowCredentials: config.AllowCredentials,
+		MaxAge:           time.Duration(config.MaxAge),
 	}
 }

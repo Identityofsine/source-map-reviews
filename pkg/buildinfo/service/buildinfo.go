@@ -3,10 +3,10 @@ package service
 import (
 	"time"
 
-	buildInfoProvider "github.com/identityofsine/fofx-go-gin-api-template/api/dto/buildinfo"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/health/service"
-	dto "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/health"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/buildinfo/model"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 )
 
 var latestBuildInfo *BuildInfo
@@ -17,20 +17,20 @@ func GetBuildInfo() (*BuildInfo, error) {
 	}
 	// Health
 	health := GetHealth()
-	exists, err := dto.DoesVersionExist(health.Version, health.Commit)
+	exists, err := repository.DoesVersionExist(health.Version, health.Commit)
 	if err != nil {
 		// Handle error
 		return nil, err
 	}
 	if exists {
 		// Return the latest build info
-		buildInfo, derr := dto.GetBuildInfoByVersionAndCommitHash(health.Version, health.Commit)
+		buildInfo, derr := repository.GetBuildInfoByVersionAndCommitHash(health.Version, health.Commit)
 		if derr != nil {
 			// Handle error
 			return nil, derr
 		}
-		buildInfoObject := buildInfoProvider.Map(buildInfo)
-		latestBuildInfo = &buildInfoObject
+		buildInfoObject := dbmapper.MapDbFields[repository.BuildInfoDb, BuildInfo](buildInfo)
+		latestBuildInfo = buildInfoObject
 	} else {
 		// Create a new build info
 		buildInfo := BuildInfo{
@@ -41,8 +41,8 @@ func GetBuildInfo() (*BuildInfo, error) {
 			CreatedAt:   time.Now().Format("2006-01-02 15:04:05"),
 		}
 
-		buildInfoObject := buildInfoProvider.ReverseMap(buildInfo)
-		err = dto.InsertBuildInfo(buildInfoObject)
+		buildInfoObject := dbmapper.MapDbFields[BuildInfo, repository.BuildInfoDb](buildInfo)
+		err = repository.InsertBuildInfo(*buildInfoObject)
 		if err != nil {
 			return nil, err
 		}

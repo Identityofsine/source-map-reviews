@@ -1,8 +1,8 @@
 package service
 
 import (
-	logDto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/storedlogs"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs/model"
 )
@@ -14,7 +14,7 @@ func GetStoredLogs() []Log {
 		storedlogs.LogError("Error getting logs: %v", err)
 		return nil
 	}
-	logs := logDto.MapAll(logsDbs)
+	logs := dbmapper.MapAllDbFields[LogDB, Log](logsDbs)
 
-	return logs
+	return *logs
 }
