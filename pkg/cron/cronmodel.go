@@ -1,4 +1,4 @@
-package types
+package cron
 
 type Executable interface {
 	GetName() string

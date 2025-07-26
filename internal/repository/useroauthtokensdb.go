@@ -1,4 +1,4 @@
-package model
+package repository
 
 import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
