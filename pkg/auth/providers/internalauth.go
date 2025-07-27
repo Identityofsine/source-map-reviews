@@ -1,8 +1,7 @@
 package providers
 
 import (
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
-	userService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	repository "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
@@ -55,7 +54,7 @@ func (obj *InternalAuthProvider) Authenticate(args authtypes.AuthenticatorArgs) 
 
 	user := dbmapper.MapDbFields[repository.UserDB, User](*userdb)
 
-	if userService.IsPasswordsEqual(*user, User{
+	if IsPasswordsEqual(*user, User{
 		Username: args.Keys["username"].(string),
 		Password: args.Keys["password"].(string),
 	}) == false {

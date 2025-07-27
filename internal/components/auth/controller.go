@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	UserService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
+	UserService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
 	AuthConstants "github.com/identityofsine/fofx-go-gin-api-template/internal/constants/auth"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth"

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"

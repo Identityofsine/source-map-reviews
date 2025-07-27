@@ -1,6 +1,4 @@
-package service
-
-import . "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
+package user
 
 func IsPasswordsEqual(foundUser, InputUser User) bool {
 	//TODO hash the password and compare
