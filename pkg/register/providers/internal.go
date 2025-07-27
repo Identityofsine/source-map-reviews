@@ -29,7 +29,12 @@ func (obj *InternalRegisterProvider) Register(args RegisterArgs) error {
 		}
 	}
 
-	return userdb.CreateUser(args["username"].(string), args["password"].(string), authTypeLks.AUTH_METHOD_INTERNAL)
+	derr := userdb.CreateUser(args["username"].(string), args["password"].(string), authTypeLks.AUTH_METHOD_INTERNAL)
+	if derr != nil {
+		return derr
+	}
+
+	return nil
 }
 
 func (obj *InternalRegisterProvider) Name() string {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -68,6 +69,9 @@ func VerifyToken(token_string string) (jwt.MapClaims, AuthError) {
 		return secret, nil
 	})
 	if err != nil {
+		if strings.Contains(err.Error(), "token is expired") {
+			return nil, exception.TokenExpired
+		}
 		return nil, NewAuthError("auth", err.Error(), "parsing-failed", exception.CODE_UNAUTHORIZED)
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)

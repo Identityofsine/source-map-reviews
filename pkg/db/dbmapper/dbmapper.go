@@ -1,6 +1,7 @@
 package dbmapper
 
 import (
+	"log"
 	"reflect"
 )
 
@@ -113,6 +114,7 @@ func getReflectionValues[in any](obj in, tag string) map[string]reflect.Value {
 
 }
 
+// setReflectValues sets the fields of the output struct based on the reflection map created from the input struct.
 func setReflectValues[in any](output in, reflectionMap map[string]reflect.Value) *in {
 	// Use reflection to set fields in the output struct
 	outputValue := reflect.ValueOf(output).Elem()
@@ -127,6 +129,20 @@ func setReflectValues[in any](output in, reflectionMap map[string]reflect.Value)
 			continue // Skip fields without a db tag
 		}
 		if value, ok := reflectionMap[dbTag]; ok {
+			// Check if the value can be set to the output field
+			if !value.IsValid() {
+				continue // Skip if the value is not valid
+			}
+
+			if !isTypeMatch(value.Type(), field.Type) {
+				mappedType, ok := attemptTypeCastThroughPlugins(value, field.Type)
+				if !ok {
+					log.Fatalf("Plugin Not Found: Type mismatch for field %s: %s cannot be assigned to %s\n", field.Name, value.Type(), field.Type.Name())
+					continue // Skip if the types do not match
+				}
+				value = *mappedType // Use the mapped value if the plugin was found
+			}
+
 			if outputValue.FieldByName(field.Name).CanSet() {
 				outputValue.FieldByName(field.Name).Set(value)
 			} else {
