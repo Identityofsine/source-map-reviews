@@ -1,28 +1,35 @@
 package repository
 
-import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+import (
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
+)
 
 type UserDB struct {
 	Id                   int64  `json:"id" db:"id"`
 	Username             string `json:"username" db:"username"`
 	Password             string `json:"password" db:"password"`
-	AuthenticationMethod string `json:"authentication_method db:"authentication_method"`
-	Verified             bool   `json:"verified" db:"verified"`
+	AuthenticationMethod string `json:"authentication_method" db:"authentication_method"`
+	Verified             bool   `json:"verified" db:"verified" dao:"omit"`
 }
 
 // logic
 func CreateUser(username, password, authMethod string) db.DatabaseError {
-	query := "INSERT INTO users (username, password, authentication_method) VALUES ($1, $2, $3)"
 
-	_, err := db.Query[UserDB](query, username, password, authMethod)
+	user := UserDB{
+		Username:             username,
+		Password:             password,
+		AuthenticationMethod: authMethod,
+	}
+
+	err := dao.InsertIntoDatabaseByStruct(user)
 
 	return err
 }
 
 func CreateUserByUserDb(user *UserDB) db.DatabaseError {
-	query := "INSERT INTO users (username, password, authentication_method, verified) VALUES ($1, $2, $3, $4)"
 
-	_, err := db.Query[UserDB](query, user.Username, user.Password, user.AuthenticationMethod, user.Verified)
+	err := dao.InsertIntoDatabaseByStruct(*user)
 	if err != nil {
 		return err
 	}

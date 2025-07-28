@@ -137,7 +137,7 @@ func setReflectValues[in any](output in, reflectionMap map[string]reflect.Value)
 			if !isTypeMatch(value.Type(), field.Type) {
 				mappedType, ok := attemptTypeCastThroughPlugins(value, field.Type)
 				if !ok {
-					log.Fatalf("Plugin Not Found: Type mismatch for field %s: %s cannot be assigned to %s\n", field.Name, value.Type(), field.Type.Name())
+					log.Printf("Plugin Not Found: Type mismatch for field %s: %s cannot be assigned to %s\n", field.Name, value.Type(), field.Type.Name())
 					continue // Skip if the types do not match
 				}
 				value = *mappedType // Use the mapped value if the plugin was found
