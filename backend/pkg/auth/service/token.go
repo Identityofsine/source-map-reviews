@@ -4,13 +4,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	tokendto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/token"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
 )
@@ -85,8 +85,8 @@ func CreateLoginToken(userId int64) (*Token, error) {
 		CreatedAt:    time.Now().Format(time.RFC3339),
 	}
 
-	loginTokenDB := tokendto.ReverseMap(loginToken)
-	derr := SaveToken(loginTokenDB)
+	loginTokenDB := dbmapper.MapDbFields[Token, TokenDB](loginToken)
+	derr := SaveToken(*loginTokenDB)
 	if derr != nil {
 		return nil, derr
 

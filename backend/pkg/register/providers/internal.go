@@ -3,8 +3,9 @@ package providers
 import (
 	"errors"
 
-	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
-	authTypeLks "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
+	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
+	authTypeLks "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/bcrypt"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/register/types"
 	validators "github.com/identityofsine/fofx-go-gin-api-template/pkg/register/validator/providers"
 )
@@ -29,7 +30,22 @@ func (obj *InternalRegisterProvider) Register(args RegisterArgs) error {
 		}
 	}
 
-	return userdb.CreateUser(args["username"].(string), args["password"].(string), authTypeLks.AUTH_METHOD_INTERNAL)
+	password, ok := args["password"].(string)
+	if !ok || password == "" {
+		return errors.New("password is required")
+	}
+
+	password, bcryptError := bcrypt.HashString(password)
+	if bcryptError != nil {
+		return bcryptError
+	}
+
+	derr := userdb.CreateUser(args["username"].(string), password, authTypeLks.AUTH_METHOD_INTERNAL)
+	if derr != nil {
+		return derr
+	}
+
+	return nil
 }
 
 func (obj *InternalRegisterProvider) Name() string {

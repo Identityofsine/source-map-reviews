@@ -1,14 +1,13 @@
 package providers
 
 import (
-	userDto "github.com/identityofsine/fofx-go-gin-api-template/api/dto/user"
-	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/model"
-	userService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
-	userdb "github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model"
+	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
+	repository "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	tokenService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
-	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 
@@ -20,10 +19,11 @@ type InternalAuthProvider struct {
 
 // TODO: change bool to include error reason
 // move this to validators?
-func (obj *InternalAuthProvider) validate(args AuthenticatorArgs) bool {
+func (obj *InternalAuthProvider) validate(args authtypes.AuthenticatorArgs) bool {
 	//check if args is nil or what we expect from a google auth request
 	if args == nil {
 		return false
+
 	}
 	if args.Keys["username"] == nil || args.Keys["password"] == nil {
 		return false
@@ -32,29 +32,49 @@ func (obj *InternalAuthProvider) validate(args AuthenticatorArgs) bool {
 	return true
 }
 
-func (obj *InternalAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, db.DatabaseError) {
+func (obj *InternalAuthProvider) Authenticate(args authtypes.AuthenticatorArgs) (*Token, authtypes.AuthError) {
 	if valid := obj.validate(args); !valid {
-		return nil, db.NewDatabaseError("InternalAuthProvider::Authenticate", "args is nil", "args-nil", 400)
+		return nil, authtypes.NewAuthError(
+			"InternalAuthProvider::Authenticate",
+			"invalid-credentials",
+			"invalid-credentials",
+			exception.CODE_BAD_REQUEST,
+		)
 	}
 
-	userdb, derr := userdb.GetUserByUsername(args.Keys["username"].(string))
+	userdb, derr := repository.GetUserByUsername(args.Keys["username"].(string))
 	if derr != nil || userdb == nil {
-		return nil, derr
+		return nil, authtypes.NewAuthError(
+			"InternalAuthProvider::Authenticate",
+			"invalid-credentials",
+			"invalid-credentials",
+			exception.CODE_UNAUTHORIZED,
+		)
 	}
 
-	user := userDto.Map(*userdb)
+	user := dbmapper.MapDbFields[repository.UserDB, User](*userdb)
 
-	if userService.IsPasswordsEqual(user, User{
+	if IsPasswordsEqual(*user, User{
 		Username: args.Keys["username"].(string),
 		Password: args.Keys["password"].(string),
 	}) == false {
-		return nil, db.NewDatabaseError("error comparing passwords", "passwords do not match", "passwords-do-not-match", 401)
+		return nil, authtypes.NewAuthError(
+			"InternalAuthProvider::Authenticate",
+			"invalid-credentials",
+			"invalid-credentials",
+			exception.CODE_UNAUTHORIZED,
+		)
 	}
 
 	token, err := tokenService.CreateLoginToken(user.ID)
 	if err != nil {
 		storedlogs.LogError("error creating token", err)
-		return nil, db.NewDatabaseError("error creating token", "error creating token", "error-creating-token", 500)
+		return nil, authtypes.NewAuthError(
+			"InternalAuthProvider::Authenticate",
+			"error-creating-token",
+			"error-creating-token",
+			exception.CODE_INTERNAL_SERVER_ERROR,
+		)
 	}
 
 	return token, nil

@@ -1,9 +1,9 @@
 package providers
 
 import (
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
-	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	GoogleAuth "github.com/identityofsine/fofx-go-gin-api-template/pkg/oauth/providers/google"
 )
 
@@ -11,7 +11,7 @@ type GoogleAuthProvider struct {
 }
 
 // TODO: replace db.DatabaseError with a more specific error type, with actionable error messages
-func (obj *GoogleAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, db.DatabaseError) {
+func (obj *GoogleAuthProvider) Authenticate(args AuthenticatorArgs) (*Token, authtypes.AuthError) {
 	return GoogleAuth.Process(args)
 }
 

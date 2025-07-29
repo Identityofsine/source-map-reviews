@@ -34,3 +34,25 @@ func MapToMap[I any, T any](a map[string]I, f func(I) T) map[string]T {
 	}
 	return newMap
 }
+
+// MapValues will mutate the input map and return a new map with the values transformed by the function f
+// f is a function that takes an input of type I and returns a value of type T
+// This is a "valueGetter"
+func GetMapValues[I any, T any](a map[string]I, f func(I) T) []T {
+	newArr := make([]T, 0)
+	for _, item := range a {
+		newArr = append(newArr, f(item)) // mutate the input array
+	}
+
+	return newArr
+}
+
+func GetMapKeys[I comparable, T any](a map[I]T) []I {
+
+	newArr := make([]I, 0)
+	for key, _ := range a {
+		newArr = append(newArr, key)
+	}
+
+	return newArr
+}

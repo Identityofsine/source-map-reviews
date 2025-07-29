@@ -2,11 +2,11 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	authController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/auth/controller"
-	healthController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/health/controller"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/auth"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/health"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/register"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs"
 	mapController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/controller/mapcontroller"
-	registerController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/register/controller"
-	logsController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs/controller"
 
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/middlewares"
 )
@@ -31,12 +31,12 @@ func setupRoutes(engine *gin.Engine) {
 
 	//inject your routes here:
 	//login
-	authController.AuthRoute.UseRouter(api)
-	registerController.RegisterRoute.UseRouter(api)
+	auth.AuthRoute.UseRouter(api)
+	register.RegisterRoute.UseRouter(api)
 	mapController.MapRoute.UseRouter(api)
 
 	api.Use(middlewares.UseAuthenticationEnforcementMiddleware().Middleware)
 
-	healthController.HealthRoute.UseRouter(api)
-	logsController.LogsRoute.UseRouter(api)
+	health.HealthRoute.UseRouter(api)
+	storedlogs.LogsRoute.UseRouter(api)
 }

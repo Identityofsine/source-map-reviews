@@ -2,10 +2,10 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
-	UserService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user/service"
+	UserService "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
+	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
 	Token "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
 	AuthService "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/service"
-	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/types"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 )
 

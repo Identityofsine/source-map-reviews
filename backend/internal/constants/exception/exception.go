@@ -1,13 +1,22 @@
 package exception
 
-import "github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
+import (
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
+)
 
 var (
 	ResourceNotFound = routeexception.NewRouteError(
 		nil,
 		"Resource not found",
 		"resource-not-found",
-		404,
+		CODE_RESOURCE_NOT_FOUND,
+	)
+	TokenExpired = authtypes.NewAuthError(
+		"TokenExpired",
+		"Token has expired",
+		"token-expired",
+		CODE_TOKEN_EXPIRED,
 	)
 )
 
