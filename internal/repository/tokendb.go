@@ -65,7 +65,7 @@ func GetTokenByRefreshToken(refreshToken string) (*AuthTokenDB, db.DatabaseError
 }
 
 func UpdateToken(tokenDB AuthTokenDB) db.DatabaseError {
-	query := "UPDATE public.authtokens SET access_token = $1, refresh_token = $2, expires_at = $3, refreshed_at = $4 WHERE user_id = $5"
+	query := "UPDATE public.auth_tokens SET access_token = $1, refresh_token = $2, expires_at = $3, refreshed_at = $4 WHERE user_id = $5"
 	_, err := db.Query[AuthTokenDB](query, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.UserId)
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ func SaveToken(tokenDB AuthTokenDB) db.DatabaseError {
 }
 
 func DeleteTokenById(tokenId string) db.DatabaseError {
-	query := "DELETE FROM public.authtokens WHERE id = $1"
+	query := "DELETE FROM public.auth_tokens WHERE id = $1"
 	_, err := db.Query[AuthTokenDB](query, tokenId)
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func DeleteTokenById(tokenId string) db.DatabaseError {
 }
 
 func DeleteTokenByRefreshToken(refreshToken string) db.DatabaseError {
-	query := "DELETE FROM public.authtokens WHERE refresh_token = $1"
+	query := "DELETE FROM public.auth_tokens WHERE refresh_token = $1"
 	_, err := db.Query[AuthTokenDB](query, refreshToken)
 	if err != nil {
 		return err
@@ -98,7 +98,7 @@ func DeleteTokenByRefreshToken(refreshToken string) db.DatabaseError {
 }
 
 func DeleteTokenByUser(userId string) db.DatabaseError {
-	query := "DELETE FROM public.authtokens WHERE user_id = $1"
+	query := "DELETE FROM public.auth_tokens WHERE user_id = $1"
 	_, err := db.Query[AuthTokenDB](query, userId)
 	if err != nil {
 		return err
@@ -107,7 +107,7 @@ func DeleteTokenByUser(userId string) db.DatabaseError {
 }
 
 func DeleteAllTokens() db.DatabaseError {
-	query := "DELETE FROM public.authtokens"
+	query := "DELETE FROM public.auth_tokens"
 	_, err := db.Query[AuthTokenDB](query)
 	if err != nil {
 		return err
@@ -117,7 +117,7 @@ func DeleteAllTokens() db.DatabaseError {
 
 // DeleteTokensWhen should never be run using any user input; this should be directly controlled by the application logic.
 func DeleteTokensWhen(condition string, args ...interface{}) db.DatabaseError {
-	query := "DELETE FROM public.authtokens WHERE " + condition
+	query := "DELETE FROM public.auth_tokens WHERE " + condition
 	_, err := db.Query[AuthTokenDB](query, args...)
 	if err != nil {
 		return err

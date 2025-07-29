@@ -8,7 +8,7 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 )
 
-type BuildInfoDb struct {
+type BuildInfoDB struct {
 	Version     string    `json:"version" db:"version"`
 	CommitHash  string    `json:"commit_hash" db:"commit_hash"`
 	BuildDate   time.Time `json:"build_date" db:"build_date"`
@@ -16,8 +16,8 @@ type BuildInfoDb struct {
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
 
-func GetBuildInfo() ([]BuildInfoDb, db.DatabaseError) {
-	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDb{}, "")
+func GetBuildInfo() ([]BuildInfoDB, db.DatabaseError) {
+	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDB{}, "")
 	if err != nil {
 		return nil, err
 	}
@@ -29,11 +29,11 @@ func GetBuildInfo() ([]BuildInfoDb, db.DatabaseError) {
 	return rows, err
 }
 
-func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (*BuildInfoDb, db.DatabaseError) {
+func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (*BuildInfoDB, db.DatabaseError) {
 
-	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDb{}, "version = $1 AND commit_hash = $2", version, commitHash)
+	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDB{}, "version = $1 AND commit_hash = $2", version, commitHash)
 	if err != nil {
-		return &BuildInfoDb{}, err
+		return &BuildInfoDB{}, err
 	}
 
 	if len(rows) == 0 {
@@ -57,7 +57,7 @@ func DoesVersionExist(version string, commitHash string) (bool, db.DatabaseError
 
 }
 
-func InsertBuildInfo(buildInfo BuildInfoDb) db.DatabaseError {
+func InsertBuildInfo(buildInfo BuildInfoDB) db.DatabaseError {
 	if buildInfo.Version == "" || buildInfo.CommitHash == "" {
 		return db.NewDatabaseError("InsertBuildInfo", "Version and CommitHash cannot be empty", "", 400)
 	}

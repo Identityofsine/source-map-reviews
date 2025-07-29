@@ -17,7 +17,7 @@ func GetUserByUserId(userId int64) (*User, error) {
 	if userDb := GetUserById(intId); userDb.Id == 0 {
 		return nil, db.NewDatabaseError("GetUserByUserId", "User not found", "user-not-found", 404)
 	} else {
-		user := dbmapper.MapDbFields[UserDB, User](userDb)
+		user := dbmapper.MapDbFields[UserDB, User](*userDb)
 		return user, nil
 	}
 }

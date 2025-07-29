@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/fatih/camelcase"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
@@ -47,7 +48,7 @@ func SelectFromDatabaseByStruct[T interface{}](dbStruct T, whereClause string, a
 		return nil, err
 	}
 
-	fields, err := getStructFieldsArray(dbStruct, true)
+	fields, err := getStructFieldsArray(dbStruct)
 	columnsMap, err := getStructFields(dbStruct, true)
 	if err != nil {
 		return nil, db.NewDatabaseError("InsertIntoDatabaseByStruct", err.Message, err.Err, err.Code)
@@ -56,7 +57,6 @@ func SelectFromDatabaseByStruct[T interface{}](dbStruct T, whereClause string, a
 	columns := make([]string, 0, len(columnsMap))
 	for idx := range fields {
 		field := fields[idx]
-		fmt.Println("Field:", field)
 		columns = append(columns, columnsMap[field])
 	}
 
@@ -82,8 +82,12 @@ func getDbModelNameFromStruct(dbStruct interface{}) (string, db.DatabaseError) {
 	if !doesStringEndWithDB(structName) {
 		return "", db.NewDatabaseError("InsertIntoDatabaseByStruct", "Struct name must end with 'DB'", "struct-name-must-end-with-DB", exception.CODE_BAD_REQUEST)
 	}
+
+	tableNameSlice := camelcase.Split(structName[:len(structName)-2]) // Remove the "DB" suffix
+	tableName := strings.Join((tableNameSlice), "_")
+
 	// Remove the "DB" suffix to get the table name, and pluralize it
-	tableName := fmt.Sprintf("%ss", strings.ToLower(structName)[:len(structName)-2])
+	tableName = fmt.Sprintf("%ss", strings.ToLower(tableName))
 	return tableName, nil
 }
 
@@ -110,7 +114,7 @@ func getStructFieldsValues(dbStruct interface{}, fields []string) ([]interface{}
 	return values, nil
 }
 
-func getStructFieldsArray(dbStruct interface{}, canOmit bool) ([]string, db.DatabaseError) {
+func getStructFieldsArray(dbStruct interface{}) ([]string, db.DatabaseError) {
 	if dbStruct == nil {
 		return nil, db.NewDatabaseError("getStructFieldsArray", "Invalid struct type", "invalid-struct", exception.CODE_BAD_REQUEST)
 	}

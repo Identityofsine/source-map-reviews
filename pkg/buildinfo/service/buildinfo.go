@@ -29,7 +29,7 @@ func GetBuildInfo() (*BuildInfo, error) {
 			// Handle error
 			return nil, derr
 		}
-		buildInfoObject := dbmapper.MapDbFields[repository.BuildInfoDb, BuildInfo](*buildInfo)
+		buildInfoObject := dbmapper.MapDbFields[repository.BuildInfoDB, BuildInfo](*buildInfo)
 		latestBuildInfo = buildInfoObject
 	} else {
 		// Create a new build info
@@ -41,7 +41,7 @@ func GetBuildInfo() (*BuildInfo, error) {
 			CreatedAt:   time.Now().Format("2006-01-02 15:04:05"),
 		}
 
-		buildInfoObject := dbmapper.MapDbFields[BuildInfo, repository.BuildInfoDb](buildInfo)
+		buildInfoObject := dbmapper.MapDbFields[BuildInfo, repository.BuildInfoDB](buildInfo)
 		err = repository.InsertBuildInfo(*buildInfoObject)
 		if err != nil {
 			return nil, err
