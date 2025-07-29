@@ -29,7 +29,7 @@ func GetBuildInfo() (*BuildInfo, error) {
 			// Handle error
 			return nil, derr
 		}
-		buildInfoObject := dbmapper.MapDbFields[repository.BuildInfoDb, BuildInfo](buildInfo)
+		buildInfoObject := dbmapper.MapDbFields[repository.BuildInfoDb, BuildInfo](*buildInfo)
 		latestBuildInfo = buildInfoObject
 	} else {
 		// Create a new build info

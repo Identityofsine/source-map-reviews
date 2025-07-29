@@ -3,7 +3,9 @@ package repository
 import (
 	"time"
 
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 )
 
 type BuildInfoDb struct {
@@ -15,44 +17,44 @@ type BuildInfoDb struct {
 }
 
 func GetBuildInfo() ([]BuildInfoDb, db.DatabaseError) {
-	query := "SELECT * FROM buildinfo"
-	rows, err := db.Query[BuildInfoDb](query)
-
+	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDb{}, "")
 	if err != nil {
 		return nil, err
 	}
 
-	return *rows, err
+	if len(rows) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
+	}
+
+	return rows, err
 }
 
-func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (BuildInfoDb, db.DatabaseError) {
-	query := "SELECT * FROM buildinfo WHERE version = $1 AND commit_hash = $2"
-	rows, err := db.Query[BuildInfoDb](query, version, commitHash)
+func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (*BuildInfoDb, db.DatabaseError) {
 
+	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDb{}, "version = $1 AND commit_hash = $2", version, commitHash)
 	if err != nil {
-		return BuildInfoDb{}, err
+		return &BuildInfoDb{}, err
 	}
 
-	if len(*rows) == 0 {
-		return BuildInfoDb{}, nil
+	if len(rows) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
 	}
 
-	return (*rows)[0], nil
+	return &(rows)[0], nil
 }
 
 func DoesVersionExist(version string, commitHash string) (bool, db.DatabaseError) {
-	query := "SELECT EXISTS(SELECT 1 FROM public.buildinfo WHERE version = $1 AND commit_hash = $2)"
-	rows, err := db.Query[bool](query, version, commitHash)
 
+	_, err := GetBuildInfoByVersionAndCommitHash(version, commitHash)
 	if err != nil {
-		return false, err
+		if err.Code == 404 {
+			return false, nil // Version does not exist
+		}
+		return false, err // Some other error occurred
 	}
 
-	if len(*rows) == 0 {
-		return false, nil
-	}
+	return true, nil // Version exists
 
-	return (*rows)[0], nil
 }
 
 func InsertBuildInfo(buildInfo BuildInfoDb) db.DatabaseError {
@@ -63,10 +65,8 @@ func InsertBuildInfo(buildInfo BuildInfoDb) db.DatabaseError {
 		return db.NewDatabaseError("InsertBuildInfo", "Version already exists", "", 409)
 	}
 
-	query := "INSERT INTO buildinfo (version, commit_hash, build_date, environment, created_at) VALUES ($1, $2, $3, $4, $5)"
-	_, err := db.Query[BuildInfoDb](query, buildInfo.Version, buildInfo.CommitHash, buildInfo.BuildDate, buildInfo.Environment, buildInfo.CreatedAt)
-	if err != nil {
-		return err
-	}
-	return nil
+	err := dao.InsertIntoDatabaseByStruct(buildInfo)
+
+	return err
+
 }

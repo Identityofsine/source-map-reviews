@@ -31,7 +31,7 @@ func VerifyUserIsAuthenticated(user User, token Token, tokenType string) AuthErr
 		return err
 	}
 
-	var dbToken *TokenDB
+	var dbToken *AuthTokenDB
 	var derr db.DatabaseError
 
 	if tokenType == TOKEN_TYPE_ACCESS {
@@ -95,7 +95,7 @@ func GetTokenByRefresh(refreshToken string) (*Token, error) {
 	if tokenDB.Id == "" {
 		return nil, nil
 	}
-	token := dbmapper.MapDbFields[TokenDB, Token](*tokenDB)
+	token := dbmapper.MapDbFields[AuthTokenDB, Token](*tokenDB)
 	return token, nil
 }
 

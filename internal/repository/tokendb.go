@@ -6,8 +6,8 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 )
 
-type TokenDB struct {
-	Id           string `db:"id"`
+type AuthTokenDB struct {
+	Id           string `db:"id" dao:"omit"`
 	UserId       int64  `db:"user_id"`
 	AccessToken  string `db:"access_token"`
 	RefreshToken string `db:"refresh_token"`
@@ -17,14 +17,14 @@ type TokenDB struct {
 }
 
 // GetTokens retrieves all tokens from the database.
-func GetTokens() ([]TokenDB, db.DatabaseError) {
+func GetTokens() ([]AuthTokenDB, db.DatabaseError) {
 	return dao.SelectFromDatabaseByStruct(
-		TokenDB{},
+		AuthTokenDB{},
 		"")
 }
 
-func GetTokenByUserId(userId string) ([]TokenDB, db.DatabaseError) {
-	rows, err := dao.SelectFromDatabaseByStruct(TokenDB{}, "user_id = $1", userId)
+func GetTokenByUserId(userId string) ([]AuthTokenDB, db.DatabaseError) {
+	rows, err := dao.SelectFromDatabaseByStruct(AuthTokenDB{}, "user_id = $1", userId)
 
 	if err != nil {
 		return nil, err
@@ -37,9 +37,9 @@ func GetTokenByUserId(userId string) ([]TokenDB, db.DatabaseError) {
 
 }
 
-func GetTokenByAccessToken(accessToken string) (*TokenDB, db.DatabaseError) {
+func GetTokenByAccessToken(accessToken string) (*AuthTokenDB, db.DatabaseError) {
 
-	rows, err := dao.SelectFromDatabaseByStruct(TokenDB{}, "access_token = $1", accessToken)
+	rows, err := dao.SelectFromDatabaseByStruct(AuthTokenDB{}, "access_token = $1", accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -50,9 +50,9 @@ func GetTokenByAccessToken(accessToken string) (*TokenDB, db.DatabaseError) {
 	return &rows[0], nil
 }
 
-func GetTokenByRefreshToken(refreshToken string) (*TokenDB, db.DatabaseError) {
+func GetTokenByRefreshToken(refreshToken string) (*AuthTokenDB, db.DatabaseError) {
 
-	rows, err := dao.SelectFromDatabaseByStruct(TokenDB{}, "refresh_token = $1", refreshToken)
+	rows, err := dao.SelectFromDatabaseByStruct(AuthTokenDB{}, "refresh_token = $1", refreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -64,16 +64,16 @@ func GetTokenByRefreshToken(refreshToken string) (*TokenDB, db.DatabaseError) {
 	return &rows[0], nil
 }
 
-func UpdateToken(tokenDB TokenDB) db.DatabaseError {
+func UpdateToken(tokenDB AuthTokenDB) db.DatabaseError {
 	query := "UPDATE public.authtokens SET access_token = $1, refresh_token = $2, expires_at = $3, refreshed_at = $4 WHERE user_id = $5"
-	_, err := db.Query[TokenDB](query, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.UserId)
+	_, err := db.Query[AuthTokenDB](query, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.UserId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func SaveToken(tokenDB TokenDB) db.DatabaseError {
+func SaveToken(tokenDB AuthTokenDB) db.DatabaseError {
 	err := dao.InsertIntoDatabaseByStruct(tokenDB)
 
 	return err
@@ -81,7 +81,7 @@ func SaveToken(tokenDB TokenDB) db.DatabaseError {
 
 func DeleteTokenById(tokenId string) db.DatabaseError {
 	query := "DELETE FROM public.authtokens WHERE id = $1"
-	_, err := db.Query[TokenDB](query, tokenId)
+	_, err := db.Query[AuthTokenDB](query, tokenId)
 	if err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func DeleteTokenById(tokenId string) db.DatabaseError {
 
 func DeleteTokenByRefreshToken(refreshToken string) db.DatabaseError {
 	query := "DELETE FROM public.authtokens WHERE refresh_token = $1"
-	_, err := db.Query[TokenDB](query, refreshToken)
+	_, err := db.Query[AuthTokenDB](query, refreshToken)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func DeleteTokenByRefreshToken(refreshToken string) db.DatabaseError {
 
 func DeleteTokenByUser(userId string) db.DatabaseError {
 	query := "DELETE FROM public.authtokens WHERE user_id = $1"
-	_, err := db.Query[TokenDB](query, userId)
+	_, err := db.Query[AuthTokenDB](query, userId)
 	if err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func DeleteTokenByUser(userId string) db.DatabaseError {
 
 func DeleteAllTokens() db.DatabaseError {
 	query := "DELETE FROM public.authtokens"
-	_, err := db.Query[TokenDB](query)
+	_, err := db.Query[AuthTokenDB](query)
 	if err != nil {
 		return err
 	}
@@ -118,7 +118,7 @@ func DeleteAllTokens() db.DatabaseError {
 // DeleteTokensWhen should never be run using any user input; this should be directly controlled by the application logic.
 func DeleteTokensWhen(condition string, args ...interface{}) db.DatabaseError {
 	query := "DELETE FROM public.authtokens WHERE " + condition
-	_, err := db.Query[TokenDB](query, args...)
+	_, err := db.Query[AuthTokenDB](query, args...)
 	if err != nil {
 		return err
 	}

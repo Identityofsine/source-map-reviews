@@ -2,7 +2,7 @@ package repository
 
 import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 
-type UserOAuthTokenDB struct {
+type UserOAuthAuthTokenDB struct {
 	UserId       int64  `json:"user_id" db:"user_id"`             // User ID associated with the OAuth token
 	AccessToken  string `json:"access_token" db:"access_token"`   // OAuth access token
 	RefreshToken string `json:"refresh_token" db:"refresh_token"` // OAuth refresh token, if applicable
@@ -15,7 +15,7 @@ func CreateUserOAuthToken(userId int64, accessToken, refreshToken, source, expir
 
 	query := "INSERT INTO user_oauth_tokens (user_id, access_token, refresh_token, source, expires_at) VALUES ($1, $2, $3, $4, $5)"
 
-	_, err := db.Query[UserOAuthTokenDB](query, userId, accessToken, refreshToken, source, expires_at)
+	_, err := db.Query[UserOAuthAuthTokenDB](query, userId, accessToken, refreshToken, source, expires_at)
 
 	return err
 }
@@ -29,13 +29,13 @@ func UpdateOrCreateUserOAuthToken(userId int64, accessToken, refreshToken, sourc
 			refresh_token = EXCLUDED.refresh_token,
 			expires_at = EXCLUDED.expires_at
 	`
-	_, err := db.Query[UserOAuthTokenDB](query, userId, accessToken, refreshToken, source, expires_at)
+	_, err := db.Query[UserOAuthAuthTokenDB](query, userId, accessToken, refreshToken, source, expires_at)
 	return err
 }
 
-func GetUserOAuthTokenByUserIdAndSource(userId int64, source string) (*UserOAuthTokenDB, db.DatabaseError) {
+func GetUserOAuthTokenByUserIdAndSource(userId int64, source string) (*UserOAuthAuthTokenDB, db.DatabaseError) {
 	query := "SELECT * FROM user_oauth_tokens WHERE user_id = $1 AND source = $2"
-	rows, err := db.Query[UserOAuthTokenDB](query, userId, source)
+	rows, err := db.Query[UserOAuthAuthTokenDB](query, userId, source)
 	if err != nil {
 		return nil, err
 	}
