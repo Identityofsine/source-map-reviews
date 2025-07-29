@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+import (
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
+)
 
 type TokenDB struct {
 	Id           string `db:"id"`
@@ -12,49 +16,52 @@ type TokenDB struct {
 	CreatedAt    string `db:"created_at"`
 }
 
+// GetTokens retrieves all tokens from the database.
 func GetTokens() ([]TokenDB, db.DatabaseError) {
-	query := "SELECT * FROM public.authtokens"
-	rows, err := db.Query[TokenDB](query)
-	if err != nil {
-		return nil, err
-	}
-	return *rows, nil
+	return dao.SelectFromDatabaseByStruct(
+		TokenDB{},
+		"")
 }
 
 func GetTokenByUserId(userId string) ([]TokenDB, db.DatabaseError) {
-	query := "SELECT * FROM public.authtokens WHERE user_id = $1"
-	rows, err := db.Query[TokenDB](query, userId)
+	rows, err := dao.SelectFromDatabaseByStruct(TokenDB{}, "user_id = $1", userId)
+
 	if err != nil {
 		return nil, err
 	}
-	if len(*rows) == 0 {
+	if len(rows) == 0 {
 		return nil, db.NewDatabaseError("GetTokenByUserId", "No tokens found for user", "no-tokens-found", 404)
 	}
-	return (*rows), nil
+
+	return rows, nil
+
 }
 
-func GetTokenByAccessToken(accessToken string) (TokenDB, db.DatabaseError) {
-	query := "SELECT * FROM public.authtokens WHERE access_token = $1"
-	rows, err := db.Query[TokenDB](query, accessToken)
+func GetTokenByAccessToken(accessToken string) (*TokenDB, db.DatabaseError) {
+
+	rows, err := dao.SelectFromDatabaseByStruct(TokenDB{}, "access_token = $1", accessToken)
 	if err != nil {
-		return TokenDB{}, err
+		return nil, err
 	}
-	if len(*rows) == 0 {
-		return TokenDB{}, nil
+	if len(rows) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
 	}
-	return (*rows)[0], nil
+
+	return &rows[0], nil
 }
 
-func GetTokenByRefreshToken(refreshToken string) (TokenDB, db.DatabaseError) {
-	query := "SELECT * FROM public.authtokens WHERE refresh_token = $1"
-	rows, err := db.Query[TokenDB](query, refreshToken)
+func GetTokenByRefreshToken(refreshToken string) (*TokenDB, db.DatabaseError) {
+
+	rows, err := dao.SelectFromDatabaseByStruct(TokenDB{}, "refresh_token = $1", refreshToken)
 	if err != nil {
-		return TokenDB{}, err
+		return nil, err
 	}
-	if len(*rows) == 0 {
-		return TokenDB{}, nil
+
+	if len(rows) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
 	}
-	return (*rows)[0], nil
+
+	return &rows[0], nil
 }
 
 func UpdateToken(tokenDB TokenDB) db.DatabaseError {
@@ -67,12 +74,9 @@ func UpdateToken(tokenDB TokenDB) db.DatabaseError {
 }
 
 func SaveToken(tokenDB TokenDB) db.DatabaseError {
-	query := "INSERT INTO public.authtokens (user_id, access_token, refresh_token, expires_at, refreshed_at, created_at) VALUES ($1, $2, $3, $4, $5, $6)"
-	_, err := db.Query[TokenDB](query, tokenDB.UserId, tokenDB.AccessToken, tokenDB.RefreshToken, tokenDB.ExpiresAt, tokenDB.RefreshedAt, tokenDB.CreatedAt)
-	if err != nil {
-		return err
-	}
-	return nil
+	err := dao.InsertIntoDatabaseByStruct(tokenDB)
+
+	return err
 }
 
 func DeleteTokenById(tokenId string) db.DatabaseError {

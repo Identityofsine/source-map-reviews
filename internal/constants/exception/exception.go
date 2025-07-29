@@ -3,6 +3,7 @@ package exception
 import (
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 )
 
 var (
@@ -10,6 +11,12 @@ var (
 		nil,
 		"Resource not found",
 		"resource-not-found",
+		CODE_RESOURCE_NOT_FOUND,
+	)
+	ResourceNotFoundDatabase = db.NewDatabaseError(
+		"ResourceNotFoundDatabase",
+		"Resource not found in database",
+		"resource-not-found-database",
 		CODE_RESOURCE_NOT_FOUND,
 	)
 	TokenExpired = authtypes.NewAuthError(
