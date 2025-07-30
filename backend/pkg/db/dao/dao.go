@@ -65,6 +65,8 @@ func SelectFromDatabaseByStruct[T interface{}](dbStruct T, whereClause string, a
 		statement += " WHERE " + whereClause
 	}
 
+	fmt.Println("Executing statement:", statement)
+
 	rows, err := db.Query[T](statement, args...)
 
 	if err != nil {

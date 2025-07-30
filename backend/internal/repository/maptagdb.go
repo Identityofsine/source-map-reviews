@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
@@ -50,7 +48,11 @@ func GetMapTagsByMapNames(mapNames []string) (*MapTagRelationshipDbs, db.Databas
 		return nil, exception.BadRequestDatabase
 	}
 
-	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, fmt.Sprintf("map_name IN (%s)", db.Placeholders(len(mapNames))), util.ToGenericArray(mapNames)...)
+	whereClause := "map_name IN (" + db.Placeholders(len(mapNames)) + ")"
+
+	mapNameMutated := util.ToGenericArray(mapNames...)
+
+	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, whereClause, mapNameMutated...)
 	if err != nil {
 		return nil, err
 	}

@@ -35,7 +35,7 @@ func ReverseCastMapTagRelationship(m MapTagRelationship) map[string][]MapTagDB {
 
 func GetTagsByMaps(mapsObject []Map) (MapTagRelationship, routeexception.RouteError) {
 
-	var maps []Map = make([]Map, len(mapsObject))
+	var maps []Map = make([]Map, 0, len(mapsObject))
 	for _, mapObj := range mapsObject {
 		maps = append(maps, Map(mapObj))
 	}

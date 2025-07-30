@@ -108,7 +108,8 @@ func populateMap(
 	mapObj *Map,
 ) routeexception.RouteError {
 
-	maps := []Map{*mapObj} // only one element, copied
+	maps := make([]Map, 1)
+	maps[0] = *mapObj // Create a slice with a single map object
 	err := populateAllMaps(&maps)
 	if err != nil {
 		return err
