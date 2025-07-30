@@ -52,7 +52,7 @@ func LogDebug(log string) {
 
 func LogWarn(log string) {
 	logObject := Log{
-		Severity:  "WARN",
+		Severity:  "WARNING",
 		Message:   log,
 		Timestamp: time.Now(),
 	}
