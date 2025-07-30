@@ -144,14 +144,3 @@ func Cast[T any](a any) *T {
 	ok := *(a).(*T)
 	return &ok
 }
-
-func Placeholders(n int) string {
-	if n <= 0 {
-		return ""
-	}
-	placeholders := make([]string, n)
-	for i := 0; i < n; i++ {
-		placeholders[i] = "?" // PostgreSQL style
-	}
-	return strings.Join(placeholders, ", ")
-}
