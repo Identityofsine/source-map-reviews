@@ -4,7 +4,7 @@ func ToGenericArray[T any](items ...T) []interface{} {
 	if len(items) == 0 {
 		return nil
 	}
-	result := make([]interface{}, 0, len(items))
+	result := make([]interface{}, len(items))
 	for i, item := range items {
 		result[i] = item
 	}
