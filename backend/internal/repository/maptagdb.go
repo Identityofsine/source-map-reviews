@@ -9,8 +9,8 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
 )
 
-// MapTagDb represents a row in the map_tags table (junction table linking maps to tags)
-type MapTagDb struct {
+// MapTagDB represents a row in the map_tags table (junction table linking maps to tags)
+type MapTagDB struct {
 	LkTag     string `db:"lk_tag"`
 	MapName   string `db:"map_name"`
 	CreatedAt string `db:"created_at" dao:"omit"`
@@ -21,11 +21,11 @@ const (
 	map_table = "map_tags"
 )
 
-type MapTagRelationshipDbs = map[string][]MapTagDb
+type MapTagRelationshipDbs = map[string][]MapTagDB
 
 // GetMapTags retrieves all map-tag links from the map_tags table
-func GetMapTags() (*[]MapTagDb, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDb{}, "")
+func GetMapTags() (*[]MapTagDB, db.DatabaseError) {
+	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, "")
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +34,8 @@ func GetMapTags() (*[]MapTagDb, db.DatabaseError) {
 }
 
 // GetMapTagsByMapName retrieves all map-tag links from the map_tags table for a given map name
-func GetMapTagsByMapName(mapName string) (*[]MapTagDb, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDb{}, "map_name = $1", mapName)
+func GetMapTagsByMapName(mapName string) (*[]MapTagDB, db.DatabaseError) {
+	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, "map_name = $1", mapName)
 	if err != nil {
 		return nil, err
 	}
@@ -50,12 +50,15 @@ func GetMapTagsByMapNames(mapNames []string) (*MapTagRelationshipDbs, db.Databas
 		return nil, exception.BadRequestDatabase
 	}
 
-	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDb{}, fmt.Sprintf("map_name IN (%s)", db.Placeholders(len(mapNames))), mapNames)
+	stringSlice := mapNames[:]
+	fmt.Printf("Map names: %v\n", stringSlice)
+
+	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, fmt.Sprintf("map_name IN (%s)", db.Placeholders(len(mapNames))), stringSlice)
 	if err != nil {
 		return nil, err
 	}
 
-	mapped := util.GroupBy(dbs, func(item MapTagDb) string {
+	mapped := util.GroupBy(dbs, func(item MapTagDB) string {
 		return item.MapName
 	})
 

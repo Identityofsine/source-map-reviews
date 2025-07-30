@@ -20,7 +20,7 @@ func GetMaps() (*[]Map, routeexception.RouteError) {
 		)
 	}
 
-	maps := dbmapper.MapAllDbFields[repository.MapDb, Map](*dbs)
+	maps := dbmapper.MapAllDbFields[repository.MapDB, Map](*dbs)
 
 	if dbs == nil || len(*dbs) == 0 {
 		return &[]Map{}, nil // Return empty slice if no maps found
@@ -46,7 +46,7 @@ func GetMap(mapName string) (*Map, routeexception.RouteError) {
 		)
 	}
 
-	mapObj := dbmapper.MapDbFields[repository.MapDb, Map](*db)
+	mapObj := dbmapper.MapDbFields[repository.MapDB, Map](*db)
 	if mapObj == nil {
 		return nil, routeexception.NewRouteError(
 			err,
@@ -77,7 +77,7 @@ func SearchMaps(form mapsearchform.MapSearchForm) (*[]Map, routeexception.RouteE
 		return &[]Map{}, nil // Return empty slice if no maps found
 	}
 
-	maps := dbmapper.MapAllDbFields[repository.MapDb, Map](*dbs)
+	maps := dbmapper.MapAllDbFields[repository.MapDB, Map](*dbs)
 
 	rerr := populateAllMaps(maps)
 

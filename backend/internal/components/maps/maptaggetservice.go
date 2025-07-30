@@ -13,22 +13,22 @@ import (
 
 type MapTagLkDb = repository.LkTagDB
 type MapTagLkDbSlice = []repository.LkTagDB
-type MapTagDb = repository.MapTagDb
+type MapTagDB = repository.MapTagDB
 
 type MapTagRelationship map[string][]MapTag
 
-func CastMapTagRelationship(m map[string][]MapTagDb) MapTagRelationship {
+func CastMapTagRelationship(m map[string][]MapTagDB) MapTagRelationship {
 	tags := make(MapTagRelationship, len(m))
 	for mapName, tag := range m {
-		tags[mapName] = *dbmapper.MapAllDbFields[MapTagDb, MapTag](tag)
+		tags[mapName] = *dbmapper.MapAllDbFields[MapTagDB, MapTag](tag)
 	}
 	return tags
 }
 
-func ReverseCastMapTagRelationship(m MapTagRelationship) map[string][]MapTagDb {
-	tags := make(map[string][]MapTagDb, len(m))
+func ReverseCastMapTagRelationship(m MapTagRelationship) map[string][]MapTagDB {
+	tags := make(map[string][]MapTagDB, len(m))
 	for mapName, tag := range m {
-		tags[mapName] = *dbmapper.MapAllDbFields[MapTag, MapTagDb](tag)
+		tags[mapName] = *dbmapper.MapAllDbFields[MapTag, MapTagDB](tag)
 	}
 	return tags
 }
@@ -44,7 +44,7 @@ func GetTagsByMaps(mapsObject []Map) (MapTagRelationship, routeexception.RouteEr
 		return item.MapName
 	})
 
-	tags, err := GetMapTagsByMapNames(mapNames)
+	tags, err := repository.GetMapTagsByMapNames(mapNames)
 	if err != nil {
 		return nil, routeexception.NewRouteError(
 			err,
@@ -58,8 +58,8 @@ func GetTagsByMaps(mapsObject []Map) (MapTagRelationship, routeexception.RouteEr
 		return nil, exception.ResourceNotFound
 	}
 
-	tagsModelMap := util.MapToMap[[]MapTagDb, []MapTag](*tags, func(item []MapTagDb) []MapTag {
-		return *dbmapper.MapAllDbFields[MapTagDb, MapTag](item)
+	tagsModelMap := util.MapToMap[[]MapTagDB, []MapTag](*tags, func(item []MapTagDB) []MapTag {
+		return *dbmapper.MapAllDbFields[MapTagDB, MapTag](item)
 	})
 
 	for mapName, tag := range tagsModelMap {
@@ -90,9 +90,9 @@ func populateMapTags(tag []MapTag) ([]MapTag, routeexception.RouteError) {
 	}
 
 	lkMap := util.MapBy(tagLks,
-		func(item lktagdb.LkTagDb) string {
+		func(item repository.LkTagDB) string {
 			return item.LkTag
-		}, func(item lktagdb.LkTagDb) MapTagLkDb {
+		}, func(item repository.LkTagDB) MapTagLkDb {
 			return MapTagLkDb(item)
 		})
 
@@ -121,7 +121,7 @@ func getTagLks(tags []MapTag) (MapTagLkDbSlice, routeexception.RouteError) {
 		return item.TagName
 	})
 
-	lks, err := lktagdb.GetLkTagsByLkTags(tagLks)
+	lks, err := repository.GetLkTagsByLkTags(tagLks)
 	if err != nil {
 		return nil, routeexception.NewRouteError(
 			err,

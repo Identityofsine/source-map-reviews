@@ -10,7 +10,7 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 )
 
-type MapDb struct {
+type MapDB struct {
 	MapName   string `db:"map_name"`
 	MapPath   string `db:"map_path"`
 	CreatedAt string `db:"created_at"`
@@ -21,8 +21,8 @@ const (
 	mapdb_table = "maps"
 )
 
-func GetMaps() (*[]MapDb, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapDb{}, "")
+func GetMaps() (*[]MapDB, db.DatabaseError) {
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, "")
 	if err != nil {
 		return nil, err
 	}
@@ -30,8 +30,8 @@ func GetMaps() (*[]MapDb, db.DatabaseError) {
 	return &dbs, nil
 }
 
-func GetMap(mapName string) (*MapDb, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapDb{}, "map_name = $1", mapName)
+func GetMap(mapName string) (*MapDB, db.DatabaseError) {
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, "map_name = $1", mapName)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func GetMap(mapName string) (*MapDb, db.DatabaseError) {
 	return &(dbs)[0], nil
 }
 
-func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDb, db.DatabaseError) {
+func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDB, db.DatabaseError) {
 
 	query := ""
 
@@ -81,7 +81,7 @@ func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDb, db.DatabaseError) {
 		query += strings.Join(placeholders, ", ") + "))"
 	}
 
-	dbs, err := dao.SelectFromDatabaseByStruct(MapDb{}, query, args...)
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, query, args...)
 
 	return &dbs, err
 }
