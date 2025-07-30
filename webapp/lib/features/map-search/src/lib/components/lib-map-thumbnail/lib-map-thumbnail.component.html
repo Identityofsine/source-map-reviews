@@ -1,0 +1,12 @@
+<div class="map-thumbnail">
+  <div class="map-thumbnail__info">
+    <h3>{{ mapName() }}</h3>
+    <ul>
+      @for (tag of mapTags(); track tag.tagName) {
+      <li>
+        <span class="map-thumbnail__item">{{ tag.tagName }}</span>
+      </li>
+      }
+    </ul>
+  </div>
+</div>

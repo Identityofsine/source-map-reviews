@@ -1,0 +1,16 @@
+<form [formGroup]="form">
+  <arch-text-input
+   formControlName="searchTerm">
+  </arch-text-input>
+</form>
+@if (search.value()) {
+
+@for (map of search.value(); track map.mapName) {
+  <lib-map-thumbnail
+    [mapName]="map.mapName"
+    [mapTags]="map.mapTags"
+  />
+
+}
+
+}

@@ -1,0 +1,50 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "@arch-feature/*": [
+        "./lib/features/*/src"
+      ],
+      "@arch-shared/*": [
+        "./lib/shared/*/src"
+      ],
+      "@features/map-search": [
+        "./dist/features/map-search"
+      ],
+      "@features/maps": [
+        "./dist/features/maps"
+      ],
+      "@shared/data-source": [
+        "./dist/shared/data-source",
+        "./dist/shared/data-source",
+        "./dist/shared/data-source",
+        "./dist/shared/data-source"
+      ],
+      "@shared/types": [
+        "./dist/shared/types"
+      ]
+    },
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
