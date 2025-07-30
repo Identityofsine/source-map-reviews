@@ -85,8 +85,8 @@ func CreateLoginToken(userId int64) (*Token, error) {
 		CreatedAt:    time.Now().Format(time.RFC3339),
 	}
 
-	loginTokenDB := dbmapper.MapDbFields[Token, TokenDB](loginToken)
-	derr := SaveToken(*loginTokenDB)
+	loginAuthTokenDB := dbmapper.MapDbFields[Token, AuthTokenDB](loginToken)
+	derr := SaveToken(*loginAuthTokenDB)
 	if derr != nil {
 		return nil, derr
 

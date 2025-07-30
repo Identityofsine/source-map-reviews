@@ -6,7 +6,7 @@ import (
 )
 
 type UserDB struct {
-	Id                   int64  `json:"id" db:"id"`
+	Id                   int64  `json:"id" db:"id" dao:"omit"`
 	Username             string `json:"username" db:"username"`
 	Password             string `json:"password" db:"password"`
 	AuthenticationMethod string `json:"authentication_method" db:"authentication_method"`
@@ -45,25 +45,26 @@ func CreateUserByUserDb(user *UserDB) db.DatabaseError {
 }
 
 func GetUserByUsername(username string) (*UserDB, db.DatabaseError) {
-	query := "SELECT * FROM users WHERE username = $1"
-	rows, err := db.Query[UserDB](query, username)
+
+	rows, err := dao.SelectFromDatabaseByStruct[UserDB](UserDB{}, "username = $1", username)
 	if err != nil {
 		return nil, err
 	}
-	if len(*rows) == 0 {
+
+	if len(rows) == 0 {
 		return nil, db.NewDatabaseError("GetUserByUsername", "User not found", "user-not-found", 404)
 	}
-	return &(*rows)[0], nil
+
+	return &(rows)[0], nil
 }
 
-func GetUserById(id string) UserDB {
-	query := "SELECT * FROM users WHERE id = $1"
-	rows, err := db.Query[UserDB](query, id)
+func GetUserById(id string) *UserDB {
+	rows, err := dao.SelectFromDatabaseByStruct[UserDB](UserDB{}, "id = $1", id)
 	if err != nil {
-		return UserDB{}
+		return nil
 	}
-	if len(*rows) == 0 {
-		return UserDB{}
+	if len(rows) == 0 {
+		return nil
 	}
-	return (*rows)[0]
+	return &(rows)[0]
 }

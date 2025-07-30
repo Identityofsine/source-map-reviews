@@ -3,10 +3,12 @@ package repository
 import (
 	"time"
 
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 )
 
-type BuildInfoDb struct {
+type BuildInfoDB struct {
 	Version     string    `json:"version" db:"version"`
 	CommitHash  string    `json:"commit_hash" db:"commit_hash"`
 	BuildDate   time.Time `json:"build_date" db:"build_date"`
@@ -14,48 +16,48 @@ type BuildInfoDb struct {
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
 
-func GetBuildInfo() ([]BuildInfoDb, db.DatabaseError) {
-	query := "SELECT * FROM buildinfo"
-	rows, err := db.Query[BuildInfoDb](query)
-
+func GetBuildInfo() ([]BuildInfoDB, db.DatabaseError) {
+	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDB{}, "")
 	if err != nil {
 		return nil, err
 	}
 
-	return *rows, err
+	if len(rows) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
+	}
+
+	return rows, err
 }
 
-func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (BuildInfoDb, db.DatabaseError) {
-	query := "SELECT * FROM buildinfo WHERE version = $1 AND commit_hash = $2"
-	rows, err := db.Query[BuildInfoDb](query, version, commitHash)
+func GetBuildInfoByVersionAndCommitHash(version string, commitHash string) (*BuildInfoDB, db.DatabaseError) {
 
+	rows, err := dao.SelectFromDatabaseByStruct(BuildInfoDB{}, "version = $1 AND commit_hash = $2", version, commitHash)
 	if err != nil {
-		return BuildInfoDb{}, err
+		return &BuildInfoDB{}, err
 	}
 
-	if len(*rows) == 0 {
-		return BuildInfoDb{}, nil
+	if len(rows) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
 	}
 
-	return (*rows)[0], nil
+	return &(rows)[0], nil
 }
 
 func DoesVersionExist(version string, commitHash string) (bool, db.DatabaseError) {
-	query := "SELECT EXISTS(SELECT 1 FROM public.buildinfo WHERE version = $1 AND commit_hash = $2)"
-	rows, err := db.Query[bool](query, version, commitHash)
 
+	_, err := GetBuildInfoByVersionAndCommitHash(version, commitHash)
 	if err != nil {
-		return false, err
+		if err.Code == 404 {
+			return false, nil // Version does not exist
+		}
+		return false, err // Some other error occurred
 	}
 
-	if len(*rows) == 0 {
-		return false, nil
-	}
+	return true, nil // Version exists
 
-	return (*rows)[0], nil
 }
 
-func InsertBuildInfo(buildInfo BuildInfoDb) db.DatabaseError {
+func InsertBuildInfo(buildInfo BuildInfoDB) db.DatabaseError {
 	if buildInfo.Version == "" || buildInfo.CommitHash == "" {
 		return db.NewDatabaseError("InsertBuildInfo", "Version and CommitHash cannot be empty", "", 400)
 	}
@@ -63,10 +65,8 @@ func InsertBuildInfo(buildInfo BuildInfoDb) db.DatabaseError {
 		return db.NewDatabaseError("InsertBuildInfo", "Version already exists", "", 409)
 	}
 
-	query := "INSERT INTO buildinfo (version, commit_hash, build_date, environment, created_at) VALUES ($1, $2, $3, $4, $5)"
-	_, err := db.Query[BuildInfoDb](query, buildInfo.Version, buildInfo.CommitHash, buildInfo.BuildDate, buildInfo.Environment, buildInfo.CreatedAt)
-	if err != nil {
-		return err
-	}
-	return nil
+	err := dao.InsertIntoDatabaseByStruct(buildInfo)
+
+	return err
+
 }

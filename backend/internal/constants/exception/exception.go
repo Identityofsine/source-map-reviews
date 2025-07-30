@@ -13,6 +13,12 @@ var (
 		"resource-not-found",
 		CODE_RESOURCE_NOT_FOUND,
 	)
+	ResourceNotFoundDatabase = db.NewDatabaseError(
+		"ResourceNotFoundDatabase",
+		"Resource not found in database",
+		"resource-not-found-database",
+		CODE_RESOURCE_NOT_FOUND,
+	)
 	TokenExpired = authtypes.NewAuthError(
 		"TokenExpired",
 		"Token has expired",
