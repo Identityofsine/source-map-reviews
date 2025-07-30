@@ -27,14 +27,13 @@ var (
 		"resource-not-found-database",
 		CODE_RESOURCE_NOT_FOUND,
 	)
-	// Database Error
+
 	BadRequestDatabase = db.NewDatabaseError(
 		"BadRequestDatabase",
 		"Bad request to the database",
 		"bad-request-database",
 		CODE_BAD_REQUEST,
 	)
-
 )
 
 const (
