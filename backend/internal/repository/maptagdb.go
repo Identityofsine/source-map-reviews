@@ -50,12 +50,13 @@ func GetMapTagsByMapNames(mapNames []string) (*MapTagRelationshipDbs, db.Databas
 		return nil, exception.BadRequestDatabase
 	}
 
-	stringSlice := mapNames[:]
-	fmt.Printf("Map names: %v\n", stringSlice)
-
-	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, fmt.Sprintf("map_name IN (%s)", db.Placeholders(len(mapNames))), stringSlice)
+	dbs, err := dao.SelectFromDatabaseByStruct(MapTagDB{}, fmt.Sprintf("map_name IN (%s)", db.Placeholders(len(mapNames))), util.ToGenericArray(mapNames)...)
 	if err != nil {
 		return nil, err
+	}
+
+	if dbs == nil || len(dbs) == 0 {
+		return nil, exception.ResourceNotFoundDatabase
 	}
 
 	mapped := util.GroupBy(dbs, func(item MapTagDB) string {
