@@ -1,19 +1,18 @@
-package mapcontroller
+package maps
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapsearchform"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/service/mapgetservice"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/mapsearchform"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 
-func GetMaps(c *gin.Context) {
+func GetMapsRoute(c *gin.Context) {
 	storedlogs.LogInfo("GET: /maps")
 
 	// Call the service to get maps
-	maps, err := mapgetservice.GetMaps()
+	maps, err := GetMaps()
 	if err != nil {
 		storedlogs.LogError("Error getting maps: %v", err)
 		c.JSON(err.Code, err)
@@ -24,7 +23,7 @@ func GetMaps(c *gin.Context) {
 
 }
 
-func GetMap(c *gin.Context) {
+func GetMapRoute(c *gin.Context) {
 	storedlogs.LogInfo("GET: /maps/:mapName")
 
 	mapName := c.Param("mapName")
@@ -41,7 +40,7 @@ func GetMap(c *gin.Context) {
 	}
 
 	// Call the service to get a specific map
-	mapData, err := mapgetservice.GetMap(mapName)
+	mapData, err := GetMap(mapName)
 	if err != nil {
 		storedlogs.LogError("Error getting map: %v", err)
 		c.JSON(err.Code, err)
@@ -51,7 +50,7 @@ func GetMap(c *gin.Context) {
 	c.JSON(200, mapData)
 }
 
-func SearchMaps(c *gin.Context) {
+func SearchMapsRoute(c *gin.Context) {
 	storedlogs.LogInfo("POST: /maps/search")
 
 	var form mapsearchform.MapSearchForm
@@ -62,7 +61,7 @@ func SearchMaps(c *gin.Context) {
 	}
 
 	// Call the service to search maps
-	maps, err := mapgetservice.SearchMaps(form)
+	maps, err := SearchMaps(form)
 	if err != nil {
 		storedlogs.LogError("Error searching maps: %v", err)
 		c.JSON(err.Code, err)

@@ -1,4 +1,4 @@
-package lktagdb
+package repository
 
 import (
 	"fmt"
@@ -7,13 +7,26 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 )
 
+// LkTagDb represents a row in the lk_tags lookup table for tag definitions
+// Matches schema in 000000013_create_lk_tags_table.sql
+// Columns: lk_tag (PK), description, short_description, created_at, updated_at
+// Timestamps are included as per migration options
+
+type LkTagDB struct {
+	LkTag            string `db:"lk_tag"`
+	Description      string `db:"description"`
+	ShortDescription string `db:"short_description"`
+	CreatedAt        string `db:"created_at"`
+	UpdatedAt        string `db:"updated_at"`
+}
+
 const (
-	table = "lk_tags"
+	lktags_table = "lk_tags"
 )
 
 // GetLkTags retrieves all tag definitions from the lk_tags table
-func GetLkTags() (*[]LkTagDb, db.DatabaseError) {
-	dbs, err := db.Query[LkTagDb]("SELECT * from " + table)
+func GetLkTags() (*[]LkTagDB, db.DatabaseError) {
+	dbs, err := db.Query[LkTagDB]("SELECT * from " + table)
 	if err != nil {
 		return nil, err
 	}

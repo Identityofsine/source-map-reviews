@@ -1,34 +1,42 @@
-package mapdb
+package repository
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapsearchform"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/mapsearchform"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 )
 
+type MapDb struct {
+	MapName   string `db:"map_name"`
+	MapPath   string `db:"map_path"`
+	CreatedAt string `db:"created_at"`
+	UpdatedAt string `db:"updated_at"`
+}
+
 const (
-	table = "maps"
+	mapdb_table = "maps"
 )
 
 func GetMaps() (*[]MapDb, db.DatabaseError) {
-	dbs, err := db.Query[MapDb]("SELECT * from " + table)
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDb{}, "")
 	if err != nil {
 		return nil, err
 	}
 
-	return dbs, nil
+	return &dbs, nil
 }
 
 func GetMap(mapName string) (*MapDb, db.DatabaseError) {
-	dbs, err := db.Query[MapDb]("SELECT * from "+table+" where map_name = $1 LIMIT 1", mapName)
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDb{}, "map_name = $1", mapName)
 	if err != nil {
 		return nil, err
 	}
 
-	if dbs == nil || len(*dbs) == 0 {
+	if dbs == nil || len(dbs) == 0 {
 		return nil, db.NewDatabaseError(
 			"GetMap",
 			fmt.Sprintf("Map with name '%s' not found", mapName),
@@ -37,12 +45,12 @@ func GetMap(mapName string) (*MapDb, db.DatabaseError) {
 		)
 	}
 
-	return &(*dbs)[0], nil
+	return &(dbs)[0], nil
 }
 
 func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDb, db.DatabaseError) {
 
-	query := fmt.Sprintf(`SELECT * FROM %s WHERE 1=1`, table)
+	query := ""
 
 	args := []interface{}{}
 	argIndex := 1 // PostgreSQL placeholders start at $1
@@ -73,10 +81,7 @@ func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDb, db.DatabaseError) {
 		query += strings.Join(placeholders, ", ") + "))"
 	}
 
-	dbs, err := db.Query[MapDb](query, args...)
-	if err != nil {
-		return nil, err
-	}
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDb{}, query, args...)
 
-	return dbs, nil
+	return &dbs, err
 }

@@ -1,44 +1,39 @@
-package maptaggetservice
+package maps
 
 import (
 	"fmt"
 
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapmodel"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/maptags"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model/lktagdb"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model/maptagdb"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
 )
 
-type Map = mapmodel.Map
-type MapTag = maptags.MapTags
-type MapTagLkDb = lktagdb.LkTagDb
-type MapTagLkDbSlice = []lktagdb.LkTagDb
-type MapTagDb = maptagdb.MapTagDb
+type MapTagLkDb = repository.LkTagDB
+type MapTagLkDbSlice = []repository.LkTagDB
+type MapTagDb = repository.MapTagDb
 
 type MapTagRelationship map[string][]MapTag
 
-func CastMapTagRelationship(m map[string][]maptagdb.MapTagDb) MapTagRelationship {
+func CastMapTagRelationship(m map[string][]MapTagDb) MapTagRelationship {
 	tags := make(MapTagRelationship, len(m))
 	for mapName, tag := range m {
-		tags[mapName] = *dbmapper.MapAllDbFields[maptagdb.MapTagDb, MapTag](tag)
+		tags[mapName] = *dbmapper.MapAllDbFields[MapTagDb, MapTag](tag)
 	}
 	return tags
 }
 
-func ReverseCastMapTagRelationship(m MapTagRelationship) map[string][]maptagdb.MapTagDb {
-	tags := make(map[string][]maptagdb.MapTagDb, len(m))
+func ReverseCastMapTagRelationship(m MapTagRelationship) map[string][]MapTagDb {
+	tags := make(map[string][]MapTagDb, len(m))
 	for mapName, tag := range m {
-		tags[mapName] = *dbmapper.MapAllDbFields[MapTag, maptagdb.MapTagDb](tag)
+		tags[mapName] = *dbmapper.MapAllDbFields[MapTag, MapTagDb](tag)
 	}
 	return tags
 }
 
-func GetTagsByMaps(mapsObject []mapmodel.Map) (MapTagRelationship, routeexception.RouteError) {
+func GetTagsByMaps(mapsObject []Map) (MapTagRelationship, routeexception.RouteError) {
 
 	var maps []Map = make([]Map, len(mapsObject))
 	for _, mapObj := range mapsObject {
@@ -49,7 +44,7 @@ func GetTagsByMaps(mapsObject []mapmodel.Map) (MapTagRelationship, routeexceptio
 		return item.MapName
 	})
 
-	tags, err := maptagdb.GetMapTagsByMapNames(mapNames)
+	tags, err := GetMapTagsByMapNames(mapNames)
 	if err != nil {
 		return nil, routeexception.NewRouteError(
 			err,
@@ -63,8 +58,8 @@ func GetTagsByMaps(mapsObject []mapmodel.Map) (MapTagRelationship, routeexceptio
 		return nil, exception.ResourceNotFound
 	}
 
-	tagsModelMap := util.MapToMap[[]maptagdb.MapTagDb, []MapTag](*tags, func(item []maptagdb.MapTagDb) []MapTag {
-		return *dbmapper.MapAllDbFields[maptagdb.MapTagDb, MapTag](item)
+	tagsModelMap := util.MapToMap[[]MapTagDb, []MapTag](*tags, func(item []MapTagDb) []MapTag {
+		return *dbmapper.MapAllDbFields[MapTagDb, MapTag](item)
 	})
 
 	for mapName, tag := range tagsModelMap {

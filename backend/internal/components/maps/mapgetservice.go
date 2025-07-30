@@ -1,19 +1,16 @@
-package mapgetservice
+package maps
 
 import (
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapmodel"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/mapsearchform"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/model/maptags"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/service/maptaggetservice"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/mapsearchform"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
-	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository/model/mapdb"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
 )
 
-func GetMaps() (*[]mapmodel.Map, routeexception.RouteError) {
+func GetMaps() (*[]Map, routeexception.RouteError) {
 
-	dbs, err := mapdb.GetMaps()
+	dbs, err := repository.GetMaps()
 	if err != nil {
 		return nil, routeexception.NewRouteError(
 			err,
@@ -23,10 +20,10 @@ func GetMaps() (*[]mapmodel.Map, routeexception.RouteError) {
 		)
 	}
 
-	maps := dbmapper.MapAllDbFields[mapdb.MapDb, mapmodel.Map](*dbs)
+	maps := dbmapper.MapAllDbFields[repository.MapDb, Map](*dbs)
 
 	if dbs == nil || len(*dbs) == 0 {
-		return &[]mapmodel.Map{}, nil // Return empty slice if no maps found
+		return &[]Map{}, nil // Return empty slice if no maps found
 	}
 
 	rerr := populateAllMaps(maps)
@@ -34,9 +31,9 @@ func GetMaps() (*[]mapmodel.Map, routeexception.RouteError) {
 	return maps, rerr
 }
 
-func GetMap(mapName string) (*mapmodel.Map, routeexception.RouteError) {
+func GetMap(mapName string) (*Map, routeexception.RouteError) {
 
-	db, err := mapdb.GetMap(mapName)
+	db, err := repository.GetMap(mapName)
 	if err != nil {
 		if err.Code == exception.CODE_RESOURCE_NOT_FOUND {
 			return nil, exception.ResourceNotFound
@@ -49,7 +46,7 @@ func GetMap(mapName string) (*mapmodel.Map, routeexception.RouteError) {
 		)
 	}
 
-	mapObj := dbmapper.MapDbFields[mapdb.MapDb, mapmodel.Map](*db)
+	mapObj := dbmapper.MapDbFields[repository.MapDb, Map](*db)
 	if mapObj == nil {
 		return nil, routeexception.NewRouteError(
 			err,
@@ -64,9 +61,9 @@ func GetMap(mapName string) (*mapmodel.Map, routeexception.RouteError) {
 	return mapObj, rerr
 }
 
-func SearchMaps(form mapsearchform.MapSearchForm) (*[]mapmodel.Map, routeexception.RouteError) {
+func SearchMaps(form mapsearchform.MapSearchForm) (*[]Map, routeexception.RouteError) {
 
-	dbs, err := mapdb.SearchMaps(form)
+	dbs, err := repository.SearchMaps(form)
 	if err != nil {
 		return nil, routeexception.NewRouteError(
 			err,
@@ -77,18 +74,18 @@ func SearchMaps(form mapsearchform.MapSearchForm) (*[]mapmodel.Map, routeexcepti
 	}
 
 	if dbs == nil || len(*dbs) == 0 {
-		return &[]mapmodel.Map{}, nil // Return empty slice if no maps found
+		return &[]Map{}, nil // Return empty slice if no maps found
 	}
 
-	maps := dbmapper.MapAllDbFields[mapdb.MapDb, mapmodel.Map](*dbs)
+	maps := dbmapper.MapAllDbFields[repository.MapDb, Map](*dbs)
 
 	rerr := populateAllMaps(maps)
 
 	return maps, rerr
 }
 
-func populateAllMaps(maps *[]mapmodel.Map) routeexception.RouteError {
-	tagsMap, err := maptaggetservice.GetTagsByMaps(
+func populateAllMaps(maps *[]Map) routeexception.RouteError {
+	tagsMap, err := GetTagsByMaps(
 		*maps,
 	)
 	if err != nil {
@@ -97,7 +94,7 @@ func populateAllMaps(maps *[]mapmodel.Map) routeexception.RouteError {
 	for i, mapObj := range *maps {
 		tags, ok := tagsMap[mapObj.MapName]
 		if !ok {
-			(*maps)[i].Tags = []maptags.MapTags{} // No tags found for this map
+			(*maps)[i].Tags = []MapTag{} // No tags found for this map
 			continue
 		}
 		(*maps)[i].Tags = tags
@@ -108,10 +105,10 @@ func populateAllMaps(maps *[]mapmodel.Map) routeexception.RouteError {
 }
 
 func populateMap(
-	mapObj *mapmodel.Map,
+	mapObj *Map,
 ) routeexception.RouteError {
 
-	maps := []mapmodel.Map{*mapObj} // only one element, copied
+	maps := []Map{*mapObj} // only one element, copied
 	err := populateAllMaps(&maps)
 	if err != nil {
 		return err

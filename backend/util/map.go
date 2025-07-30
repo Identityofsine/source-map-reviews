@@ -9,6 +9,8 @@ func MergeMap(a map[string]any, b map[string]any) map[string]any {
 }
 
 // MapBy will mutate the input array and then group them by the key; this is useful for grouping items by a specific key
+// k is a function that takes an input of type I and returns a key of type string
+// i is a function that takes an input of type I and returns a value of type T
 func MapBy[I any, T any](a []I, k func(I) string, i func(I) T) map[string]T {
 	newMap := make(map[string]T)
 	for _, item := range a {

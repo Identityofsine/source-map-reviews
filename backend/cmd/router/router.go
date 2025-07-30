@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/auth"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/health"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/register"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs"
-	mapController "github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps/controller/mapcontroller"
 
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/middlewares"
 )
@@ -33,7 +33,7 @@ func setupRoutes(engine *gin.Engine) {
 	//login
 	auth.AuthRoute.UseRouter(api)
 	register.RegisterRoute.UseRouter(api)
-	mapController.MapRoute.UseRouter(api)
+	maps.MapRoute.UseRouter(api)
 
 	api.Use(middlewares.UseAuthenticationEnforcementMiddleware().Middleware)
 

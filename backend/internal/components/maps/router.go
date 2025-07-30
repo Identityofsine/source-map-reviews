@@ -1,4 +1,4 @@
-package mapcontroller
+package maps
 
 import (
 	"github.com/gin-gonic/gin"
@@ -9,9 +9,9 @@ type route Routeable
 
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	registerGroup := router.Group("/maps")
-	registerGroup.GET("/", GetMaps)
-	registerGroup.GET("/:mapName", GetMap)
-	registerGroup.POST("/search", SearchMaps)
+	registerGroup.GET("/", GetMapsRoute)
+	registerGroup.GET("/:mapName", GetMapRoute)
+	registerGroup.POST("/search", SearchMapsRoute)
 
 	return router
 }
