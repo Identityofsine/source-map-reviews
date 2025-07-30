@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -13,11 +14,11 @@ import (
 // Timestamps are included as per migration options
 
 type LkTagDB struct {
-	LkTag            string `db:"lk_tag"`
-	Description      string `db:"description"`
-	ShortDescription string `db:"short_description"`
-	CreatedAt        string `db:"created_at"`
-	UpdatedAt        string `db:"updated_at"`
+	LkTag            string         `db:"lk_tag"`
+	Description      sql.NullString `db:"description"`
+	ShortDescription sql.NullString `db:"short_description"`
+	CreatedAt        string         `db:"created_at"`
+	UpdatedAt        string         `db:"updated_at"`
 }
 
 const (

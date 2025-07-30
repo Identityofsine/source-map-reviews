@@ -98,8 +98,8 @@ func populateMapTags(tag []MapTag) ([]MapTag, routeexception.RouteError) {
 
 	for i := range tag {
 		if lk, ok := lkMap[tag[i].TagName]; ok {
-			tag[i].TagDescription = lk.Description
-			tag[i].TagDescriptionShort = lk.ShortDescription
+			tag[i].TagDescription = lk.Description.String
+			tag[i].TagDescriptionShort = lk.ShortDescription.String
 		}
 	}
 

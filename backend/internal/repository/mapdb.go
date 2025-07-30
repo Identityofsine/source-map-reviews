@@ -50,7 +50,7 @@ func GetMap(mapName string) (*MapDB, db.DatabaseError) {
 
 func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDB, db.DatabaseError) {
 
-	query := ""
+	query := "1=1"
 
 	args := []interface{}{}
 	argIndex := 1 // PostgreSQL placeholders start at $1
