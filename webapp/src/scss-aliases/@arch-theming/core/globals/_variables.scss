@@ -17,9 +17,10 @@ $gray-500: #adb5bd;
 $gray-600: #6c757d;
 $gray-625: #646464;
 $gray-650: #5A5A5A;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
+$gray-700: #343a40;
+$gray-800: #212529;
+$gray-900: #131313;
+$gray-950: #0E0E0E;
 $black: #000000;
 
 $green-100: #E6F9F0;
@@ -38,9 +39,16 @@ $yellow-500: #FFC107;
 
 $blue-350: #6FC6FD;
 $blue-500: #007BFF;
+$blue-600: #0069D9;
+$blue-800: #004085;
+
 
 $black: #000000;
 $white: #FFFFFF;
+
+// Global Styling Variables
+$background: $gray-950;
+$foreground: $gray-100;
 
 
 // Typography

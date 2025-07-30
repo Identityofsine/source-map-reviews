@@ -2,11 +2,14 @@
 
 $input-height: 53px;
 
-label.pli-input {
+label.pli-input {}
 
-}
-
-input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="tel"], input[type="search"] {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="search"] {
   height: $input-height;
   width: 100%;
   box-sizing: border-box;
@@ -16,15 +19,16 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
   font-family: pli.$font-family-base;
   padding: 0 12px;
 
-  color: pli.$gray-900 !important;
+  color: pli.$gray-100 !important;
 
-  border: 1px solid pli.$gray-330;
+  border: 1px solid pli.$gray-800;
   border-radius: 4px;
+  background-color: pli.$gray-900;
 
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
   &:focus {
-    border-color: pli.$blue-350;
+    border-color: pli.$blue-500;
     border-width: 2px;
     outline: none;
   }

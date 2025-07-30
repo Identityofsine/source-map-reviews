@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@arch-feature/*": [
         "./lib/features/*/src"
@@ -11,19 +12,16 @@
         "./lib/shared/*/src"
       ],
       "@features/map-search": [
-        "./dist/features/map-search"
+        "./lib/features/map-search"
       ],
       "@features/maps": [
-        "./dist/features/maps"
+        "./lib/features/maps"
       ],
       "@shared/data-source": [
-        "./dist/shared/data-source",
-        "./dist/shared/data-source",
-        "./dist/shared/data-source",
-        "./dist/shared/data-source"
+        "./lib/shared/data-source"
       ],
       "@shared/types": [
-        "./dist/shared/types"
+        "./lib/shared/types"
       ]
     },
     "outDir": "./dist/out-tsc",

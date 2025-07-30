@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ArchTextInputComponent } from '@arch-shared/arch-ui';
 import { MapsService } from '@arch-shared/data-source';
 import { MapThumbnailComponent } from './components/lib-map-thumbnail/lib-map-thumbnail.component';

@@ -6,7 +6,27 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jasmine"
-    ]
+    ],
+    "paths": {
+      "@arch-feature/*": [
+        "./lib/features/*/src"
+      ],
+      "@arch-shared/*": [
+        "./lib/shared/*/src"
+      ],
+      "@features/map-search": [
+        "./lib/features/map-search"
+      ],
+      "@features/maps": [
+        "./lib/features/maps"
+      ],
+      "@shared/data-source": [
+        "./lib/shared/data-source"
+      ],
+      "@shared/types": [
+        "./lib/shared/types"
+      ]
+    }
   },
   "include": [
     "src/**/*.spec.ts",

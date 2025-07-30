@@ -1,5 +1,5 @@
 version: "0.0.1"
 server_name: "fofx-go-gin"
 iteration: 1
-commit: "a1fd02c"
+commit: "2737568"
 branch: "main"
