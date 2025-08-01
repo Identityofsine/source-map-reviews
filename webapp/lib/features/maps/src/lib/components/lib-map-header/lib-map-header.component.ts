@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MapTag } from '@arch-shared/types';
-import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
+import { MapTagsComponent } from '../lib-map-tags/lib-map-tags.component';
+import { MapReviewsComponent } from '../lib-map-reviews/lib-map-reviews.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,7 +9,7 @@ import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
   templateUrl: './lib-map-header.component.html',
   styleUrls: ['./lib-map-header.component.scss'],
   imports: [
-    MapTagComponent,
+    MapTagsComponent,
   ],
 })
 export class MapHeaderComponent {

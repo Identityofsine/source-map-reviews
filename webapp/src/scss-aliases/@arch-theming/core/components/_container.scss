@@ -1,15 +1,29 @@
 @use '../globals/variables' as pli;
 
-*[pli-container] {
-  --pli-container-border-radius: 2px;
+*[arch-container] {
+  --pli-container-border-radius: 4px;
   --pli-container-border-color: pli.$gray-150;
 }
 
-.pli-container {
+.arch-container {
+  position: relative;
   width: fit-content;
-  padding: 24px 48px;
-  background-color: pli.$white;
-  border: 1px solid var(--pli-container-border-color);
-  box-shadow: pli.$light-shadow;
+  margin: 4px;
   border-radius: var(--pli-container-border-radius);
+  box-sizing: border-box;
+  background-color: pli.$gray-950;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    top: 50%;
+    left: 50%;
+    box-shadow: pli.$med-shadow-500;
+    transform: translate(-50%, -50%);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border-radius: var(--pli-container-border-radius);
+    background: pli.$source-gradient;
+  }
 }

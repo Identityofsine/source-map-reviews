@@ -1,0 +1,30 @@
+@use '@arch-theming/core' as arch;
+
+.map-header {
+
+  &__title {
+    width: fit-content;
+
+    h1 {
+      font-size: 4.0000rem;
+      line-height: 1.2;
+      font-weight: 600;
+      color: white;
+    }
+
+  }
+
+  &__divider {
+    width: min(95%, 1280px);
+    margin: 8px auto;
+    height: 1px;
+    background-color: arch.$gray-100;
+    border-radius: 4px;
+  }
+
+  &__tags {
+    margin-top: 16px;
+  }
+
+
+}

@@ -1,0 +1,21 @@
+<div class="map-reviews">
+  <div class="map-reviews__title">
+    <h5>
+      Reviews
+    </h5>
+  </div>
+  <div
+   class="map-reviews__list"
+   [class.empty]="isEmpty()"
+   arch-container>
+    @if (isEmpty()) {
+    <div class="map-reviews__empty">
+      <p class="empty-text">
+        There are no reviews for this map.
+      </p>
+    </div>
+    } @else {
+
+    }
+  </div>
+</div>

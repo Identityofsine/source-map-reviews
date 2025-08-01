@@ -17,3 +17,9 @@ h6 {
   margin: 0;
   margin-top: .15em;
 }
+
+p.empty-text {
+  color: arch.$gray-675;
+  font-size: 1rem;
+  text-align: center;
+}

@@ -1,6 +1,9 @@
 package mapperplugins
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type DESTINATION = interface{}
 type OBJECT = interface{}
@@ -50,7 +53,8 @@ func (pio PluginInOutMap) GetPlugin(objectType, destinationObjectType string) Ma
 }
 
 var (
-	MapperPlugins = make(PluginInOutMap)
+	MapperPlugins     = make(PluginInOutMap)
+	mapperPluginsLock sync.RWMutex
 )
 
 func reverseRegisterMapperPlugin(plugin MapperPlugin) {
@@ -60,6 +64,7 @@ func reverseRegisterMapperPlugin(plugin MapperPlugin) {
 	if plugin.GetObjectString() == "" || plugin.GetDestinationObjectString() == "" {
 		return
 	}
+
 	if _, exists := MapperPlugins[plugin.GetDestinationObjectString()]; !exists {
 		MapperPlugins[plugin.GetDestinationObjectString()] = make(PluginMap)
 	}
@@ -74,6 +79,9 @@ func registerMapperPlugin(plugin MapperPlugin) {
 	if plugin.GetObjectString() == "" || plugin.GetDestinationObjectString() == "" {
 		return
 	}
+	for locked := mapperPluginsLock.TryLock(); !locked; locked = mapperPluginsLock.TryLock() {
+	}
+	defer mapperPluginsLock.Unlock()
 	if _, exists := MapperPlugins[plugin.GetObjectString()]; !exists {
 		MapperPlugins[plugin.GetObjectString()] = make(PluginMap)
 	}
@@ -91,6 +99,10 @@ func initializeMapperPlugins() {
 func GetMapperPlugin(object string, destination string) MapperPlugin {
 
 	initializeMapperPlugins()
+
+	for locked := mapperPluginsLock.TryLock(); !locked; locked = mapperPluginsLock.TryLock() {
+	}
+	defer mapperPluginsLock.Unlock()
 
 	plugin := MapperPlugins.GetPlugin(
 		object,
