@@ -1,3 +1,33 @@
-<div class="map-gallery" arch-container>
+<div
+ class="map-gallery"
+ [class.empty]="isEmpty()"
+ arch-container>
+
+  <div class="map-gallery__review">
+    <lib-map-gallery-review
+     [review]="currentImage()">
+    </lib-map-gallery-review>
+  </div>
+
+  @if (isEmpty()) {
+  <div class="map-gallery__empty">
+    <div class="map-gallery__image-container">
+      <img
+       src="maps/map_no_image.jpg"
+       alt="Empty Map Gallery"
+       class="map-gallery__empty-image" />
+    </div>
+    <div class="map-gallery__empty-container">
+      <p class="empty-text">
+        There are no images for this map.
+      </p>
+      <button
+       class="map-gallery__add-image">
+        Add Image
+      </button>
+    </div>
+  </div>
+  } @else {
+  }
 
 </div>

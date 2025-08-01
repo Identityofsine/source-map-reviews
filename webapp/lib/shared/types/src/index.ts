@@ -3,3 +3,5 @@
  */
 
 export * from './lib/maps.interface'
+export * from './lib/reviews.interface'
+export * from './lib/images.interface'

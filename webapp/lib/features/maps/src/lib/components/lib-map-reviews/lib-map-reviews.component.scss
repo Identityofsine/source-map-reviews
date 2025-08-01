@@ -2,12 +2,12 @@
   &__list {
     width: 100%;
 
-    min-height: 100px &.empty {
+    min-height: 100px;
+
+    &.empty {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--arch-gray-100);
-      font-size: 1.2rem;
     }
   }
 }

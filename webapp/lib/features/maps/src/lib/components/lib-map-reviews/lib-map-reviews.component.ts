@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
-import { MapReview } from 'lib/shared/types/src/lib/reviews.interface';
+import { MapReview } from '@arch-shared/types';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

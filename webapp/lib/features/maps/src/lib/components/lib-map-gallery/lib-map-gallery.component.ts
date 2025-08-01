@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
-import { MapReview } from 'lib/shared/types/src/lib/reviews.interface';
+import { MapReview } from '@arch-shared/types';
+import { MapGalleryReviewComponent } from '../lib-map-gallery-review/lib-map-gallery-review.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,11 +9,21 @@ import { MapReview } from 'lib/shared/types/src/lib/reviews.interface';
   templateUrl: './lib-map-gallery.component.html',
   styleUrl: './lib-map-gallery.component.scss',
   imports: [
-    ArchContainer
+    ArchContainer,
+    MapGalleryReviewComponent
   ],
 })
 export class MapGalleryComponent {
 
   readonly mapImages = input<MapReview[]>();
+
+  readonly isEmpty = computed(() => {
+    return (this.mapImages() ?? []).length <= 0;
+  });
+
+  readonly currentIndex = signal(0);
+
+  readonly currentImage = computed(() =>
+    this.mapImages()?.[this.currentIndex()] ?? null);
 
 }

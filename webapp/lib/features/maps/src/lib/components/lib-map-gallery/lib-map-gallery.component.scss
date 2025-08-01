@@ -1,7 +1,64 @@
 @use '@arch-theming/core' as arch;
 
 .map-gallery {
+  position: relative;
   width: 100%;
   height: 488px;
   margin-top: 32px;
+
+  .map-gallery__review {
+    position: absolute;
+    top: 17px;
+    left: 25px;
+    width: 100%;
+    z-index: 2;
+
+  }
+
+
+  &.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .map-gallery__empty-container {
+      position: relative;
+      z-index: 2;
+      filter: brightness(1.4);
+    }
+
+    .map-gallery__add-image {
+      width: 100%;
+      text-align: center;
+      font-weight: 500;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .map-gallery__image-container {
+      z-index: 0;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: blur(7px) brightness(0.2);
+      }
+    }
+
+    .map-gallery__empty-image {}
+  }
+
 }
