@@ -89,6 +89,10 @@ func populateAllMaps(maps *[]Map) routeexception.RouteError {
 		*maps,
 	)
 	if err != nil {
+		if err.Code == exception.CODE_RESOURCE_NOT_FOUND {
+			// No tags found for any maps, return without error
+			return nil
+		}
 		return err
 	}
 	for i, mapObj := range *maps {

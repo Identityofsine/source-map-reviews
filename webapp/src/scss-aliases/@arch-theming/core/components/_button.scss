@@ -1,6 +1,11 @@
 @use '../globals/variables' as *;
 @use '../globals/mixins' as *;
 
+button {
+  //should be completely unset
+  all: unset;
+}
+
 // Example button styles using the theming system
 .btn {
   padding: 7.5px map-get($spacers, 5);
@@ -39,7 +44,7 @@ $button-focus-outline: 2px;
     transform: translateY(-1px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   }
-  
+
   &:active {
     transform: translateY(0);
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -56,6 +61,6 @@ $button-focus-outline: 2px;
   transition: $button-transition;
   outline: none;
   text-decoration: none;
-  
+
   @include button-hover-effect();
 }

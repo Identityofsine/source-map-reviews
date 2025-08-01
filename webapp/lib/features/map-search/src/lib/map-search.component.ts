@@ -37,7 +37,7 @@ export class MapSearchComponent {
 
   readonly maps = computed(() => {
     const data = this.search.value() ?? [];
-    return data
+    return data.slice(0, 10);
   })
 
 }

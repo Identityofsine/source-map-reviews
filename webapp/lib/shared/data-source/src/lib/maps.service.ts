@@ -17,6 +17,12 @@ export class MapsService {
     )
   }
 
+  public getMap(id: string): Observable<Map> {
+    return this.http.get<MapApi>(`${this.API_URL}/${id}`).pipe(
+      map(map => this.populateMapFromBackend(map))
+    )
+  }
+
   public searchMaps(form: MapSearchForm): Observable<Map[]> {
     return this.http.post<MapApi[]>(`${this.API_URL}/search`, form).pipe(
       map(maps => maps.map(map => this.populateMapFromBackend(map)))

@@ -1,4 +1,7 @@
-<div class="map-thumbnail">
+<button
+  class="map-thumbnail"
+  (click)="onMapClick()"
+  >
   <div class="map-thumbnail__image">
     <img [src]="mapImage()" alt="{{ mapName() }}" (error)="onImgError($event)" />
   </div>
@@ -6,11 +9,11 @@
     <h3>{{ mapName() }}</h3>
     <div class="map-thumbnail__tags">
       @for (tag of mapTags(); track tag.tagName) {
-      <lib-map-thumbnail-tag
+      <lib-map-tag
         [tag]="tag"
         class="map-thumbnail__item"
       />
       }
     </div>
   </div>
-</div>
+</button>

@@ -1,3 +1,5 @@
+@use '@arch-theming/core' as arch;
+
 .map-thumbnail {
   position: relative;
   width: 280px;
@@ -10,6 +12,12 @@
     object-fit: cover;
     border-radius: 8px;
     transition: filter 0.2s ease-in-out;
+  }
+
+  h3 {
+    margin-top: 12px;
+    color: arch.$gray-100;
+
   }
 
   .map-thumbnail__tags {

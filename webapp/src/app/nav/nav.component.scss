@@ -1,0 +1,12 @@
+@use '@arch-theming/core' as arch;
+
+nav {
+  width: min(1860px, 95vw);
+  height: 51px;
+  margin: 0 auto;
+  background-color: arch.$gray-900;
+  border: 1px solid arch.$gray-725;
+  border-radius: 26px;
+
+  box-shadow: arch.$light-shadow-500;
+}
