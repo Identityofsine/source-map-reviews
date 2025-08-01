@@ -12,6 +12,8 @@ services:
     command: nodemon -L --legacy-watch --exec go run cmd/server/main.go --signal SIGTERM
     ports:
       - "3030:3001"
+    volumes:
+      - /home/kevin/Downloads/de_archive_bucket:/usr/src/bucket
   db:
     container_name: fofx-de_archive-dev-db
     ports:

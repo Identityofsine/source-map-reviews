@@ -3,14 +3,15 @@
    formControlName="searchTerm">
   </arch-text-input>
 </form>
-@if (search.value()) {
+@if (maps()) {
 
-@for (map of search.value(); track map.mapName) {
-  <lib-map-thumbnail
-    [mapName]="map.mapName"
-    [mapTags]="map.mapTags"
-  />
-
-}
+  <div class="maps">
+  @for (map of maps(); track map.mapName) {
+    <lib-map-thumbnail
+      [mapName]="map.mapName"
+      [mapTags]="map.mapTags"
+    />
+  }
+  </div>
 
 }

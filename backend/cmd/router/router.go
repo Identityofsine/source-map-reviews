@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/auth"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/health"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/images"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/register"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs"
@@ -25,6 +26,8 @@ func SetupRouter() *gin.Engine {
 func setupRoutes(engine *gin.Engine) {
 	// Set up the routes for the application
 	api := engine.Group("/api/v1")
+
+	images.ImageRoute.UseRouter(api)
 
 	// Top Level Middleware
 	api.Use(middlewares.UseCors().Middleware)

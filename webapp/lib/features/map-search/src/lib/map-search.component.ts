@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ArchTextInputComponent } from '@arch-shared/arch-ui';
@@ -34,5 +34,10 @@ export class MapSearchComponent {
       searchTerm: this.searchTerm() ?? '',
     }),
   });
+
+  readonly maps = computed(() => {
+    const data = this.search.value() ?? [];
+    return data
+  })
 
 }

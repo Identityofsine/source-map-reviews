@@ -1,12 +1,16 @@
 <div class="map-thumbnail">
+  <div class="map-thumbnail__image">
+    <img [src]="mapImage()" alt="{{ mapName() }}" (error)="onImgError($event)" />
+  </div>
   <div class="map-thumbnail__info">
     <h3>{{ mapName() }}</h3>
-    <ul>
+    <div class="map-thumbnail__tags">
       @for (tag of mapTags(); track tag.tagName) {
-      <li>
-        <span class="map-thumbnail__item">{{ tag.tagName }}</span>
-      </li>
+      <lib-map-thumbnail-tag
+        [tag]="tag"
+        class="map-thumbnail__item"
+      />
       }
-    </ul>
+    </div>
   </div>
 </div>

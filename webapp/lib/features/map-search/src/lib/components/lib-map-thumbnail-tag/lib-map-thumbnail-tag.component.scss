@@ -1,0 +1,20 @@
+@use '@arch-theming/core' as arch;
+
+.map-thumbnail__item {
+  line-height: 1.1;
+  background-color: arch.$gray-850;
+  border: 1.1px solid arch.$gray-800;
+  border-radius: 5px;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: arch.$light-shadow-500;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: arch.$gray-800;
+    box-shadow: arch.$light-shadow;
+    cursor: pointer;
+  }
+}

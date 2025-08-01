@@ -1,0 +1,40 @@
+.map-thumbnail {
+  position: relative;
+  width: 280px;
+  min-height: 180px;
+
+  .map-thumbnail__image,
+  img {
+    width: 280px;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: filter 0.2s ease-in-out;
+  }
+
+  .map-thumbnail__tags {
+    margin-top: 8px;
+
+    display: flex;
+    max-width: 100%;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  cursor: pointer;
+
+  transition: transform 0.2s ease-in-out,
+  filter 0.2s ease-in-out;
+
+  &:hover {
+    .map-thumbnail__image {
+      filter: brightness(1.2);
+    }
+
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(-2px) scale(0.98);
+  }
+}

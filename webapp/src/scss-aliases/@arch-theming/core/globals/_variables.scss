@@ -18,7 +18,9 @@ $gray-600: #6c757d;
 $gray-625: #646464;
 $gray-650: #5A5A5A;
 $gray-700: #343a40;
-$gray-800: #212529;
+$gray-750: #212529;
+$gray-800: #1E1E1E;
+$gray-850: #1A1A1A;
 $gray-900: #131313;
 $gray-950: #0E0E0E;
 $black: #000000;
@@ -36,6 +38,9 @@ $green-900: #023216;
 $red-500: #DC3545;
 
 $yellow-500: #FFC107;
+
+$orange-600: #EC8F06;
+$orange-800: #865103;
 
 $blue-350: #6FC6FD;
 $blue-500: #007BFF;
@@ -118,3 +123,7 @@ $success-color: $green-500;
 $warning-color: $yellow-500;
 $danger-color: $red-500;
 $info-color: $blue-500;
+
+
+// Gradients
+$source-gradient: linear-gradient(90deg, $orange-600, $orange-800);
