@@ -4,16 +4,15 @@ import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'lib-map-header',
-  templateUrl: './lib-map-header.component.html',
-  styleUrls: ['./lib-map-header.component.scss'],
+  selector: 'lib-map-tags',
+  templateUrl: './lib-map-tags.component.html',
+  styleUrl: './lib-map-tags.component.scss',
   imports: [
-    MapTagComponent,
+    MapTagComponent
   ],
 })
-export class MapHeaderComponent {
+export class MapTagsComponent {
 
-  readonly mapName = input<string>();
-  readonly mapTags = input<MapTag[]>();
+  readonly tags = input<MapTag[]>();
 
 }

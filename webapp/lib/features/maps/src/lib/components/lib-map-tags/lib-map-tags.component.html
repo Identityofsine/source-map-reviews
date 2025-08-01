@@ -1,0 +1,7 @@
+<div class="map__tags">
+  @for (tag of tags(); track tag.tagName) {
+  <lib-map-tag
+   [tag]="tag"
+   class="map-thumbnail__item" />
+  }
+</div>

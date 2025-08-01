@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MapTag } from '@arch-shared/types';
 import { Router } from '@angular/router';
-import { MapTagComponent } from '@arch-feature/maps';
+import { MapTagsComponent } from '@arch-feature/maps';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,7 +9,7 @@ import { MapTagComponent } from '@arch-feature/maps';
   templateUrl: './lib-map-thumbnail.component.html',
   styleUrls: ['./lib-map-thumbnail.component.scss'],
   imports: [
-    MapTagComponent
+    MapTagsComponent
   ],
 })
 export class MapThumbnailComponent {

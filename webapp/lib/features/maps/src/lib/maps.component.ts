@@ -1,10 +1,13 @@
 import { Component, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MapsService } from '@arch-shared/data-source';
+import { MapHeaderComponent } from './components/lib-map-header/lib-map-header.component';
 
 @Component({
   selector: 'arch-maps',
-  imports: [],
+  imports: [
+    MapHeaderComponent,
+  ],
   templateUrl: './maps.component.html',
   styleUrl: './maps.component.scss',
 })
