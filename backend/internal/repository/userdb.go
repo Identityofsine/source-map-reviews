@@ -22,14 +22,14 @@ func CreateUser(username, password, authMethod string) db.DatabaseError {
 		AuthenticationMethod: authMethod,
 	}
 
-	err := dao.InsertIntoDatabaseByStruct(user)
+	_, err := dao.InsertIntoDatabaseByStruct(user)
 
 	return err
 }
 
 func CreateUserByUserDb(user *UserDB) db.DatabaseError {
 
-	err := dao.InsertIntoDatabaseByStruct(*user)
+	_, err := dao.InsertIntoDatabaseByStruct(*user)
 	if err != nil {
 		return err
 	}

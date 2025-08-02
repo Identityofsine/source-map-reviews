@@ -25,6 +25,6 @@ func GetLogs() ([]LogDB, db.DatabaseError) {
 
 func SaveLogs(logDB LogDB) db.DatabaseError {
 
-	err := dao.InsertIntoDatabaseByStruct(logDB)
+	_, err := dao.InsertIntoDatabaseByStruct(logDB)
 	return err
 }

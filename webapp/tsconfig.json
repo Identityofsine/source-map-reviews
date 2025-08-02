@@ -20,6 +20,9 @@
       "@features/maps": [
         "./lib/features/maps"
       ],
+      "@features/reviews": [
+        "./dist/features/reviews"
+      ],
       "@shared/auth": [
         "./dist/shared/auth"
       ],

@@ -3,7 +3,7 @@ package reviews
 import "time"
 
 type MapReview struct {
-	MapReviewID string `json:"mapReviewId" db:"map_review_id" dao:"omit"` // pk
+	MapReviewID int64  `json:"mapReviewId" db:"map_review_id" dao:"pk"` // primary key
 	MapName     string `json:"mapName" db:"map_name" binding:"required"`
 	ReviewerID  int64  `json:"userId" db:"reviewer" binding:"required"`
 

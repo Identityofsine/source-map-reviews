@@ -4,7 +4,7 @@ import "fmt"
 
 type routeerror struct {
 	// Exception should be hidden from the user, but can be logged for debugging
-	Exception error  `json:"-"`
+	Exception error  `json:"debug"`
 	Message   string `json:"message"`
 	Err       string `json:"error"`
 	Code      int    `json:"code"`

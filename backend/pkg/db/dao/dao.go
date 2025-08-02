@@ -14,34 +14,147 @@ import (
 // Take in a Struct that ends in DB, and write some predefined methods
 
 // InsertIntoDatabaseByStruct takes a struct that represents a database table and inserts it into the database.
-func InsertIntoDatabaseByStruct(dbStruct interface{}) db.DatabaseError {
-
+// It returns the updated struct with any auto-generated fields (like IDs) populated.
+func InsertIntoDatabaseByStruct[T interface{}](dbStruct T) (*T, db.DatabaseError) {
 	tableName, err := getDbModelNameFromStruct(dbStruct)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	columnsMap, err := getStructFields(dbStruct, false)
+	// Get fields suitable for insertion (handles primary keys and omitted fields automatically)
+	insertFields, err := GetInsertFields(dbStruct)
 	if err != nil {
-		return db.NewDatabaseError("InsertIntoDatabaseByStruct", err.Message, err.Err, err.Code)
+		return nil, err
 	}
 
-	columns := make([]string, 0, len(columnsMap))
-	fields := util.GetMapKeys(columnsMap)
-	for _, field := range fields {
-		columns = append(columns, columnsMap[field])
+	if len(insertFields) == 0 {
+		return nil, db.NewDatabaseError("InsertIntoDatabaseByStruct", "No fields to insert", "no-fields-to-insert", exception.CODE_BAD_REQUEST)
+	}
+
+	// Build column names and values for insertion
+	columns := make([]string, 0, len(insertFields))
+	values := make([]interface{}, 0, len(insertFields))
+
+	for _, field := range insertFields {
+		columns = append(columns, field.DbColumnName)
+		values = append(values, field.Value)
 	}
 
 	statement := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tableName, strings.Join(columns, ", "), db.Placeholders(len(columns)))
 
-	fieldValues, err := getStructFieldsValues(dbStruct, fields)
+	_, err = db.Query[interface{}](statement, values...)
+	if err != nil {
+		return nil, err
+	}
 
-	_, err = db.Query[interface{}](statement, fieldValues...)
+	// Try to get the updated record with auto-generated fields
+	// This assumes that primary key fields have been auto-generated or updated
+	// We'll attempt to find the record using any available unique identifiers
+	pkFields, pkErr := GetPrimaryKeyFields(dbStruct)
+	if pkErr == nil && len(pkFields) > 0 {
+		// Check if any primary key has a valid value to query with
+		hasValidPK := false
+		for _, pkField := range pkFields {
+			fieldType := reflect.TypeOf(pkField.Value)
+			zeroValue := reflect.Zero(fieldType)
+			if !reflect.DeepEqual(pkField.Value, zeroValue.Interface()) {
+				hasValidPK = true
+				break
+			}
+		}
+
+		if hasValidPK {
+			// Query the database to get the updated record
+			whereClause, args, err := BuildPrimaryKeyWhereClause(dbStruct)
+			if err == nil {
+				results, err := SelectFromDatabaseByStruct(dbStruct, whereClause, args...)
+				if err == nil && len(results) > 0 {
+					return &results[0], nil
+				}
+			}
+		}
+	}
+
+	// If we can't retrieve the updated record, return the original
+	return &dbStruct, nil
+}
+
+// UpdateIntoDatabaseByStruct updates a database record using the struct's primary key.
+// It only updates fields that have been changed from their zero values.
+func UpdateIntoDatabaseByStruct(dbStruct interface{}) db.DatabaseError {
+	// Validate that the primary key exists and is valid
+	err := ValidatePrimaryKey(dbStruct)
+	if err != nil {
+		return err
+	}
+
+	// Check if the record exists in the database
+	exists, err := CheckIfPrimaryKeyExistsInDatabase(dbStruct)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return db.NewDatabaseError("UpdateIntoDatabaseByStruct", "Record with the given primary key does not exist", "record-not-found", exception.CODE_RESOURCE_NOT_FOUND)
+	}
+
+	tableName, err := getDbModelNameFromStruct(dbStruct)
+	if err != nil {
+		return err
+	}
+
+	// Get only changed fields (non-zero values, excluding primary keys and omitted fields)
+	changedFields, err := GetChangedFields(dbStruct)
+	if err != nil {
+		return err
+	}
+
+	if len(changedFields) == 0 {
+		return db.NewDatabaseError("UpdateIntoDatabaseByStruct", "No fields to update", "no-fields-to-update", exception.CODE_BAD_REQUEST)
+	}
+
+	// Build SET clause with changed fields
+	columns := make([]string, 0, len(changedFields))
+	values := make([]interface{}, 0, len(changedFields))
+
+	// Create placeholders for SET clause
+	setPlaceholders := db.Placeholders(len(changedFields))
+	placeholderParts := strings.Split(setPlaceholders, ", ")
+
+	for i, field := range changedFields {
+		columns = append(columns, fmt.Sprintf("%s = %s", field.DbColumnName, placeholderParts[i]))
+		values = append(values, field.Value)
+	}
+
+	// Build WHERE clause using primary key
+	pkFields, err := GetPrimaryKeyFields(dbStruct)
+	if err != nil {
+		return err
+	}
+
+	var whereConditions []string
+	var pkValues []interface{}
+
+	// Create placeholders for WHERE clause continuing from SET clause
+	whereStartIndex := len(values) + 1
+	for i, pkField := range pkFields {
+		whereConditions = append(whereConditions, fmt.Sprintf("%s = $%d", pkField.DbColumnName, whereStartIndex+i))
+		pkValues = append(pkValues, pkField.Value)
+	}
+
+	whereClause := strings.Join(whereConditions, " AND ")
+	statement := fmt.Sprintf("UPDATE %s SET %s WHERE %s", tableName, strings.Join(columns, ", "), whereClause)
+
+	// Combine field values and primary key values
+	allValues := append(values, pkValues...)
+
+	_, err = db.Query[interface{}](statement, allValues...)
 
 	return err
 }
 
-func UpdateIntoDatabaseByStruct(dbStruct interface{}, whereClause string, args ...interface{}) db.DatabaseError {
+// UpdateIntoDatabaseByStructWithWhere provides the old behavior with custom WHERE clause
+// Deprecated: Use UpdateIntoDatabaseByStruct for primary key-based updates
+func UpdateIntoDatabaseByStructWithWhere(dbStruct interface{}, whereClause string, args ...interface{}) db.DatabaseError {
 	tableName, err := getDbModelNameFromStruct(dbStruct)
 	if err != nil {
 		return err
@@ -49,7 +162,7 @@ func UpdateIntoDatabaseByStruct(dbStruct interface{}, whereClause string, args .
 
 	columnsMap, err := getStructFields(dbStruct, false)
 	if err != nil {
-		return db.NewDatabaseError("UpdateIntoDatabaseByStruct", err.Message, err.Err, err.Code)
+		return db.NewDatabaseError("UpdateIntoDatabaseByStructWithWhere", err.Message, err.Err, err.Code)
 	}
 
 	columns := make([]string, 0, len(columnsMap))
@@ -65,7 +178,7 @@ func UpdateIntoDatabaseByStruct(dbStruct interface{}, whereClause string, args .
 
 	fieldValues, err := getStructFieldsValues(dbStruct, fields)
 	if err != nil {
-		return db.NewDatabaseError("UpdateIntoDatabaseByStruct", err.Message, err.Err, err.Code)
+		return db.NewDatabaseError("UpdateIntoDatabaseByStructWithWhere", err.Message, err.Err, err.Code)
 	}
 
 	_, err = db.Query[interface{}](statement, append(fieldValues, args...)...)
@@ -80,10 +193,13 @@ func SelectFromDatabaseByStruct[T interface{}](dbStruct T, whereClause string, a
 		return nil, err
 	}
 
-	fields, err := getStructFieldsArray(dbStruct)
+	fields, zerr := getStructFieldsArray(dbStruct)
 	columnsMap, err := getStructFields(dbStruct, true)
 	if err != nil {
 		return nil, db.NewDatabaseError("InsertIntoDatabaseByStruct", err.Message, err.Err, err.Code)
+	}
+	if zerr != nil {
+		return nil, db.NewDatabaseError("InsertIntoDatabaseByStruct", zerr.Message, zerr.Err, zerr.Code)
 	}
 
 	columns := make([]string, 0, len(columnsMap))

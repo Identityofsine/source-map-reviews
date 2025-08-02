@@ -16,7 +16,7 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 
 	// Use the authentication enforcement middleware for posting
 	g.Use(middlewares.UseAuthenticationEnforcementMiddleware().Middleware)
-	g.POST("/:mapName", SaveMapReview)
+	g.POST("/", SaveMapReview)
 
 	return router
 }

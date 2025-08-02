@@ -74,7 +74,9 @@ func UpdateToken(tokenDB AuthTokenDB) db.DatabaseError {
 }
 
 func SaveToken(tokenDB AuthTokenDB) db.DatabaseError {
-	err := dao.InsertIntoDatabaseByStruct(tokenDB)
+	nT, err := dao.InsertIntoDatabaseByStruct(tokenDB)
+
+	tokenDB.Id = nT.Id // Set the ID from the inserted token
 
 	return err
 }

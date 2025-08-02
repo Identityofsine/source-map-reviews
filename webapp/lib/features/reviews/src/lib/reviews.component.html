@@ -1,0 +1,10 @@
+<div class="lib-review">
+  @for (star of stars(); track star.idx) {
+  <button
+   class="lib-review__star"
+   (click)="onStarClick.emit(star.idx)">
+    <arch-icon
+     icon="/ui/star.svg" />
+  </button>
+  }
+</div>

@@ -65,7 +65,7 @@ func InsertBuildInfo(buildInfo BuildInfoDB) db.DatabaseError {
 		return db.NewDatabaseError("InsertBuildInfo", "Version already exists", "", 409)
 	}
 
-	err := dao.InsertIntoDatabaseByStruct(buildInfo)
+	_, err := dao.InsertIntoDatabaseByStruct(buildInfo)
 
 	return err
 
