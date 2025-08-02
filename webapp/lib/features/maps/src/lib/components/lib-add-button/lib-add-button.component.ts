@@ -12,6 +12,7 @@ import { IconComponent } from '@arch-shared/arch-ui';
 })
 export class AddButtonComponent {
 
+  readonly type = input<'review' | 'tag'>('review');
 
   readonly shouldShow = input<boolean>(false);
   readonly click = output<void>();

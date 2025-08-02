@@ -1,11 +1,15 @@
 @if (shouldShow()) {
 <button
- class="add-button">
+ class="add-button"
+ [class.tag]="type() === 'tag'"
+ >
   <div class="add-icon">
     <arch-icon
      class="add-icon"
      src="/ui/plus.svg"></arch-icon>
   </div>
-  <span class="add">Add</span>
+  @if (type() != 'tag') {
+    <span class="add">Add</span>
+  }
 </button>
 }

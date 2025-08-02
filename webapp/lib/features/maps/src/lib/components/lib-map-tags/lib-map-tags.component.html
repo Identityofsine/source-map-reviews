@@ -9,5 +9,12 @@
       There are no tags yet.
     </span>
   }
+  @if (shouldShowAddButton()) {
+    <lib-add-button
+      class="map__add-button"
+      [type]="'tag'"
+      [shouldShow]="shouldShowAddButton()"
+      />
+  }
 
 </div>

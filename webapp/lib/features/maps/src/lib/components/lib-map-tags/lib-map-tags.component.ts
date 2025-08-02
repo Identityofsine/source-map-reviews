@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, HostBinding, input, linkedSignal, viewChild } from '@angular/core';
 import { MapTag } from '@arch-shared/types';
 import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
+import { AddButtonComponent } from '../lib-add-button/lib-add-button.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,7 +9,8 @@ import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
   templateUrl: './lib-map-tags.component.html',
   styleUrl: './lib-map-tags.component.scss',
   imports: [
-    MapTagComponent
+    MapTagComponent,
+    AddButtonComponent
   ],
 })
 export class MapTagsComponent {

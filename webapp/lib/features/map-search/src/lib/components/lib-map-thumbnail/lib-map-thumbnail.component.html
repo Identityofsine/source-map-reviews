@@ -1,16 +1,15 @@
 <button
-  class="map-thumbnail"
-  (click)="onMapClick()"
-  >
+ class="map-thumbnail"
+ (click)="onMapClick()">
   <div class="map-thumbnail__image">
     <img [src]="mapImage()" alt="{{ mapName() }}" (error)="onImgError($event)" />
   </div>
   <div class="map-thumbnail__info">
     <h3>{{ mapName() }}</h3>
     <div class="map-thumbnail__tags">
-    <lib-map-tags
-      [tags]="mapTags()"
-    />
+      <lib-map-tags
+       [tags]="mapTags()"
+       [shouldShowAddButton]="isAuthenticated()" />
     </div>
   </div>
 </button>
