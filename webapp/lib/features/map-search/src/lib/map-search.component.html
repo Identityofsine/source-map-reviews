@@ -1,17 +1,14 @@
-<form [formGroup]="form">
-  <arch-text-input
-   formControlName="searchTerm">
-  </arch-text-input>
-</form>
-@if (maps()) {
-
-  <div class="maps">
-  @for (map of maps(); track map.mapName) {
-    <lib-map-thumbnail
-      [mapName]="map.mapName"
-      [mapTags]="map.mapTags"
-    />
+<div class="map-search-container">
+  <arch-map-search-query />
+  
+  @if (maps()) {
+    <div class="maps">
+      @for (map of maps(); track map.mapName) {
+        <lib-map-thumbnail
+          [mapName]="map.mapName"
+          [mapTags]="map.mapTags"
+        />
+      }
+    </div>
   }
-  </div>
-
-}
+</div>

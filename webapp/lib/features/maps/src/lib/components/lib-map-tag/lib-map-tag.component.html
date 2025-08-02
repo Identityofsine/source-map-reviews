@@ -1,5 +1,8 @@
 @if (tag() && tag()?.tagName) {
-<div class="map-thumbnail__item">
+<button
+  class="map-thumbnail__item"
+  (click)="onTagClick($event)"
+>
   <span class="map-thumbnail__item-name">{{ tag()?.tagName }}</span>
-</div>
+</button>
 }

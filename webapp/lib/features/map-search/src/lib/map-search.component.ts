@@ -1,37 +1,50 @@
-import { Component, computed, inject } from '@angular/core';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, input, OnInit } from '@angular/core';
+import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ArchTextInputComponent } from '@arch-shared/arch-ui';
 import { MapsService } from '@arch-shared/data-source';
 import { MapThumbnailComponent } from './components/lib-map-thumbnail/lib-map-thumbnail.component';
+import { LibMapSearchQueryComponent } from './components/lib-map-search-query/lib-map-search-query.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, map, Observable, startWith } from 'rxjs';
+import { MapSearchFormService } from './map-search-form.service';
 
 @Component({
   selector: 'arch-map-search',
   imports: [
-    ArchTextInputComponent,
+    LibMapSearchQueryComponent,
     ReactiveFormsModule,
     MapThumbnailComponent,
   ],
   templateUrl: './map-search.component.html',
   styleUrl: './map-search.component.scss',
 })
-export class MapSearchComponent {
+export class MapSearchComponent implements OnInit {
 
-  readonly fb = inject(FormBuilder);
+  readonly route = inject(ActivatedRoute);
+  readonly formService = inject(MapSearchFormService);
+  readonly router = inject(Router);
   readonly mapService = inject(MapsService);
+  readonly destroyRef = inject(DestroyRef);
 
-  readonly form = this.fb.group({
-    searchTerm: ['']
-  })
+  readonly SEPARATOR = '>';
 
-  readonly searchTerm = toSignal(this.form?.get('searchTerm')!.valueChanges, { initialValue: '' });
+  //?_search=""
+  readonly _search = input<string>();
+  //?_tags=""
+  readonly _tags = input<string>();
+
+  readonly form = this.formService.form;
+  readonly searchTerm = this.formService.searchTerm;
+  readonly tags = this.formService.tags;
 
   readonly search = rxResource({
     request: () => ({
-      searchTerm: this.searchTerm()
+      searchTerm: this.searchTerm(),
+      tags: this.tags() ?? [],
     }),
     loader: () => this.mapService.searchMaps({
       searchTerm: this.searchTerm() ?? '',
+      tags: [this.tags() ?? []].flat(),
     }),
   });
 
@@ -39,5 +52,47 @@ export class MapSearchComponent {
     const data = this.search.value() ?? [];
     return data.slice(0, 10);
   })
+
+  ngOnInit(): void {
+    if (this._search()) {
+      this.form.get('searchTerm')?.setValue(this._search(), { emitEvent: true });
+    }
+    if (this._tags()) {
+      this.form.get('tags')?.setValue(this._tags().split(this.SEPARATOR), { emitEvent: true });
+    }
+
+    const values = Object.keys(this.form?.value)
+      ?.map(key =>
+        this.form.get(key)?.valueChanges
+          .pipe(
+            startWith(this.form.get(key)?.value),
+            map((value) => ({ [key]: value }))
+          )
+      );
+
+    combineLatest(values)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        map((values) => {
+          return values.reduce((acc, curr) => {
+            return { ...acc, ...curr };
+          }, {});
+        })
+      )
+      .subscribe(({ searchTerm, tags }) => {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {
+            _search: searchTerm,
+            _tags: tags.length > 0 &&
+              Array.isArray(tags) ?
+              tags.join(this.SEPARATOR)
+              : null,
+          },
+          queryParamsHandling: 'merge',
+        });
+      });
+  }
+
 
 }

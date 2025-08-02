@@ -1,0 +1,60 @@
+@use '@arch-theming/core';
+
+.dropdown-selected-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: core.$blue-800;
+  color: core.$blue-350;
+  padding: 0.375rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid core.$blue-600;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+
+  &:hover {
+    background-color: core.$blue-600;
+    border-color: core.$blue-500;
+  }
+}
+
+.dropdown-selected-item-text {
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.dropdown-selected-item-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: background-color 0.15s ease-in-out;
+  min-width: 18px;
+  min-height: 18px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .remove-icon {
+    width: 14px;
+    height: 14px;
+    background-color: core.$blue-350;
+
+    &:hover {
+      background-color: core.$white;
+    }
+  }
+} 

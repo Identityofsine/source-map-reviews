@@ -3,6 +3,7 @@ import { MapTag } from '@arch-shared/types';
 import { Router } from '@angular/router';
 import { MapTagsComponent } from '@arch-feature/maps';
 import { AuthService } from '@arch-shared/auth';
+import { MapSearchFormService } from '../../map-search-form.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +17,7 @@ import { AuthService } from '@arch-shared/auth';
 export class MapThumbnailComponent {
 
   // DI
+  readonly formService = inject(MapSearchFormService);
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
 
@@ -34,6 +36,12 @@ export class MapThumbnailComponent {
 
   onMapClick() {
     this.router.navigate(['/map', this.mapName()]);
+  }
+
+  onTagClick(tag: MapTag) {
+    this.formService.form.get('tags')?.setValue(
+      [tag.tagName]
+    )
   }
 
 }

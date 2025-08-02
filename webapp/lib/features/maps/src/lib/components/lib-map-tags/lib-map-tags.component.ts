@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, HostBinding, input, linkedSignal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, input, linkedSignal, output, viewChild } from '@angular/core';
 import { MapTag } from '@arch-shared/types';
 import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
 import { AddButtonComponent } from '../lib-add-button/lib-add-button.component';
@@ -17,6 +17,7 @@ export class MapTagsComponent {
 
   readonly tags = input<MapTag[]>();
   readonly shouldShowAddButton = input<boolean>(true);
+  readonly tagClick = output<MapTag>();
 
   readonly container = viewChild('container');
 

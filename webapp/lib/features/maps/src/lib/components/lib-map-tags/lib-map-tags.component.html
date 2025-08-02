@@ -2,7 +2,9 @@
   @for (tag of shownTags(); track tag.tagName) {
     <lib-map-tag
      [tag]="tag"
-     class="map-thumbnail__item" />
+     class="map-thumbnail__item"
+     (tagClick)="tagClick.emit(tag)"
+     />
   }
   @if (isEmpty() && shouldShowAddButton()) {
     <span class="muted-text">

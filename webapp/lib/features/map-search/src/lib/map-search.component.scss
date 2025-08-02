@@ -1,3 +1,13 @@
+.map-search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .maps {
   box-sizing: border-box;
   width: 100%;
@@ -6,6 +16,4 @@
   grid-auto-rows: fit-content;
   align-items: stretch;
   gap: 24px 16px;
-  margin: 0 auto;
-  padding: 32px;
 }

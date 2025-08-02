@@ -1,0 +1,31 @@
+.map-search-query {
+  width: 100%;
+}
+
+.search-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: end;
+  }
+}
+
+.search-input-group,
+.tags-input-group {
+  flex: 1;
+  min-width: 0;
+
+  @media (min-width: 768px) {
+    &.search-input-group {
+      flex: 2;
+    }
+    
+    &.tags-input-group {
+      flex: 1;
+    }
+  }
+} 

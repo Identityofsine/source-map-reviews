@@ -11,6 +11,12 @@ import { MapTag } from '@arch-shared/types';
 export class MapTagComponent {
 
   readonly tag = input<MapTag>();
-  readonly click = output<MapTag>();
+  readonly tagClick = output<MapTag>();
+
+  onTagClick($event: MouseEvent) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.tagClick.emit(this.tag());
+  }
 
 }
