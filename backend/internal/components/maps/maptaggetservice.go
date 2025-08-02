@@ -33,6 +33,53 @@ func ReverseCastMapTagRelationship(m MapTagRelationship) map[string][]MapTagDB {
 	return tags
 }
 
+func GetTags() ([]MapTag, routeexception.RouteError) {
+
+	tags, err := repository.GetMapTags()
+	if err != nil {
+		return nil, routeexception.NewRouteError(
+			err,
+			"Failed to get tags",
+			"get-tags-failed",
+			err.Code,
+		)
+	}
+
+	if tags == nil || len(*tags) == 0 {
+		return nil, exception.ResourceNotFound
+	}
+
+	tagsModel := *dbmapper.MapAllDbFields[MapTagDB, MapTag](*tags)
+
+	return tagsModel, nil
+}
+
+func GetTagLks() ([]TagLk, routeexception.RouteError) {
+
+	lks, err := repository.GetLkTags()
+	if err != nil {
+		return nil, routeexception.NewRouteError(
+			err,
+			"Failed to get tag LKs",
+			"get-tag-lks-failed",
+			err.Code,
+		)
+	}
+
+	if lks == nil || len(*lks) == 0 {
+		return nil, routeexception.NewRouteError(
+			nil,
+			"Tag LKs not found",
+			"tag-lks-not-found",
+			exception.CODE_RESOURCE_NOT_FOUND,
+		)
+	}
+
+	lksModel := *dbmapper.MapAllDbFields[repository.LkTagDB, TagLk](*lks)
+
+	return lksModel, nil
+}
+
 func GetTagsByMaps(mapsObject []Map) (MapTagRelationship, routeexception.RouteError) {
 
 	var maps []Map = make([]Map, 0, len(mapsObject))

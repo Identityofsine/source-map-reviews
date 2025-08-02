@@ -2,6 +2,7 @@
 <button
  class="add-button"
  [class.tag]="type() === 'tag'"
+ (click)="onAddButtonClick($event)"
  >
   <div class="add-icon">
     <arch-icon

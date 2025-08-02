@@ -14,11 +14,11 @@ import (
 // Timestamps are included as per migration options
 
 type LkTagDB struct {
-	LkTag            string         `db:"lk_tag"`
-	Description      sql.NullString `db:"description"`
-	ShortDescription sql.NullString `db:"short_description"`
-	CreatedAt        string         `db:"created_at"`
-	UpdatedAt        string         `db:"updated_at"`
+	LkTag            string         `db:"lk_tag" json:"tagLk"`
+	Description      sql.NullString `db:"description" json:"description"`
+	ShortDescription sql.NullString `db:"short_description" json:"shortDescription"`
+	CreatedAt        string         `db:"created_at" json:"createdAt"`
+	UpdatedAt        string         `db:"updated_at" json:"updatedAt"`
 }
 
 const (

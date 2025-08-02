@@ -15,20 +15,20 @@ export interface DropdownItem {
     @if (label()) {
       <label class="dropdown-input-label" [for]="inputId()">{{ label() }}</label>
     }
-    
+
     <div class="dropdown-input-container">
       <!-- Selected items display -->
       @if (selectedItems().length > 0) {
         <div class="dropdown-selected-items">
           @for (item of selectedItems(); track item.key) {
-            <arch-dropdown-selected-item 
+            <arch-dropdown-selected-item
               [item]="item"
               (remove)="removeItem(item.key)"
             />
           }
         </div>
       }
-      
+
       <!-- Text input -->
       <div class="dropdown-input-wrapper">
         <input
@@ -44,9 +44,9 @@ export interface DropdownItem {
           (blur)="onBlur()"
           (keydown)="onKeyDown($event)"
         />
-        
+
         <!-- Dropdown toggle button -->
-        <button 
+        <button
           type="button"
           class="dropdown-toggle"
           [disabled]="_disabled()"
@@ -55,16 +55,16 @@ export interface DropdownItem {
           ▼
         </button>
       </div>
-      
+
       <!-- Dropdown menu -->
       @if (showDropdown()) {
         <div class="dropdown-menu">
           @if (filteredItems().length === 0 && !freeRange()) {
             <div class="dropdown-no-items">No items available</div>
           }
-          
+
           @for (item of filteredItems(); track item.key) {
-            <div 
+            <div
               class="dropdown-item"
               [class.selected]="isSelected(item.key)"
               (click)="selectItem(item)"
@@ -72,9 +72,9 @@ export interface DropdownItem {
               {{ item.value }}
             </div>
           }
-          
+
           @if (freeRange() && currentInput().trim() && !isExactMatch()) {
-            <div 
+            <div
               class="dropdown-item dropdown-add-new"
               (click)="addCustomItem()"
             >
@@ -97,18 +97,25 @@ export interface DropdownItem {
   standalone: true,
 })
 export class ArchDropdownInputComponent implements ControlValueAccessor {
-  private readonly destroyRef = inject(DestroyRef);
 
   // Input properties
   readonly placeholder = input('');
   readonly disabled = input(false);
   readonly label = input<string | null>(null);
   readonly freeRange = input(false);
-  readonly items = input<DropdownItem[]>([]);
+  readonly items = input<any[]>([]);
+  readonly itemKey = input<string>('key');
+  readonly itemValue = input<string>('value');
   readonly inputId = input(`dropdown-input-${Math.random().toString(36).substr(2, 9)}`);
 
   // Internal state
   protected readonly _disabled = signal(false);
+  readonly mutatedItems = computed(() => {
+    return (this.items() ?? [])?.map(item => ({
+      key: item[this.itemKey()],
+      value: item[this.itemValue()],
+    })) as DropdownItem[];
+  })
   readonly currentInput = signal('');
   readonly showDropdown = signal(false);
   readonly selectedKeys = signal<string[]>([]);
@@ -116,8 +123,8 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
   // Computed properties
   readonly selectedItems = computed(() => {
     const keys = this.selectedKeys();
-    const itemsMap = new Map(this.items().map(item => [item.key, item]));
-    
+    const itemsMap = new Map(this.mutatedItems().map(item => [item.key, item]));
+
     return keys.map(key => {
       const existingItem = itemsMap.get(key);
       return existingItem || { key, value: key };
@@ -127,22 +134,22 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
   readonly filteredItems = computed(() => {
     const input = this.currentInput().toLowerCase();
     const selected = new Set(this.selectedKeys());
-    
-    return this.items()
-      .filter(item => 
-        !selected.has(item.key) && 
+
+    return this.mutatedItems()
+      .filter(item =>
+        !selected.has(item.key) &&
         item.value.toLowerCase().includes(input)
       );
   });
 
   readonly isExactMatch = computed(() => {
     const input = this.currentInput().toLowerCase();
-    return this.items().some(item => item.value.toLowerCase() === input);
+    return this.mutatedItems().some(item => item.value.toLowerCase() === input);
   });
 
   // ControlValueAccessor implementation
-  private onChange: (value: string[]) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (value: string[]) => void = () => { };
+  private onTouched: () => void = () => { };
 
   writeValue(value: string[]): void {
     this.selectedKeys.set(value || []);
@@ -211,7 +218,7 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
 
   addCustomItem(): void {
     if (!this.freeRange()) return;
-    
+
     const input = this.currentInput().trim().toLowerCase();
     if (input && !this.isSelected(input)) {
       const newSelected = [...this.selectedKeys(), input];
@@ -225,4 +232,4 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
   isSelected(key: string): boolean {
     return this.selectedKeys().includes(key);
   }
-} 
+}

@@ -31,3 +31,17 @@ export interface MapSearchForm {
   reviewed?: boolean;
   unreviewed?: boolean;
 }
+
+export interface GenericTagLk<D> {
+  tagLk: string;
+  tagDescription?: string;
+  tagDescriptionShort?: string;
+  createdAt?: D;
+  updatedAt?: D;
+}
+
+export interface TagLkApi extends GenericTagLk<string> {
+}
+
+export interface TagLk extends GenericTagLk<Date> {
+}

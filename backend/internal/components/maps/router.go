@@ -11,6 +11,7 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	registerGroup := router.Group("/maps")
 	registerGroup.GET("/", GetMapsRoute)
 	registerGroup.GET("/:mapName", GetMapRoute)
+	registerGroup.GET("/tags", GetTagsRoute)
 	registerGroup.POST("/search", SearchMapsRoute)
 
 	return router

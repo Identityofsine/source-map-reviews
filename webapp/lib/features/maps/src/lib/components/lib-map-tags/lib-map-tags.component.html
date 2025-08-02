@@ -1,12 +1,19 @@
 <div class="map__tags" #container>
-  @for (tag of shownTags(); track tag.tagName) {
+  @for (tag of visibleTags(); track tag.tagName) {
     <lib-map-tag
      [tag]="tag"
      class="map-thumbnail__item"
      (tagClick)="tagClick.emit(tag)"
      />
   }
-  @if (isEmpty() && shouldShowAddButton()) {
+  @if (hasRemainingTags()) {
+    <lib-map-tags-remaining
+      [remainingTags]="remainingTags()"
+      (click)="onRemainingTagsClick($event)"
+      class="map-thumbnail__item"
+    />
+  }
+  @if (isEmpty()) {
     <span class="muted-text">
       There are no tags yet.
     </span>

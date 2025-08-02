@@ -17,4 +17,10 @@ export class AddButtonComponent {
   readonly shouldShow = input<boolean>(false);
   readonly click = output<void>();
 
+  onAddButtonClick($event: MouseEvent): void {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.click.emit();
+  }
+
 }

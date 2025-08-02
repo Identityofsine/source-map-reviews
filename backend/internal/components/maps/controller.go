@@ -70,3 +70,17 @@ func SearchMapsRoute(c *gin.Context) {
 
 	c.JSON(200, maps)
 }
+
+func GetTagsRoute(c *gin.Context) {
+	storedlogs.LogInfo("GET: /maps/tags")
+
+	// Call the service to get map tags
+	tags, err := GetTagLks()
+	if err != nil {
+		storedlogs.LogError("Error getting map tags: %v", err)
+		c.JSON(err.Code, err)
+		return
+	}
+
+	c.JSON(200, tags)
+}

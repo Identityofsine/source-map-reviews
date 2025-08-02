@@ -1,0 +1,34 @@
+@use '@arch-theming/core' as arch;
+
+.map-tag {
+  &--remaining {
+    line-height: 1.1;
+    background-color: arch.$gray-800;
+    border: 1.1px solid arch.$gray-700;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: 16px;
+    color: arch.$gray-300;
+    font-weight: 600;
+    box-shadow: arch.$light-shadow-500;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    // Make it look like a clickable button
+    background: none;
+    outline: none;
+
+    // Slightly different styling to indicate it's a special button
+    font-style: italic;
+
+    &:hover {
+      background-color: arch.$gray-750;
+      box-shadow: arch.$light-shadow;
+      color: arch.$gray-200;
+      border-style: solid;
+      font-style: normal;
+    }
+
+  }
+}

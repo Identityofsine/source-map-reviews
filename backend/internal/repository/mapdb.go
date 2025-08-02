@@ -78,7 +78,11 @@ func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDB, db.DatabaseError) {
 			placeholders = append(placeholders, fmt.Sprintf("$%d", argIndex))
 			argIndex++
 		}
-		query += strings.Join(placeholders, ", ") + "))"
+		query += strings.Join(placeholders, ", ") + ") GROUP BY map_name HAVING COUNT(DISTINCT lk_tag) = "
+		query += fmt.Sprintf("$%d", argIndex)
+		args = append(args, len(form.Tags))
+		argIndex++
+		query += ")"
 	}
 
 	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, query, args...)

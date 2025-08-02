@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Map, MapApi, MapSearchForm } from '../../../types/src';
+import { Map, MapApi, MapSearchForm, TagLk } from '../../../types/src';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -20,6 +20,16 @@ export class MapsService {
   public getMap(id: string): Observable<Map> {
     return this.http.get<MapApi>(`${this.API_URL}/${id}`).pipe(
       map(map => this.populateMapFromBackend(map))
+    )
+  }
+
+  public getTags(): Observable<TagLk[]> {
+    return this.http.get<TagLk[]>(`${this.API_URL}/tags`).pipe(
+      map(tags => tags.map(tag => ({
+        ...tag,
+        createdAt: tag.createdAt ? new Date(tag.createdAt) : undefined,
+        updatedAt: tag.updatedAt ? new Date(tag.updatedAt) : undefined
+      })))
     )
   }
 
