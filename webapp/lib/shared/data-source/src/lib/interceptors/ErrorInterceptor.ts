@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { AuthService as ExternAuthService } from '@arch-shared/auth';
@@ -9,25 +9,29 @@ import { Router } from '@angular/router';
 export class ErrorInterceptor implements HttpInterceptor {
 
   //DI
-  readonly authService = inject(AuthService);
-  readonly externAuthService = inject(ExternAuthService);
+  readonly injector = inject(Injector);
   readonly router = inject(Router);
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
+
+        const authService = this.injector.get(AuthService); // Ensure AuthService is injected to handle token refresh
+        const externAuthService = this.injector.get(ExternAuthService); // Ensure ExternAuthService is injected to handle token management
+
         // Handle specific status codes
         switch (error.status) {
           case 419:
-            return this.authService.refresh().pipe(
+            return authService.refresh().pipe(
               switchMap(() => next.handle(req)),
               catchError((refreshError) => {
                 // Handle refresh token failure, e.g., redirect to login
-                this.externAuthService.wipeToken();
+                externAuthService.wipeToken();
                 return throwError(() => refreshError);
               }));
           case 422:
-            this.externAuthService.wipeToken();
+            externAuthService.wipeToken();
             return throwError(() => error);
           case 401:
           case 403:

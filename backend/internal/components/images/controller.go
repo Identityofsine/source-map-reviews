@@ -21,13 +21,23 @@ func GetImageRoute(c *gin.Context) {
 	bucket := config.GetBucketConfig()
 	fullPath := filepath.Join(bucket.BucketPath, path)
 
-	// Open file for streaming (this also checks if file exists)
-	file, err := os.Open(fullPath)
+	// Check if file exists and get file info
+	fileInfo, err := os.Stat(fullPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			c.AbortWithStatusJSON(404, exception.ResourceNotFound)
 			return
 		}
+		c.AbortWithStatusJSON(500, gin.H{
+			"error":   "Failed to access file",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	// Open file for streaming
+	file, err := os.Open(fullPath)
+	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{
 			"error":   "Failed to open file",
 			"message": err.Error(),
@@ -35,16 +45,6 @@ func GetImageRoute(c *gin.Context) {
 		return
 	}
 	defer file.Close()
-
-	// Get file info for content length
-	fileInfo, err := file.Stat()
-	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"error":   "Failed to get file info",
-			"message": err.Error(),
-		})
-		return
-	}
 
 	// Detect content type from file extension
 	contentType := mime.TypeByExtension(filepath.Ext(fullPath))

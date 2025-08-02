@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
 import { MapReview } from '@arch-shared/types';
-import { MapGalleryReviewComponent } from '../lib-map-gallery-review/lib-map-gallery-review.component';
+import { MapGalleryReviewComponent } from './lib-map-gallery-review/lib-map-gallery-review.component';
 import { AuthService } from '@arch-shared/auth';
 
 @Component({
@@ -24,7 +24,7 @@ export class MapGalleryComponent {
   });
 
   readonly canAddImage = computed(() => {
-    return this.externAuthService.isUserAuthenticated();
+    return this.externAuthService.isAuthenticatedSignal();
   });
 
   readonly currentIndex = signal(0);

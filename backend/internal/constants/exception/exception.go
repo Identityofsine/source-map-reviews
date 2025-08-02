@@ -7,12 +7,19 @@ import (
 )
 
 var (
+	InternalServerError = routeexception.NewRouteError(
+		nil,
+		"Internal server error",
+		"internal-server-error",
+		CODE_INTERNAL_SERVER_ERROR,
+	)
 	ResourceNotFound = routeexception.NewRouteError(
 		nil,
 		"Resource not found",
 		"resource-not-found",
 		CODE_RESOURCE_NOT_FOUND,
 	)
+
 	TokenExpired = authtypes.NewAuthError(
 		"TokenExpired",
 		"Token has expired",
@@ -24,6 +31,13 @@ var (
 		"Token is invalid",
 		"token-invalid",
 		CODE_TOKEN_INVALID,
+	)
+
+	BadRequest = routeexception.NewRouteError(
+		nil,
+		"Bad request",
+		"bad-request",
+		CODE_BAD_REQUEST,
 	)
 
 	// Database errors

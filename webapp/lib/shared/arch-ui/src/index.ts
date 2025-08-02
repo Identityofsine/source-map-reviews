@@ -4,4 +4,5 @@
 
 export * from './lib/error-message/error-message.component';
 export * from './lib/text-input/text-input.component';
+export * from './lib/icon/icon.component';
 export * from './lib/container/container.directive';

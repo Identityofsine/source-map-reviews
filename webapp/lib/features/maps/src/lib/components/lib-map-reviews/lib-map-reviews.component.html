@@ -15,7 +15,16 @@
       </p>
     </div>
     } @else {
-
+      @for (review of reviews(); track review.mapReviewId) {
+        <lib-map-review
+          [review]="review"
+        />
+      }
     }
+    <div class="map-reviews__absolute_add">
+    <lib-add-button
+      [shouldShow]="shouldShow()"
+    >
+    </lib-add-button>
   </div>
 </div>

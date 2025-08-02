@@ -7,6 +7,7 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/images"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/maps"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/register"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/reviews"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/storedlogs"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
 
@@ -38,6 +39,7 @@ func setupRoutes(engine *gin.Engine) {
 	auth.AuthRoute.UseRouter(api)
 	register.RegisterRoute.UseRouter(api)
 	maps.MapRoute.UseRouter(api)
+	reviews.ReviewsRoute.UseRouter(api)
 
 	api.Use(middlewares.UseAuthenticationEnforcementMiddleware().Middleware)
 

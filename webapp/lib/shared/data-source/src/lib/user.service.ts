@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { Token, TokenApi, UserAuthForm } from "@arch-shared/types";
+import { inject, Injectable, Injector } from "@angular/core";
+import { User } from "@arch-shared/types";
 import { map, Observable } from "rxjs";
 
 @Injectable({
@@ -8,26 +8,26 @@ import { map, Observable } from "rxjs";
 })
 export class UserService {
 
-  readonly http = inject(HttpClient);
+  readonly injector = inject(Injector);
 
-  readonly API_URL = '/api/user';
-  readonly AUTH_URL = '/api/auth';
-
-
-  public login(form: UserAuthForm): Observable<Token> {
-    return this.http.post<TokenApi>(`${this.AUTH_URL}/internal`, form).pipe(
-      map(token => this.populateTokenFromBackend(token))
-    );
-
+  private get http(): HttpClient {
+    return this.injector.get(HttpClient);
   }
 
-  private populateTokenFromBackend(token: TokenApi): Token {
-    return {
-      ...token,
-      expiresAt: token.expiresAt ? new Date(token.expiresAt) : undefined,
-      createdAt: token.createdAt ? new Date(token.createdAt) : undefined,
-      updatedAt: token.updatedAt ? new Date(token.updatedAt) : undefined
-    };
+  readonly API_URL = '/api/user';
+
+  public me(): Observable<User> {
+    return this.http.get<User>(`${this.API_URL}/me`)
+  }
+
+  // Special method for initial validation that bypasses auth interceptor
+  public validateInitial(token: string): Observable<User> {
+    return this.http.get<User>(`${this.API_URL}/me`, {
+      headers: {
+        'X-Skip-Auth-Interceptor': 'true',
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 
 }

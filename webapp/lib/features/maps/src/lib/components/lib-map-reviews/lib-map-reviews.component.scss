@@ -1,13 +1,26 @@
 .map-reviews {
   &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 32px;
     width: 100%;
+    box-sizing: border-box;
 
     min-height: 100px;
 
     &.empty {
+      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+  }
+
+  &__absolute_add {
+    position: absolute;
+    top: 0px;
+    right: 16px;
+    transform: translateY(-50%);
   }
 }

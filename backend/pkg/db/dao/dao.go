@@ -41,6 +41,38 @@ func InsertIntoDatabaseByStruct(dbStruct interface{}) db.DatabaseError {
 	return err
 }
 
+func UpdateIntoDatabaseByStruct(dbStruct interface{}, whereClause string, args ...interface{}) db.DatabaseError {
+	tableName, err := getDbModelNameFromStruct(dbStruct)
+	if err != nil {
+		return err
+	}
+
+	columnsMap, err := getStructFields(dbStruct, false)
+	if err != nil {
+		return db.NewDatabaseError("UpdateIntoDatabaseByStruct", err.Message, err.Err, err.Code)
+	}
+
+	columns := make([]string, 0, len(columnsMap))
+	fields := util.GetMapKeys(columnsMap)
+	for _, field := range fields {
+		columns = append(columns, fmt.Sprintf("%s = ?", columnsMap[field]))
+	}
+
+	statement := fmt.Sprintf("UPDATE %s SET %s", tableName, strings.Join(columns, ", "))
+	if whereClause != "" {
+		statement += " WHERE " + whereClause
+	}
+
+	fieldValues, err := getStructFieldsValues(dbStruct, fields)
+	if err != nil {
+		return db.NewDatabaseError("UpdateIntoDatabaseByStruct", err.Message, err.Err, err.Code)
+	}
+
+	_, err = db.Query[interface{}](statement, append(fieldValues, args...)...)
+
+	return err
+}
+
 func SelectFromDatabaseByStruct[T interface{}](dbStruct T, whereClause string, args ...interface{}) ([]T, db.DatabaseError) {
 
 	tableName, err := getDbModelNameFromStruct(dbStruct)

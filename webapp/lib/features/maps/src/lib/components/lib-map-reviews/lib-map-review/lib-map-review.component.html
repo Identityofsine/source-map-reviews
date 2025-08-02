@@ -1,0 +1,15 @@
+<div class="map-review">
+  <div class="map-review__title">
+    <h3>
+      shm^xy
+    </h3>
+    <p class="map-review__subtitle">
+      {{ review().updatedAt | date: 'short' }}
+    </p>
+  </div>
+  <div class="map-review__content">
+    <p class="map-review__text">
+      {{ review().review }}
+    </p>
+  </div>
+</div>

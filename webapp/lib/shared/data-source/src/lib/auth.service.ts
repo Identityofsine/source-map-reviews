@@ -13,18 +13,18 @@ export class AuthService {
   readonly http = inject(HttpClient);
   readonly externAuthService = inject(ExternAuthService);
 
-  readonly API_URL = '/api/auth/login';
+  readonly API_URL = '/api/auth';
 
 
   public login(form: UserAuthForm): Observable<Token> {
-    return this.http.post<TokenApi>(`${this.API_URL}/internal`, form).pipe(
+    return this.http.post<TokenApi>(`${this.API_URL}/login/internal`, form).pipe(
       map(token => this.populateTokenFromBackend(token)),
       this.externAuthService.storeToken()
     );
   }
 
   public refresh(): Observable<Token> {
-    return this.http.post<TokenApi>(`${this.API_URL}/refresh`, {}).pipe(
+    return this.http.get<TokenApi>(`${this.API_URL}/refresh`).pipe(
       map(token => this.populateTokenFromBackend(token)),
       this.externAuthService.storeToken()
     );

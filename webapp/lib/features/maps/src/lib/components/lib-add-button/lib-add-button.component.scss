@@ -1,0 +1,46 @@
+@use '@arch-theming/core' as arch;
+
+.add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+  gap: 6px;
+  --color: #{arch.$gray-500};
+
+  background-color: arch.$background;
+  padding: 5px 48px;
+  border-radius: 4px;
+  border: 1px solid arch.$gray-675;
+
+  transition: all 0.2s ease-in-out;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  .add-icon {
+    font-size: .7rem;
+
+    ::ng-deep {
+      .icon {
+        background-color: var(--color);
+      }
+    }
+  }
+
+  .add {
+    color: var(--color);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.5);
+  }
+
+  &:active {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+}

@@ -20,3 +20,9 @@ export interface TokenApi extends GenericToken<string> {
 
 export interface Token extends GenericToken<Date> {
 }
+
+export interface User {
+  id?: number;
+  username?: string;
+  verified?: boolean;
+}

@@ -11,7 +11,8 @@ type route Routeable
 //of the health component of this web application
 
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
-	router.GET("/me", GetUserSelf)
+	g := router.Group("/user")
+	g.GET("/me", GetUserSelf)
 	return router
 }
 

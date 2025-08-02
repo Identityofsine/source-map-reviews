@@ -5,7 +5,7 @@
 
 select public.create_table(
    table_name => 'map_reviews',
-   columns => 'map_review_id SERIAL,
+   columns => 'map_review_id SERIAL AUTO_INCREMENT,
                map_name VARCHAR(255) NOT NULL,
                reviewer INTEGER NOT NULL,
                stars INTEGER CHECK (stars >= 1 AND stars <= 5),

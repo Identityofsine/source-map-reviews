@@ -1,0 +1,11 @@
+@use '@arch-theming/core' as arch;
+
+.icon {
+  --url: '';
+  mask: var(--url) no-repeat center / contain;
+  -webkit-mask: var(--url) no-repeat center / contain;
+  height: 1em;
+  width: 1em;
+  background-color: arch.$gray-500;
+  transition: all 0.2s ease-in-out;
+}

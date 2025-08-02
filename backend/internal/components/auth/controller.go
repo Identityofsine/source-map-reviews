@@ -78,8 +78,8 @@ func RefershTokenHandler(c *gin.Context) {
 		return
 	}
 
-	refreshToken, err := cookies.Get("refresh_token")
-	if err != nil || refreshToken == "" {
+	refreshToken, rerr := cookies.Get("refresh_token")
+	if rerr != nil || refreshToken == "" {
 		c.JSON(401, gin.H{"error": "unauthorized", "message": "Refresh token is required"})
 		return
 	}

@@ -104,14 +104,15 @@ func GetTokenFromCookies(cookies *cookies.Cookies) (*Token, AuthError) {
 		return nil, NewAuthError("GetTokensFromCookies", "Cookies are nil", "cookies-nil", exception.CODE_BAD_REQUEST)
 	}
 
-	accessToken, err := cookies.Get("access_token")
-	if err != nil || accessToken == "" {
-		return nil, NewAuthError("GetTokensFromCookies", "Access token is required", "access-token-required", exception.CODE_UNAUTHORIZED)
-	}
+	accessToken, aerr := cookies.Get("access_token")
 
 	refreshToken, err := cookies.Get("refresh_token")
 	if err != nil || refreshToken == "" {
 		return nil, NewAuthError("GetTokensFromCookies", "Refresh token is required", "refresh-token-required", exception.CODE_UNAUTHORIZED)
+	}
+
+	if aerr != nil {
+		return nil, NewAuthError("GetTokensFromCookies", "Access token has expired", "access-token-expired", exception.CODE_TOKEN_EXPIRED)
 	}
 
 	userId, err := cookies.GetInt("user_id")
