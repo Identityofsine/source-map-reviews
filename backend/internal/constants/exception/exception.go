@@ -19,6 +19,12 @@ var (
 		"token-expired",
 		CODE_TOKEN_EXPIRED,
 	)
+	TokenInvalid = authtypes.NewAuthError(
+		"TokenInvalid",
+		"Token is invalid",
+		"token-invalid",
+		CODE_TOKEN_INVALID,
+	)
 
 	// Database errors
 	ResourceNotFoundDatabase = db.NewDatabaseError(
@@ -42,6 +48,7 @@ const (
 	CODE_FORBIDDEN             = 403
 	CODE_RESOURCE_NOT_FOUND    = 404
 	CODE_TOKEN_EXPIRED         = 419
+	CODE_TOKEN_INVALID         = 422
 	CODE_TOO_MANY_REQUESTS     = 429
 	CODE_NOT_IMPLEMENTED       = 501
 	CODE_INTERNAL_SERVER_ERROR = 500

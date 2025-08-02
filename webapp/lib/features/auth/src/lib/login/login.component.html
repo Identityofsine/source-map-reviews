@@ -1,0 +1,19 @@
+<form [formGroup]="loginForm">
+  <input
+   formControlName="username"
+   type="text"
+   placeholder="Username" />
+  <input
+   formControlName="password"
+   type="password"
+   placeholder="Password" />
+
+  <button
+   type="submit"
+   class="btn btn-primary"
+   [disabled]="!loginForm.valid"
+   (click)="onSubmit()">
+    Login
+  </button>
+
+</form>

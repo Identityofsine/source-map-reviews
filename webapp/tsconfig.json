@@ -11,11 +11,17 @@
       "@arch-shared/*": [
         "./lib/shared/*/src"
       ],
+      "@features/auth": [
+        "./dist/features/auth"
+      ],
       "@features/map-search": [
         "./lib/features/map-search"
       ],
       "@features/maps": [
         "./lib/features/maps"
+      ],
+      "@shared/auth": [
+        "./dist/shared/auth"
       ],
       "@shared/data-source": [
         "./lib/shared/data-source"

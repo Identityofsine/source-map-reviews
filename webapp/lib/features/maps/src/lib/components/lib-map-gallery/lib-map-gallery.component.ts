@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
 import { MapReview } from '@arch-shared/types';
 import { MapGalleryReviewComponent } from '../lib-map-gallery-review/lib-map-gallery-review.component';
+import { AuthService } from '@arch-shared/auth';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,10 +16,15 @@ import { MapGalleryReviewComponent } from '../lib-map-gallery-review/lib-map-gal
 })
 export class MapGalleryComponent {
 
+  readonly externAuthService = inject(AuthService);
   readonly mapImages = input<MapReview[]>();
 
   readonly isEmpty = computed(() => {
     return (this.mapImages() ?? []).length <= 0;
+  });
+
+  readonly canAddImage = computed(() => {
+    return this.externAuthService.isUserAuthenticated();
   });
 
   readonly currentIndex = signal(0);

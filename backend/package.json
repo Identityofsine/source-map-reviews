@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@angular/language-service": "^16.2.12"
+  }
+}

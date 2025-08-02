@@ -21,10 +21,12 @@
       <p class="empty-text">
         There are no images for this map.
       </p>
-      <button
-       class="map-gallery__add-image">
-        Add Image
-      </button>
+      @if (canAddImage()) {
+        <button
+         class="map-gallery__add-image">
+          Add Image
+        </button>
+      }
     </div>
   </div>
   } @else {

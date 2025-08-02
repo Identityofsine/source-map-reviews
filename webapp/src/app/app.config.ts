@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CookieInterceptor } from '../../lib/shared/data-source/src/lib/interceptors/CookieInterceptor';
 import { ErrorInterceptor } from '../../lib/shared/data-source/src/lib/interceptors/ErrorInterceptor';
+import { AuthInterceptor } from 'lib/shared/data-source/src/lib/interceptors/AuthInterceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,5 +22,10 @@ export const appConfig: ApplicationConfig = {
       useClass: ErrorInterceptor,
       multi: true
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ]
 };

@@ -281,6 +281,72 @@
           }
         }
       }
+    },
+    "@shared/auth": {
+      "projectType": "library",
+      "root": "lib/shared/auth",
+      "sourceRoot": "lib/shared/auth/src",
+      "prefix": "arch",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "lib/shared/auth/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/shared/auth/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "lib/shared/auth/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "lib/shared/auth/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "@features/auth": {
+      "projectType": "library",
+      "root": "lib/features/auth",
+      "sourceRoot": "lib/features/auth/src",
+      "prefix": "arch",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "lib/features/auth/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/features/auth/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "lib/features/auth/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "lib/features/auth/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }

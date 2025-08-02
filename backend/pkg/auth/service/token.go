@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	. "github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/authtypes"
 	. "github.com/identityofsine/fofx-go-gin-api-template/pkg/auth/model"
@@ -99,6 +100,10 @@ func RenewLoginToken(token Token, user User) (*Token, AuthError) {
 	if authError := VerifyUserIsAuthenticated(user, token, TOKEN_TYPE_REFRESH); authError != nil {
 
 		storedlogs.LogError("RenewLoginToken: User is not authenticated or token is invalid", authError)
+		if authError.Code == exception.TokenExpired.Code {
+			// send back a dead token
+			return nil, exception.TokenInvalid
+		}
 
 		return nil, authError
 	}
