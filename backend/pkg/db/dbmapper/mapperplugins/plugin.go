@@ -94,6 +94,7 @@ func initializeMapperPlugins() {
 	// For example, you can call registerMapperPlugin for each plugin here.
 	registerMapperPlugin(TimeMapper{})
 	registerMapperPlugin(NullStringMapper{})
+	registerMapperPlugin(Int64Mapper{})
 }
 
 func GetMapperPlugin(object string, destination string) MapperPlugin {

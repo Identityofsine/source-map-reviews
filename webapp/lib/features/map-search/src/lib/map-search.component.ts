@@ -50,7 +50,7 @@ export class MapSearchComponent implements OnInit {
 
   readonly maps = computed(() => {
     const data = this.search.value() ?? [];
-    return data.slice(0, 10);
+    return data.slice(0, 25);
   })
 
   ngOnInit(): void {

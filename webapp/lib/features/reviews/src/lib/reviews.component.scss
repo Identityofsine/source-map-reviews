@@ -1,0 +1,9 @@
+.lib-review {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  &__star {
+    font-size: 26px;
+  }
+}

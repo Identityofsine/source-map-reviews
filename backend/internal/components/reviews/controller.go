@@ -17,6 +17,7 @@ func GetMapReviews(c *gin.Context) {
 	reviews, err := GetReviewsByMapName(mapName)
 	if err != nil {
 		c.JSON(err.Code, err)
+		return
 	}
 
 	c.JSON(200, reviews)

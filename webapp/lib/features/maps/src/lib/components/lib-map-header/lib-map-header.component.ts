@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { MapTag } from '@arch-shared/types';
 import { MapTagsComponent } from '../lib-map-tags/lib-map-tags.component';
 import { MapReviewsComponent } from '../lib-map-reviews/lib-map-reviews.component';
+import { AuthService } from '@arch-shared/auth';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +15,14 @@ import { MapReviewsComponent } from '../lib-map-reviews/lib-map-reviews.componen
 })
 export class MapHeaderComponent {
 
+  //DI
+  readonly externAuthService = inject(AuthService)
+
   readonly mapName = input<string>();
   readonly mapTags = input<MapTag[]>();
+
+  readonly shouldShowAddButton = this.externAuthService.isAuthenticatedSignal
+
+
 
 }

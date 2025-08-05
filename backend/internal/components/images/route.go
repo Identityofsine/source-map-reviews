@@ -10,6 +10,7 @@ type route Routeable
 func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	registerGroup := router.Group("/images")
 	registerGroup.GET("/:path", GetImageRoute)
+	registerGroup.POST("/upload", SaveImageRoute)
 
 	return router
 }

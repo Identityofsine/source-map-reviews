@@ -1,12 +1,15 @@
 package reviews
 
 import (
+	"fmt"
+
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/components/user"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/storedlogs"
 )
 
 // SaveReview handles both creating new reviews and updating existing ones
@@ -64,6 +67,14 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 
 	// Map back to domain model
 	result := dbmapper.MapDbFields[repository.MapReviewDB, MapReview](savedReview)
+	if result == nil {
+		return nil, routeexception.NewRouteError(nil, "Failed to map saved review", "map-saved-review-failed", exception.CODE_INTERNAL_SERVER_ERROR)
+	}
+	result.Images = review.Images // Preserve images from the input
+
+	// Optionally, save review images if provided
+	result.Images = storeImages(*result)
+
 	return result, nil
 }
 
@@ -103,6 +114,11 @@ func UpdateReview(reviewId int64, review MapReview, cookies cookies.Cookies) (*M
 
 	// Map back to domain model
 	result := dbmapper.MapDbFields[repository.MapReviewDB, MapReview](savedReview)
+	result.Images = review.Images // Preserve images from the input
+
+	// Optionally, save review images if provided
+	result.Images = storeImages(*result)
+
 	return result, nil
 }
 
@@ -161,4 +177,23 @@ func GetReviewByUserAndMap(userId int64, mapName string) (*MapReview, routeexcep
 
 	result := dbmapper.MapDbFields[repository.MapReviewDB, MapReview](*review)
 	return result, nil
+}
+
+func storeImages(review MapReview) []MapReviewImage {
+	if len(review.Images) == 0 {
+		return nil // No images to store
+	}
+
+	var savedImages []MapReviewImage
+	for _, img := range review.Images {
+		// will insert only fresh ones
+		savedImg, err := SaveReviewImage(review.MapReviewID, img.Image.ImageID)
+		if err != nil {
+			storedlogs.LogError(fmt.Sprintf("Failed to save review image: %v", err), err)
+			continue
+		}
+		savedImages = append(savedImages, *savedImg)
+	}
+
+	return savedImages
 }

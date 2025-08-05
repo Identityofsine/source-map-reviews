@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { IconComponent } from '@arch-shared/arch-ui';
 
 @Component({
-  selector: 'arch-reviews',
+  selector: 'reviews-component',
   imports: [
     IconComponent
   ],

@@ -6,6 +6,12 @@
     <p class="map-review__subtitle">
       {{ review().updatedAt | date: 'short' }}
     </p>
+    <div class="map-review__reviews">
+      <reviews-component
+       [readOnly]="true"
+       [reviewScore]="review().stars">
+      </reviews-component>
+    </div>
   </div>
   <div class="map-review__content">
     <p class="map-review__text">

@@ -13,6 +13,9 @@ type routeerror struct {
 type RouteError = *routeerror
 
 func (e *routeerror) Error() string {
+	if e.Exception == nil {
+		return fmt.Sprintf("%s: %s (%d)", e.Message, e.Err, e.Code)
+	}
 	return fmt.Sprintf("%s: %s (%d), %s", e.Message, e.Err, e.Code, e.Exception.Error())
 }
 

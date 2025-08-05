@@ -54,24 +54,25 @@ func InsertIntoDatabaseByStruct[T interface{}](dbStruct T) (*T, db.DatabaseError
 	if pkErr == nil && len(pkFields) > 0 {
 		// Check if any primary key has a valid value to query with
 		hasValidPK := false
+		var foundPKField DaoFieldInfo
 		for _, pkField := range pkFields {
-			fieldType := reflect.TypeOf(pkField.Value)
-			zeroValue := reflect.Zero(fieldType)
-			if !reflect.DeepEqual(pkField.Value, zeroValue.Interface()) {
+			if pkField.IsPrimaryKey {
+				foundPKField = pkField
 				hasValidPK = true
 				break
 			}
 		}
-
 		if hasValidPK {
-			// Query the database to get the updated record
-			whereClause, args, err := BuildPrimaryKeyWhereClause(dbStruct)
-			if err == nil {
-				results, err := SelectFromDatabaseByStruct(dbStruct, whereClause, args...)
-				if err == nil && len(results) > 0 {
-					return &results[0], nil
-				}
+
+			obj, err := SelectFromDatabaseByStruct(dbStruct, "1 = 1 ORDER BY $1 ASC", foundPKField.Value)
+
+			if err != nil {
+				return nil, db.NewDatabaseError("InsertIntoDatabaseByStruct", "Failed to retrieve inserted record", "insert-retrieve-error", exception.CODE_INTERNAL_SERVER_ERROR)
 			}
+			if len(obj) > 0 {
+				return &obj[len(obj)-1], nil // Return the last inserted record
+			}
+
 		}
 	}
 

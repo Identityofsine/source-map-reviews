@@ -1,6 +1,11 @@
 @use '@arch-theming/core' as arch;
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+  --nav-width: min(1860px, 95vw);
+
+}
+
 body {
   background: arch.$background;
   color: arch.$foreground;
