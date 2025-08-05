@@ -11,8 +11,17 @@ func (_ *route) UseRouter(router *gin.RouterGroup) *gin.RouterGroup {
 	registerGroup := router.Group("/maps")
 	registerGroup.GET("/", GetMapsRoute)
 	registerGroup.GET("/:mapName", GetMapRoute)
-	registerGroup.GET("/tags", GetTagsRoute)
 	registerGroup.POST("/search", SearchMapsRoute)
+
+	// Tag lookup endpoints
+	registerGroup.GET("/tags", GetTagsRoute)
+	registerGroup.POST("/tags", SaveTagLkRoute)
+	registerGroup.DELETE("/tags/:tagLk", DeleteTagLkRoute)
+
+	// Map-tag relationship endpoints
+	registerGroup.POST("/:mapName/tags/:tagLk", AddTagToMapRoute)
+	registerGroup.DELETE("/:mapName/tags/:tagLk", RemoveTagFromMapRoute)
+	registerGroup.PUT("/:mapName/tags", UpdateMapTagsRoute)
 
 	return router
 }

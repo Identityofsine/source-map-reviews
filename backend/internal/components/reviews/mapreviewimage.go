@@ -10,6 +10,7 @@ type MapReviewImage struct {
 	MapReviewImageId int64        `json:"mapReviewImageId" db:"map_review_image_id"`
 	MapReviewId      int64        `json:"mapReviewId" db:"map_review_id"`
 	Image            images.Image `json:"image"` // Assuming Image is a struct defined in the images package
+	ImageId          int64        `db:"image_id" json:"imageId" gorm:"-"`
 }
 
 func (m *MapReviewImage) Populate(img *images.Image) routeexception.RouteError {

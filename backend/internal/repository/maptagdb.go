@@ -68,3 +68,36 @@ func GetMapTagsByMapNames(mapNames []string) (*MapTagRelationshipDbs, db.Databas
 	return &mapped, nil
 
 }
+
+// SaveMapTagDb handles inserting map-tag relationships
+func SaveMapTagDb(mapTag MapTagDB) (*MapTagDB, db.DatabaseError) {
+	// Check if this map-tag combination already exists
+	existing, err := GetMapTagsByMapName(mapTag.MapName)
+	if err == nil && existing != nil {
+		for _, existingTag := range *existing {
+			if existingTag.LkTag == mapTag.LkTag {
+				// Already exists, return the existing one
+				return &existingTag, nil
+			}
+		}
+	}
+
+	// Insert new map-tag relationship
+	inserted, err := dao.InsertIntoDatabaseByStruct(mapTag)
+	if err != nil {
+		return nil, err
+	}
+	return inserted, nil
+}
+
+// DeleteMapTagDb deletes a map-tag relationship
+func DeleteMapTagDb(mapName string, lkTag string) db.DatabaseError {
+	_, err := db.Delete("DELETE FROM "+map_table+" WHERE map_name = $1 AND lk_tag = $2", mapName, lkTag)
+	return err
+}
+
+// DeleteMapTagsByMapName deletes all tags for a specific map
+func DeleteMapTagsByMapName(mapName string) db.DatabaseError {
+	_, err := db.Delete("DELETE FROM "+map_table+" WHERE map_name = $1", mapName)
+	return err
+}

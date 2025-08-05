@@ -42,5 +42,15 @@ func SaveReviewImage(reviewId int64, imageId int64) (*MapReviewImage, routeexcep
 
 	mapReviewImage := dbmapper.MapDbFields[repository.MapReviewImageDB, MapReviewImage](*savedImage)
 
+	img, err := repository.GetImageByID(imageId)
+	if err != nil || img == nil {
+		return nil, routeexception.NewRouteError(
+			err,
+			"Failed to get image by ID",
+			"get-image-by-id-failed",
+			err.Code,
+		)
+	}
+
 	return mapReviewImage, nil
 }

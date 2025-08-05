@@ -33,12 +33,13 @@ func (m *MapReview) Populate(imgs []MapReviewImage) routeexception.RouteError {
 	}
 
 	imgIds := util.Map(imgs, func(img MapReviewImage) int64 {
-		return img.Image.ImageID
+		return img.ImageId
 	})
 
 	imgMapDbs, err := repository.GetImagesByIDs(
 		imgIds,
 	)
+
 	if err != nil {
 		if err.Code == exception.CODE_RESOURCE_NOT_FOUND {
 			return nil
@@ -61,16 +62,16 @@ func (m *MapReview) Populate(imgs []MapReviewImage) routeexception.RouteError {
 			return &img
 		})
 
-	for _, image := range imgs {
+	for i := range imgs {
 
-		imgId := imgMaps[strconv.Itoa(int(image.Image.ImageID))]
+		image := &imgs[i]
+		imgId := imgMaps[strconv.Itoa(int(image.ImageId))]
 		if imgId == nil || imgId.ImageID == 0 {
 			storedlogs.LogWarn("Image ID is zero, cannot populate image for review: " + strconv.Itoa(int(m.MapReviewID)))
 			continue
 		}
 
 		err := image.Populate(imgId)
-
 		if err != nil {
 			if err.Code == exception.CODE_INTERNAL_SERVER_ERROR {
 				return routeexception.NewRouteError(err, "Failed to populate image", "populate-image-failed", err.Code)
@@ -79,6 +80,8 @@ func (m *MapReview) Populate(imgs []MapReviewImage) routeexception.RouteError {
 			continue
 		}
 	}
+
+	m.Images = imgs
 
 	return nil
 

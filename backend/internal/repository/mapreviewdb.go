@@ -18,8 +18,9 @@ type MapReviewDB struct {
 	CreatedAt   time.Time      `db:"created_at" json:"createdAt" dao:"omit"`    // Time when the review was created
 }
 
-func GetMapReviewDBByMapName(mapName string) ([]MapReviewDB, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapReviewDB{}, "map_name = $1", mapName)
+func selectMapReviewDBWrapper(whereClause string, args ...interface{}) ([]MapReviewDB, db.DatabaseError) {
+
+	dbs, err := dao.SelectFromDatabaseByStruct(MapReviewDB{}, whereClause, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +28,12 @@ func GetMapReviewDBByMapName(mapName string) ([]MapReviewDB, db.DatabaseError) {
 	return dbs, nil
 }
 
+func GetMapReviewDBByMapName(mapName string) ([]MapReviewDB, db.DatabaseError) {
+	return selectMapReviewDBWrapper("map_name = $1", mapName)
+}
+
 func GetMapReviewDBById(reviewId int64) (*MapReviewDB, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapReviewDB{}, "map_review_id = $1", reviewId)
+	dbs, err := selectMapReviewDBWrapper("map_review_id = $1", reviewId)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +46,7 @@ func GetMapReviewDBById(reviewId int64) (*MapReviewDB, db.DatabaseError) {
 }
 
 func GetMapReviewDBByMapNameAndReviewer(mapName string, reviewerId int64) (*MapReviewDB, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapReviewDB{}, "map_name = $1 AND reviewer = $2", mapName, reviewerId)
+	dbs, err := selectMapReviewDBWrapper("map_name = $1 AND reviewer = $2", mapName, reviewerId)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +59,7 @@ func GetMapReviewDBByMapNameAndReviewer(mapName string, reviewerId int64) (*MapR
 }
 
 func GetMapReviewDBByReviewer(reviewerId int64) ([]MapReviewDB, db.DatabaseError) {
-	dbs, err := dao.SelectFromDatabaseByStruct(MapReviewDB{}, "reviewer = $1", reviewerId)
+	dbs, err := selectMapReviewDBWrapper("reviewer = $1", reviewerId)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +68,7 @@ func GetMapReviewDBByReviewer(reviewerId int64) ([]MapReviewDB, db.DatabaseError
 }
 
 func DeleteMapReviewDB(reviewId int64) db.DatabaseError {
-	_, err := dao.SelectFromDatabaseByStruct(MapReviewDB{}, "map_review_id = $1", reviewId)
+	_, err := selectMapReviewDBWrapper("map_review_id = $1", reviewId)
 	if err != nil {
 		return err
 	}
@@ -95,7 +100,7 @@ func SaveMapReviewDB(review MapReviewDB) (MapReviewDB, db.DatabaseError) {
 			return MapReviewDB{}, err
 		}
 
-		results, err := dao.SelectFromDatabaseByStruct(review, whereClause, args...)
+		results, err := selectMapReviewDBWrapper(whereClause, args...)
 		if err != nil {
 			return MapReviewDB{}, err
 		}

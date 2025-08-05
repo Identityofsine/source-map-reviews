@@ -1,0 +1,202 @@
+{
+	"info": {
+		"_postman_id": "tag-crud-collection",
+		"name": "Map Tags CRUD API",
+		"description": "Collection for managing map tags and tag lookups",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tag Lookups",
+			"item": [
+				{
+					"name": "Get All Tag Lookups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maps/tags",
+							"host": ["{{baseUrl}}"],
+							"path": ["maps", "tags"]
+						},
+						"description": "Retrieve all available tag lookups"
+					}
+				},
+				{
+					"name": "Create/Update Tag Lookup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tagLk\": \"strategy\",\n  \"tagDescription\": \"Strategy-focused maps\",\n  \"tagDescriptionShort\": \"Strategy maps\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/maps/tags",
+							"host": ["{{baseUrl}}"],
+							"path": ["maps", "tags"]
+						},
+						"description": "Create a new tag lookup or update existing one"
+					}
+				},
+				{
+					"name": "Delete Tag Lookup",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maps/tags/strategy",
+							"host": ["{{baseUrl}}"],
+							"path": ["maps", "tags", "strategy"]
+						},
+						"description": "Delete a tag lookup (only if not in use by any maps)"
+					}
+				}
+			],
+			"description": "Operations for managing tag lookup definitions"
+		},
+		{
+			"name": "Map-Tag Relationships",
+			"item": [
+				{
+					"name": "Add Tag to Map",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maps/de_dust2/tags/strategy",
+							"host": ["{{baseUrl}}"],
+							"path": ["maps", "de_dust2", "tags", "strategy"]
+						},
+						"description": "Add an existing tag to a specific map"
+					}
+				},
+				{
+					"name": "Remove Tag from Map",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maps/de_dust2/tags/strategy",
+							"host": ["{{baseUrl}}"],
+							"path": ["maps", "de_dust2", "tags", "strategy"]
+						},
+						"description": "Remove a specific tag from a map"
+					}
+				},
+				{
+					"name": "Update All Map Tags",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tags\": [\"strategy\", \"competitive\", \"classic\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/maps/de_dust2/tags",
+							"host": ["{{baseUrl}}"],
+							"path": ["maps", "de_dust2", "tags"]
+						},
+						"description": "Replace all tags for a map with the provided list"
+					}
+				}
+			],
+			"description": "Operations for managing which tags are assigned to maps"
+		},
+		{
+			"name": "Example Workflows",
+			"item": [
+				{
+					"name": "Create Multiple Tag Lookups",
+					"item": [
+						{
+							"name": "Create 'competitive' tag",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"tagLk\": \"competitive\",\n  \"tagDescription\": \"Maps suitable for competitive play\",\n  \"tagDescriptionShort\": \"Competitive\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/maps/tags",
+									"host": ["{{baseUrl}}"],
+									"path": ["maps", "tags"]
+								}
+							}
+						},
+						{
+							"name": "Create 'casual' tag",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"tagLk\": \"casual\",\n  \"tagDescription\": \"Maps designed for casual gameplay\",\n  \"tagDescriptionShort\": \"Casual\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/maps/tags",
+									"host": ["{{baseUrl}}"],
+									"path": ["maps", "tags"]
+								}
+							}
+						},
+						{
+							"name": "Create 'classic' tag",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"tagLk\": \"classic\",\n  \"tagDescription\": \"Classic maps from the original game\",\n  \"tagDescriptionShort\": \"Classic\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/maps/tags",
+									"host": ["{{baseUrl}}"],
+									"path": ["maps", "tags"]
+								}
+							}
+						}
+					]
+				}
+			],
+			"description": "Example workflows and batch operations"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"description": "Base URL for the API (adjust port as needed)"
+		}
+	],
+	"auth": {
+		"type": "inherit"
+	}
+} 

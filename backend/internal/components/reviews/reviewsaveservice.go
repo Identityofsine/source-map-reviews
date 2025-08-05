@@ -72,8 +72,14 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 	}
 	result.Images = review.Images // Preserve images from the input
 
-	// Optionally, save review images if provided
+	// Save review images if provided
 	result.Images = storeImages(*result)
+
+	// Populate the review with complete image data
+	resultErr := PopulateReviewWithImages(result)
+	if resultErr != nil {
+		return nil, routeexception.NewRouteError(resultErr, "Failed to populate review images", "populate-review-images-failed", resultErr.Code)
+	}
 
 	return result, nil
 }
@@ -116,8 +122,14 @@ func UpdateReview(reviewId int64, review MapReview, cookies cookies.Cookies) (*M
 	result := dbmapper.MapDbFields[repository.MapReviewDB, MapReview](savedReview)
 	result.Images = review.Images // Preserve images from the input
 
-	// Optionally, save review images if provided
+	// Save review images if provided
 	result.Images = storeImages(*result)
+
+	// Populate the review with complete image data
+	resultErr := PopulateReviewWithImages(result)
+	if resultErr != nil {
+		return nil, routeexception.NewRouteError(resultErr, "Failed to populate review images", "populate-review-images-failed", resultErr.Code)
+	}
 
 	return result, nil
 }
@@ -148,49 +160,25 @@ func DeleteReview(reviewId int64, cookies cookies.Cookies) routeexception.RouteE
 	return nil
 }
 
-// GetReviewsByUser returns all reviews by a specific user
-func GetReviewsByUser(userId int64) ([]MapReview, routeexception.RouteError) {
-	reviews, dbErr := repository.GetMapReviewDBByReviewer(userId)
-	if dbErr != nil {
-		return nil, routeexception.NewRouteError(dbErr, "Failed to fetch user reviews", "fetch-user-reviews-failed", dbErr.Code)
-	}
-
-	var result []MapReview
-	for _, review := range reviews {
-		mapped := dbmapper.MapDbFields[repository.MapReviewDB, MapReview](review)
-		result = append(result, *mapped)
-	}
-
-	return result, nil
-}
-
-// GetReviewByUserAndMap returns a user's review for a specific map
-func GetReviewByUserAndMap(userId int64, mapName string) (*MapReview, routeexception.RouteError) {
-	review, dbErr := repository.GetMapReviewDBByMapNameAndReviewer(mapName, userId)
-	if dbErr != nil {
-		return nil, routeexception.NewRouteError(dbErr, "Failed to fetch review", "fetch-review-failed", dbErr.Code)
-	}
-
-	if review == nil {
-		return nil, nil // No review found, but not an error
-	}
-
-	result := dbmapper.MapDbFields[repository.MapReviewDB, MapReview](*review)
-	return result, nil
-}
-
 func storeImages(review MapReview) []MapReviewImage {
 	if len(review.Images) == 0 {
 		return nil // No images to store
 	}
 
 	var savedImages []MapReviewImage
+	savedImages = make([]MapReviewImage, 0, len(review.Images))
 	for _, img := range review.Images {
 		// will insert only fresh ones
 		savedImg, err := SaveReviewImage(review.MapReviewID, img.Image.ImageID)
-		if err != nil {
-			storedlogs.LogError(fmt.Sprintf("Failed to save review image: %v", err), err)
-			continue
+		if err != nil || savedImg == nil {
+			if err == nil {
+				storedlogs.LogWarn(fmt.Sprintf("Failed to save review image for review %d: image ID %d is nil", review.MapReviewID, img.Image.ImageID))
+			}
+			if err != nil {
+				storedlogs.LogError(fmt.Sprintf("Error saving review image for review %d: %v", review.MapReviewID, err), err)
+			}
+			savedImages = append(savedImages, img)
+			continue // Skip this image if saving failed
 		}
 		savedImages = append(savedImages, *savedImg)
 	}

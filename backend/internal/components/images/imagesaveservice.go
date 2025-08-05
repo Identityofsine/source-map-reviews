@@ -53,7 +53,7 @@ func SaveImage(request *SaveImageRequest, fileData []byte) (*Image, routeexcepti
 	// This is a placeholder implementation.
 	imageTemp := Image{
 		ImagePath: sysFile,
-		Caption:   request.FileName,
+		Caption:   request.Caption,
 	}
 	imageDb := dbmapper.MapDbFields[Image, repository.ImageDB](imageTemp)
 	if imageDb == nil {

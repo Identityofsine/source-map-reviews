@@ -3,8 +3,8 @@ package images
 import "mime/multipart"
 
 type SaveImageRequest struct {
-	FileName string `json:"fileName" binding:"required"`
-	FileExt  string `json:"fileExt" binding:"required"`
+	Caption string `json:"caption" binding:"required"`
+	FileExt string `json:"fileExt" binding:"required"`
 }
 
 type SaveImageForm struct {
