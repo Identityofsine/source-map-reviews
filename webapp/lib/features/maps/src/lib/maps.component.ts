@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MapsService } from '@arch-shared/data-source';
 import { MapHeaderComponent } from './components/lib-map-header/lib-map-header.component';
@@ -34,7 +34,10 @@ export class MapsComponent {
     loader: ({ request }) => this.reviewsService.getReviews(request.id),
   });
 
+
   readonly map = this._map.value;
   readonly reviews = this._reviews.value;
+
+  readonly mapImages = computed(() => this.reviews()?.filter(review => review.images) ?? []);
 
 }

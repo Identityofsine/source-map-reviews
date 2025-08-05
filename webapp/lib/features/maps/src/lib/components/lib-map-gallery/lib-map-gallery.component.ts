@@ -27,9 +27,26 @@ export class MapGalleryComponent {
     return this.externAuthService.isAuthenticatedSignal();
   });
 
+  readonly allImages = computed(() => {
+    return this.mapImages()
+      ?.map((review) => review.images)
+      ?.flatMap(i => i)
+  })
+
+  readonly currentReview = computed(() => {
+    return this.mapImages()?.[this.currentIndex()] ?? null;
+  })
+
+  readonly currentImage = computed(() => {
+    return this.allImages()?.[this.currentIndex()] ?? null;
+  })
+
+  readonly currentImagePath = computed(() => {
+    return this.currentImage()?.image?.imagePath;
+  });
+
   readonly currentIndex = signal(0);
 
-  readonly currentImage = computed(() =>
-    this.mapImages()?.[this.currentIndex()] ?? null);
+
 
 }

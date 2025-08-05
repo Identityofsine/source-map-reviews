@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MapReview } from '@arch-shared/types';
 
@@ -6,7 +7,7 @@ import { MapReview } from '@arch-shared/types';
   selector: 'lib-map-gallery-review',
   templateUrl: './lib-map-gallery-review.component.html',
   styleUrl: './lib-map-gallery-review.component.scss',
-  imports: [],
+  imports: [DatePipe],
 })
 export class MapGalleryReviewComponent {
 

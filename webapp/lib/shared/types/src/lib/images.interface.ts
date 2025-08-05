@@ -1,11 +1,13 @@
 export interface Image {
-  imageId?: string;
+  imageId?: number;
   imagePath?: string;
   caption?: string;
 }
 
 export interface MapImage {
-  mapImageId?: string;
-  mapName?: string;
-  images?: Image[];
+  mapReviewId?: number;
+  mapReviewImageId?: number;
+  mapImageId?: number;
+  imageId?: number;
+  image?: Image;
 }

@@ -3,6 +3,7 @@ package config
 type BucketConfig struct {
 	ConfigFile
 	BucketPath string `yaml:"bucket_path" json:"bucket_path"`
+	PublicPath string `yaml:"public_path" json:"public_path"`
 }
 
 func GetBucketConfig() *BucketConfig {

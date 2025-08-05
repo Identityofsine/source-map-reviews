@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	"github.com/identityofsine/fofx-go-gin-api-template/pkg/config"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dao"
 	"github.com/identityofsine/fofx-go-gin-api-template/util"
@@ -15,9 +16,21 @@ type ImageDB struct {
 }
 
 func GetImages() ([]ImageDB, db.DatabaseError) {
-	return dao.SelectFromDatabaseByStruct[ImageDB](
+	rows, err := dao.SelectFromDatabaseByStruct[ImageDB](
 		ImageDB{},
 		"")
+	if err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return nil, db.NewDatabaseError("GetImages", "No images found", "no-images-found", 404)
+	}
+
+	for i := range rows {
+		rows[i].ImagePath = fmt.Sprintf("%s/%s", config.GetBucketConfig().PublicPath, rows[i].ImagePath)
+	}
+
+	return rows, nil
 }
 
 func GetImageByID(imageID int64) (*ImageDB, db.DatabaseError) {
@@ -29,6 +42,8 @@ func GetImageByID(imageID int64) (*ImageDB, db.DatabaseError) {
 	if len(rows) == 0 {
 		return nil, db.NewDatabaseError("GetImageByID", "No image found with the given ID", "no-image-found", 404)
 	}
+
+	rows[0].ImagePath = fmt.Sprintf("%s/%s", config.GetBucketConfig().PublicPath, rows[0].ImagePath)
 
 	return &rows[0], nil
 }
@@ -49,6 +64,10 @@ func GetImagesByIDs(imageID []int64) ([]ImageDB, db.DatabaseError) {
 
 	if len(rows) == 0 {
 		return nil, db.NewDatabaseError("GetImagesByIDs", "No images found with the given IDs", "no-images-found", 404)
+	}
+
+	for i := range rows {
+		rows[i].ImagePath = fmt.Sprintf("%s/%s", config.GetBucketConfig().PublicPath, rows[i].ImagePath)
 	}
 
 	return rows, nil

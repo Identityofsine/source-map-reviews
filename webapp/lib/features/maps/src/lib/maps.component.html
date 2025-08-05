@@ -4,7 +4,9 @@
    [mapName]="map().mapName"
    [mapTags]="map().mapTags" />
   <div class="map__container">
-    <lib-map-gallery></lib-map-gallery>
+    <lib-map-gallery
+    [mapImages]="mapImages()"
+    ></lib-map-gallery>
     <lib-map-reviews
     [reviews]="reviews()"
     ></lib-map-reviews>
