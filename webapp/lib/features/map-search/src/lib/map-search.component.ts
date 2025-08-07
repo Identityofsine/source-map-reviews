@@ -7,12 +7,14 @@ import { LibMapSearchQueryComponent } from './components/lib-map-search-query/li
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
 import { MapSearchFormService } from './map-search-form.service';
+import { ArchModalComponent } from '@arch-shared/arch-ui';
 
 @Component({
   selector: 'arch-map-search',
   imports: [
     LibMapSearchQueryComponent,
     ReactiveFormsModule,
+    ArchModalComponent,
     MapThumbnailComponent,
   ],
   templateUrl: './map-search.component.html',
