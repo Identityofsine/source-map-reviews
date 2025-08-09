@@ -9,4 +9,40 @@
   background-color: arch.$background;
   border: 1px solid arch.$gray-725;
   border-radius: 12px;
+
+  min-width: 328px;
+
+
+  .arch-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .arch-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .arch-modal-close {
+      font-size: 18px;
+      transition: filter 0.3s ease-in-out;
+      cursor: pointer;
+      margin-left: auto;
+
+      &:hover {
+        filter: brightness(2);
+      }
+    }
+
+  }
+
+  .arch-modal-body {
+    margin-top: 16px;
+  }
+
+  .arch-modal-footer {
+    margin-top: 8px;
+  }
+
+
 }

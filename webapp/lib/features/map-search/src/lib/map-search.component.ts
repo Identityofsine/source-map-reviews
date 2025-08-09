@@ -1,20 +1,18 @@
 import { Component, computed, DestroyRef, inject, input, OnInit } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MapsService } from '@arch-shared/data-source';
 import { MapThumbnailComponent } from './components/lib-map-thumbnail/lib-map-thumbnail.component';
 import { LibMapSearchQueryComponent } from './components/lib-map-search-query/lib-map-search-query.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, map, Observable, startWith } from 'rxjs';
+import { combineLatest, map, startWith } from 'rxjs';
 import { MapSearchFormService } from './map-search-form.service';
-import { ArchModalComponent } from '@arch-shared/arch-ui';
 
 @Component({
   selector: 'arch-map-search',
   imports: [
     LibMapSearchQueryComponent,
     ReactiveFormsModule,
-    ArchModalComponent,
     MapThumbnailComponent,
   ],
   templateUrl: './map-search.component.html',
