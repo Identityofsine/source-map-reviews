@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { MapTag } from '@arch-shared/types';
+import { Map, MapTag } from '@arch-shared/types';
 import { Router } from '@angular/router';
 import { MapTagsComponent } from '@arch-feature/maps';
 import { AuthService } from '@arch-shared/auth';
@@ -21,11 +21,18 @@ export class MapThumbnailComponent {
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
 
-  readonly mapName = input<string>();
-  readonly mapTags = input<MapTag[]>();
+  readonly map = input<Map>();
+
+  readonly mapName = computed(() => {
+    return this.map()?.mapName || '';
+  });
+
+  readonly mapTags = computed(() => {
+    return this.map().mapTags || [];
+  })
 
   readonly mapImage = computed(() => {
-    return `/api/images/${this.mapName() ?? 'map_placeholder'}.jpg`;
+    return this.map()?.thumbnail.imagePath || ''
   })
 
   readonly isAuthenticated = this.authService.isAuthenticatedSignal;

@@ -6,6 +6,7 @@ import (
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/repository"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/db/dbmapper"
+	"github.com/identityofsine/fofx-go-gin-api-template/util"
 )
 
 func GetMaps() (*[]Map, routeexception.RouteError) {
@@ -85,6 +86,7 @@ func SearchMaps(form mapsearchform.MapSearchForm) (*[]Map, routeexception.RouteE
 }
 
 func populateAllMaps(maps *[]Map) routeexception.RouteError {
+
 	tagsMap, err := GetTagsByMaps(
 		*maps,
 	)
@@ -95,6 +97,20 @@ func populateAllMaps(maps *[]Map) routeexception.RouteError {
 		}
 		return err
 	}
+
+	mapNames := util.Map(*maps, func(m Map) string {
+		return m.MapName
+	})
+	imageMap, err := GetMapImagesByMapName(mapNames)
+	if err != nil {
+		return routeexception.NewRouteError(
+			err,
+			"Failed to get map images",
+			"get-map-images-failed",
+			err.Code,
+		)
+	}
+
 	for i, mapObj := range *maps {
 		tags, ok := tagsMap[mapObj.MapName]
 		if !ok {
@@ -102,6 +118,14 @@ func populateAllMaps(maps *[]Map) routeexception.RouteError {
 			continue
 		}
 		(*maps)[i].Tags = tags
+		images, ok := imageMap[mapObj.MapName]
+		if !ok {
+			continue
+		}
+		if images == nil || len(*images) == 0 {
+			continue // No images found for this map
+		}
+		(*maps)[i].Thumbnail = (*images)[0]
 	}
 
 	return nil
@@ -121,6 +145,7 @@ func populateMap(
 
 	// Copy updated tags back into original pointer
 	mapObj.Tags = maps[0].Tags
+	mapObj.Thumbnail = maps[0].Thumbnail
 
 	return nil
 }

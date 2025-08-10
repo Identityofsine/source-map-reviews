@@ -1,9 +1,9 @@
 <div class="map-search-container">
   <arch-map-search-query />
-  
+
   @if (maps()) {
-    <arch-paginated-list 
-      [data]="maps()" 
+    <arch-paginated-list
+      [data]="maps()"
       [itemsPerPage]="12"
       [showPageInput]="true"
       [showPageInfo]="true"
@@ -11,8 +11,7 @@
       [gridColumns]="'repeat(auto-fill, minmax(280px, 1fr))'">
       <ng-template #itemTemplate let-map>
         <lib-map-thumbnail
-          [mapName]="map.mapName"
-          [mapTags]="map.mapTags"
+          [map]="map"
         />
       </ng-template>
     </arch-paginated-list>

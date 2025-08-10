@@ -67,6 +67,41 @@ func GetMapReviewDBByReviewer(reviewerId int64) ([]MapReviewDB, db.DatabaseError
 	return dbs, nil
 }
 
+// GetMapReviewDBByMapNames retrieves reviews for multiple map names efficiently
+func GetMapReviewDBByMapNames(mapNames []string) (map[string][]MapReviewDB, db.DatabaseError) {
+	if mapNames == nil || len(mapNames) == 0 {
+		return make(map[string][]MapReviewDB), nil
+	}
+
+	whereClause := "map_name IN (" + db.Placeholders(len(mapNames)) + ")"
+
+	// Convert to interface{} slice for variadic args
+	args := make([]interface{}, len(mapNames))
+	for i, mapName := range mapNames {
+		args[i] = mapName
+	}
+
+	dbs, err := selectMapReviewDBWrapper(whereClause, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Group reviews by map name
+	reviewsByMap := make(map[string][]MapReviewDB)
+	for _, review := range dbs {
+		reviewsByMap[review.MapName] = append(reviewsByMap[review.MapName], review)
+	}
+
+	// Initialize empty slices for maps with no reviews
+	for _, mapName := range mapNames {
+		if _, exists := reviewsByMap[mapName]; !exists {
+			reviewsByMap[mapName] = []MapReviewDB{}
+		}
+	}
+
+	return reviewsByMap, nil
+}
+
 func DeleteMapReviewDB(reviewId int64) db.DatabaseError {
 	_, err := selectMapReviewDBWrapper("map_review_id = $1", reviewId)
 	if err != nil {

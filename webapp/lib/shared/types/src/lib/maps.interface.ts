@@ -1,6 +1,9 @@
+import { Image } from "./images.interface";
+
 export interface MapGeneric<D> {
   mapName?: string;
   mapImage?: string;
+  thumbnail?: Image;
   mapPath?: string;
   mapTags?: GenericMapTag<D>[];
 }

@@ -32,3 +32,11 @@ func PtrArray[T any](items ...T) []*T {
 	}
 	return result
 }
+
+func Reduce[T any, OUT any](items []T, initial OUT, reducer func(OUT, T) OUT) OUT {
+	result := initial
+	for _, item := range items {
+		result = reducer(result, item)
+	}
+	return result
+}
