@@ -7,9 +7,11 @@
     <lib-map-gallery
     [mapName]="map().mapName"
     [mapImages]="mapImages()"
+    [selectedReview]="currentReview()"
     ></lib-map-gallery>
     <lib-map-reviews
     [reviews]="reviews()"
+    (onReviewClick)="onReviewClick($event)"
     ></lib-map-reviews>
   </div>
   }

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { ReviewsComponent } from '@arch-feature/reviews';
 import { MapReview } from '@arch-shared/types';
 
@@ -16,5 +16,6 @@ import { MapReview } from '@arch-shared/types';
 export class MapReviewComponent {
 
   readonly review = input<MapReview>();
+  readonly onReviewClick = output<MapReview>();
 
 }

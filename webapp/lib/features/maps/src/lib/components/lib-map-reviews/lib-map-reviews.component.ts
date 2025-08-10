@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
 import { MapReview } from '@arch-shared/types';
 import { AddButtonComponent } from '../lib-add-button/lib-add-button.component';
@@ -21,6 +21,7 @@ export class MapReviewsComponent {
   readonly authService = inject(AuthService);
 
   readonly reviews = input<MapReview[]>();
+  readonly onReviewClick = output<MapReview>();
 
   readonly isEmpty = computed(() => {
     return (this.reviews() ?? []).length <= 0

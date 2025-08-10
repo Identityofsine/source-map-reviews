@@ -1,4 +1,6 @@
-<div class="map-review">
+<button
+ class="map-review"
+ (click)="onReviewClick.emit(review())">
   <div class="map-review__title">
     <h3>
       shm^xy
@@ -18,4 +20,4 @@
       {{ review().review }}
     </p>
   </div>
-</div>
+</button>

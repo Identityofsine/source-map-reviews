@@ -18,6 +18,7 @@
       @for (review of reviews(); track review.mapReviewId) {
         <lib-map-review
           [review]="review"
+          (onReviewClick)="onReviewClick.emit($event)"
         />
       }
     }

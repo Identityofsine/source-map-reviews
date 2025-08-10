@@ -1,7 +1,7 @@
 import { MapImage } from "./images.interface";
 
 interface MapReviewGeneric<D> {
-  mapReviewId?: string;
+  mapReviewId?: number;
   mapName?: string;
   userId?: number;
   images?: MapImage[];
