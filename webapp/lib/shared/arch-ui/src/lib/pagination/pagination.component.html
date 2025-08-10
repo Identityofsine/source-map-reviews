@@ -1,0 +1,47 @@
+<div class="pagination-container">
+  @if (showPageInfo()) {
+    <div class="pagination-info">
+      Showing {{ startItem() }}-{{ endItem() }} of {{ totalItems() }} items
+    </div>
+  }
+  
+  <div class="pagination-controls">
+    <!-- Previous page button -->
+    <button 
+      class="pagination-btn pagination-btn-nav"
+      [disabled]="!canGoPrevious()"
+      (click)="goToPrevious()"
+      title="Previous page">
+      ←
+    </button>
+
+    <!-- Page input section -->
+    @if (showPageInput()) {
+      <div class="pagination-page-input">
+        <input 
+          type="number"
+          class="page-input"
+          [value]="pageInputValue()"
+          [min]="1"
+          [max]="totalPages()"
+          (input)="onPageInputChange($any($event.target).value)"
+          (keydown.enter)="onPageInputEnter()"
+          (blur)="onPageInputBlur()" />
+        <span>/{{ totalPages() }}</span>
+      </div>
+    } @else {
+      <div class="pagination-page-display">
+        {{ currentPage() }}/{{ totalPages() }}
+      </div>
+    }
+
+    <!-- Next page button -->
+    <button 
+      class="pagination-btn pagination-btn-nav"
+      [disabled]="!canGoNext()"
+      (click)="goToNext()"
+      title="Next page">
+      →
+    </button>
+  </div>
+</div> 

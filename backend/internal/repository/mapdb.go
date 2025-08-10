@@ -31,6 +31,7 @@ func GetMaps() (*[]MapDB, db.DatabaseError) {
 }
 
 func GetMap(mapName string) (*MapDB, db.DatabaseError) {
+	// Use exact case-sensitive match for map name lookup
 	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, "map_name = $1", mapName)
 	if err != nil {
 		return nil, err
@@ -49,43 +50,80 @@ func GetMap(mapName string) (*MapDB, db.DatabaseError) {
 }
 
 func SearchMaps(form mapsearchform.MapSearchForm) (*[]MapDB, db.DatabaseError) {
-
-	query := "1=1"
-
+	var conditions []string
 	args := []interface{}{}
-	argIndex := 1 // PostgreSQL placeholders start at $1
+	argIndex := 1
 
+	// Case-insensitive search term with multiple search patterns using ILIKE
 	if form.SearchTerm != "" {
-		query += fmt.Sprintf(" AND map_name LIKE $%d", argIndex)
-		args = append(args, "%"+form.SearchTerm+"%")
-		argIndex++
+		searchConditions := []string{
+			fmt.Sprintf("map_name ILIKE $%d", argIndex),   // Case-insensitive substring match
+			fmt.Sprintf("map_name ILIKE $%d", argIndex+1), // Case-insensitive start of string match
+			fmt.Sprintf("map_name ILIKE $%d", argIndex+2), // Case-insensitive end of string match
+		}
+
+		// Add the search term variations
+		args = append(args, "%"+form.SearchTerm+"%") // Contains
+		args = append(args, form.SearchTerm+"%")     // Starts with
+		args = append(args, "%"+form.SearchTerm)     // Ends with
+		argIndex += 3
+
+		// Combine search conditions with OR for more flexible matching
+		conditions = append(conditions, "("+strings.Join(searchConditions, " OR ")+")")
 	}
-	if form.Reviewed {
-		query += fmt.Sprintf(" AND reviewed = $%d", argIndex)
-		args = append(args, true)
-		argIndex++
+
+	// Handle review status with proper subquery
+	if form.Reviewed && !form.Unreviewed {
+		// Only reviewed maps - maps that have at least one review
+		conditions = append(conditions, `
+			map_name IN (
+				SELECT DISTINCT map_name 
+				FROM map_reviews
+			)`)
+	} else if form.Unreviewed && !form.Reviewed {
+		// Only unreviewed maps - maps with no reviews
+		conditions = append(conditions, `
+			map_name NOT IN (
+				SELECT DISTINCT map_name 
+				FROM map_reviews
+			)`)
 	}
-	if form.Unreviewed {
-		query += fmt.Sprintf(" AND reviewed = $%d", argIndex)
-		args = append(args, false)
-		argIndex++
-	}
+	// If both or neither are true, don't filter by review status
+
+	// Handle tags with optimized subquery
 	if len(form.Tags) > 0 {
-		query += " AND map_name IN (SELECT map_name FROM map_tags WHERE lk_tag IN ("
-		placeholders := []string{}
-		for _, tag := range form.Tags {
+		tagPlaceholders := make([]string, len(form.Tags))
+		for i, tag := range form.Tags {
+			tagPlaceholders[i] = fmt.Sprintf("$%d", argIndex)
 			args = append(args, tag)
-			placeholders = append(placeholders, fmt.Sprintf("$%d", argIndex))
 			argIndex++
 		}
-		query += strings.Join(placeholders, ", ") + ") GROUP BY map_name HAVING COUNT(DISTINCT lk_tag) = "
-		query += fmt.Sprintf("$%d", argIndex)
+
+		// Use subquery to find maps that have ALL specified tags
+		tagCondition := fmt.Sprintf(`
+			map_name IN (
+				SELECT map_name 
+				FROM map_tags 
+				WHERE lk_tag IN (%s)
+				GROUP BY map_name 
+				HAVING COUNT(DISTINCT lk_tag) = $%d
+			)`, strings.Join(tagPlaceholders, ", "), argIndex)
+
 		args = append(args, len(form.Tags))
 		argIndex++
-		query += ")"
+		conditions = append(conditions, tagCondition)
 	}
 
-	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, query, args...)
+	// Build WHERE clause
+	whereClause := "1=1"
+	if len(conditions) > 0 {
+		whereClause += " AND " + strings.Join(conditions, " AND ")
+	}
+
+	// Add ordering for consistent results and better user experience
+	whereClause += " ORDER BY map_name ASC"
+
+	dbs, err := dao.SelectFromDatabaseByStruct(MapDB{}, whereClause, args...)
 
 	return &dbs, err
 }

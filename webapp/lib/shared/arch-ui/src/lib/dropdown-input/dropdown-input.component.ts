@@ -17,8 +17,8 @@ export interface DropdownItem {
     }
 
     <div class="dropdown-input-container">
-      <!-- Selected items display -->
-      @if (selectedItems().length > 0) {
+      <!-- Selected items display (only show for multi-select) -->
+      @if (selectedItems().length > 0 && !singleSelect()) {
         <div class="dropdown-selected-items">
           @for (item of selectedItems(); track item.key) {
             <arch-dropdown-selected-item
@@ -37,12 +37,13 @@ export interface DropdownItem {
           [id]="inputId()"
           [type]="'text'"
           [disabled]="_disabled()"
-          [value]="currentInput()"
+          [value]="singleSelect() && selectedItems().length > 0 ? selectedItems()[0].value : currentInput()"
           [placeholder]="placeholder()"
           (input)="onInput($event)"
           (focus)="onFocus()"
           (blur)="onBlur()"
           (keydown)="onKeyDown($event)"
+          [readonly]="singleSelect()"
         />
 
         <!-- Dropdown toggle button -->
@@ -107,6 +108,7 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
   readonly itemKey = input<string>('key');
   readonly itemValue = input<string>('value');
   readonly inputId = input(`dropdown-input-${Math.random().toString(36).substr(2, 9)}`);
+  readonly singleSelect = input(false);
 
   // Internal state
   protected readonly _disabled = signal(false);
@@ -169,6 +171,9 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
 
   // Event handlers
   onInput(event: Event): void {
+    // Don't allow input in single select mode (readonly handles this, but double-check)
+    if (this.singleSelect()) return;
+    
     const inputElement = event.target as HTMLInputElement;
     this.currentInput.set(inputElement.value);
     this.showDropdown.set(true);
@@ -201,10 +206,17 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
   }
 
   selectItem(item: DropdownItem): void {
-    if (!this.isSelected(item.key)) {
-      const newSelected = [...this.selectedKeys(), item.key];
-      this.selectedKeys.set(newSelected);
-      this.onChange(newSelected);
+    if (this.singleSelect()) {
+      // For single select, replace the selection
+      this.selectedKeys.set([item.key]);
+      this.onChange([item.key]);
+    } else {
+      // For multi-select, add to selection if not already selected
+      if (!this.isSelected(item.key)) {
+        const newSelected = [...this.selectedKeys(), item.key];
+        this.selectedKeys.set(newSelected);
+        this.onChange(newSelected);
+      }
     }
     this.currentInput.set('');
     this.showDropdown.set(false);

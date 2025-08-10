@@ -2,6 +2,7 @@ import { Component, computed, DestroyRef, inject, input, OnInit } from '@angular
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MapsService } from '@arch-shared/data-source';
+import { PaginatedListComponent } from '@arch-shared/arch-ui';
 import { MapThumbnailComponent } from './components/lib-map-thumbnail/lib-map-thumbnail.component';
 import { LibMapSearchQueryComponent } from './components/lib-map-search-query/lib-map-search-query.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +15,7 @@ import { MapSearchFormService } from './map-search-form.service';
     LibMapSearchQueryComponent,
     ReactiveFormsModule,
     MapThumbnailComponent,
+    PaginatedListComponent,
   ],
   templateUrl: './map-search.component.html',
   styleUrl: './map-search.component.scss',
@@ -50,7 +52,7 @@ export class MapSearchComponent implements OnInit {
 
   readonly maps = computed(() => {
     const data = this.search.value() ?? [];
-    return data.slice(0, 25);
+    return data; // Return all data, let pagination component handle slicing
   })
 
   ngOnInit(): void {

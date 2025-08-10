@@ -1,0 +1,31 @@
+<div class="paginated-list-container">
+  <!-- Items list -->
+  <div class="paginated-list-items" 
+       [class.grid-layout]="layout() === 'grid'"
+       [style.grid-template-columns]="layout() === 'grid' ? gridColumns() : null">
+    @for (item of paginatedData(); track $index) {
+      <ng-container 
+        [ngTemplateOutlet]="itemTemplate()" 
+        [ngTemplateOutletContext]="{ $implicit: item, index: $index }">
+      </ng-container>
+    }
+    
+    @if (paginatedData().length === 0) {
+      <div class="no-items-message">
+        No items to display
+      </div>
+    }
+  </div>
+
+  <!-- Pagination controls -->
+  @if (showPagination() && totalPages() > 1) {
+    <arch-pagination
+      [totalItems]="totalItems()"
+      [itemsPerPage]="itemsPerPage()"
+      [currentPage]="currentPage()"
+      [showPageInput]="showPageInput()"
+      [showPageInfo]="showPageInfo()"
+      (pageChange)="onPageChange($event)">
+    </arch-pagination>
+  }
+</div> 

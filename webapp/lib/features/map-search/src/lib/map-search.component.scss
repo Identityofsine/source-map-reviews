@@ -8,13 +8,3 @@
   margin: 0 auto;
   box-sizing: border-box;
 }
-
-.maps {
-  box-sizing: border-box;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  justify-items: center;
-  align-items: stretch;
-  gap: 24px 16px;
-}

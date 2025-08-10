@@ -1,0 +1,163 @@
+@use '@arch-theming/core' as *;
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: map-get($spacers, 6) 0;
+}
+
+.pagination-info {
+  display: none; // Hide the verbose info text
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: map-get($spacers, 2);
+  background-color: rgba($gray-800, 0.9);
+  padding: map-get($spacers, 2);
+  border-radius: map-get($spacers, 2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba($gray-700, 0.5);
+}
+
+.pagination-btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: $gray-300;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: map-get($spacers, 1);
+
+  &:hover:not(:disabled) {
+    background-color: rgba($primary-color, 0.2);
+    color: $white;
+  }
+
+  &:disabled {
+    color: $gray-600;
+    cursor: not-allowed;
+    
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &.pagination-btn-nav {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+.pagination-page-input {
+  display: flex;
+  align-items: center;
+  gap: map-get($spacers, 2);
+  color: $gray-300;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  .page-input {
+    width: 40px;
+    padding: map-get($spacers, 1);
+    border: 1px solid rgba($gray-600, 0.5);
+    border-radius: map-get($spacers, 1);
+    background-color: rgba($gray-700, 0.8);
+    color: $gray-100;
+    font-size: 0.75rem;
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: rgba($primary-color, 0.7);
+      background-color: $gray-700;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+}
+
+.pagination-page-display {
+  color: $gray-300;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.items-per-page {
+  display: flex;
+  align-items: center;
+  
+  arch-dropdown-input {
+    // Override the dropdown styles to match our dark theme
+    ::ng-deep {
+      .dropdown-input-container {
+        min-width: 140px;
+      }
+      
+      .dropdown-input {
+        background-color: rgba($gray-700, 0.8);
+        border-color: rgba($gray-600, 0.5);
+        color: $gray-100;
+        font-size: 0.75rem;
+        padding: map-get($spacers, 1) map-get($spacers, 2);
+        
+        &:focus {
+          border-color: rgba($primary-color, 0.7);
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+        }
+        
+        &::placeholder {
+          color: $gray-400;
+        }
+      }
+      
+      .dropdown-toggle {
+        background-color: transparent;
+        border-left-color: rgba($gray-600, 0.5);
+        color: $gray-300;
+        
+        &:hover {
+          background-color: rgba($gray-600, 0.3);
+        }
+      }
+      
+      .dropdown-menu {
+        background-color: $gray-700;
+        border-color: rgba($gray-600, 0.5);
+        box-shadow: 0 4px 6px rgba($black, 0.3);
+      }
+      
+      .dropdown-item {
+        color: $gray-100;
+        font-size: 0.75rem;
+        
+        &:hover {
+          background-color: rgba($primary-color, 0.2);
+        }
+        
+        &.selected {
+          background-color: rgba($primary-color, 0.3);
+          color: $white;
+        }
+      }
+    }
+  }
+} 
