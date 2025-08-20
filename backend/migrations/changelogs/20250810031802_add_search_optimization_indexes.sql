@@ -36,73 +36,39 @@ ON map_search_stats (review_count DESC, avg_rating DESC);
 CREATE INDEX IF NOT EXISTS idx_map_search_stats_tags 
 ON map_search_stats (tag_count DESC, search_rank DESC);
 
--- Advanced text search combinations
--- Index for combined map name and review text search
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_combined_text_search 
-ON map_reviews USING gin (
-    (map_name || ' ' || COALESCE(review, '')) gin_trgm_ops
-);
-
 -- Index for search by map name with review quality filter
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_maps_quality_search 
+CREATE INDEX IF NOT EXISTS idx_maps_quality_search 
 ON map_reviews (map_name, stars) 
-WHERE stars >= 3 AND review IS NOT NULL AND length(review) > 10;
-
--- Index for finding maps with recent activity
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_maps_recent_activity 
-ON map_reviews (map_name, updated_at DESC) 
-WHERE updated_at > created_at;
+WHERE stars >= 3 AND review IS NOT NULL;
 
 -- Index for user engagement tracking
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_user_engagement 
+CREATE INDEX IF NOT EXISTS idx_user_engagement 
 ON map_reviews (reviewer) 
-INCLUDE (map_name, stars, created_at) 
-WHERE created_at > (NOW() - INTERVAL '90 days');
-
--- Index for seasonal/temporal analysis
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_maps_temporal 
-ON map_reviews (EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at), map_name);
+INCLUDE (map_name, stars, created_at);
 
 -- Index for finding controversial maps (high variance in ratings)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_maps_rating_analysis 
+CREATE INDEX IF NOT EXISTS idx_maps_rating_analysis 
 ON map_reviews (map_name, stars) 
 INCLUDE (created_at, map_review_id);
 
 -- Search performance optimization index
 -- This index helps with pagination in search results
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_maps_search_pagination 
+CREATE INDEX IF NOT EXISTS idx_maps_search_pagination 
 ON maps (map_name) 
 INCLUDE (created_at, updated_at);
 
--- Index for advanced tag filtering (for complex tag combinations)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_advanced_tag_filtering 
+-- Index for advanced tag filtering
+CREATE INDEX IF NOT EXISTS idx_advanced_tag_filtering 
 ON map_tags (lk_tag) 
-INCLUDE (map_name, created_at) 
-WHERE lk_tag IN (
-    SELECT lk_tag FROM map_tags 
-    GROUP BY lk_tag 
-    HAVING COUNT(*) >= 5  -- Only popular tags
-);
-
--- Create function to refresh materialized view (can be called periodically)
-CREATE OR REPLACE FUNCTION refresh_map_search_stats()
-RETURNS void AS $$
-BEGIN
-    REFRESH MATERIALIZED VIEW CONCURRENTLY map_search_stats;
-END;
-$$ LANGUAGE plpgsql;
+INCLUDE (map_name, created_at);
 
 -- +goose Down
--- Drop function and materialized view
-DROP FUNCTION IF EXISTS refresh_map_search_stats();
+-- Drop materialized view
 DROP MATERIALIZED VIEW IF EXISTS map_search_stats;
 
 -- Drop indexes in reverse order
 DROP INDEX IF EXISTS idx_advanced_tag_filtering;
 DROP INDEX IF EXISTS idx_maps_search_pagination;
 DROP INDEX IF EXISTS idx_maps_rating_analysis;
-DROP INDEX IF EXISTS idx_maps_temporal;
 DROP INDEX IF EXISTS idx_user_engagement;
-DROP INDEX IF EXISTS idx_maps_recent_activity;
 DROP INDEX IF EXISTS idx_maps_quality_search;
-DROP INDEX IF EXISTS idx_combined_text_search;
