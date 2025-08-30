@@ -10,6 +10,7 @@
     [selectedReview]="currentReview()"
     ></lib-map-gallery>
     <lib-map-reviews
+    [mapName]="id()"
     [reviews]="reviews()"
     (onReviewClick)="onReviewClick($event)"
     ></lib-map-reviews>

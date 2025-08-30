@@ -1,0 +1,12 @@
+@use '@arch-theming/core';
+
+.not-empty {
+  display: none;
+}
+
+.empty-result {
+  margin: 1rem auto;
+  text-align: center;
+  font-size: 12px;
+  color: core.$gray-600;
+}

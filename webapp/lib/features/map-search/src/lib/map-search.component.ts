@@ -56,12 +56,8 @@ export class MapSearchComponent implements OnInit {
   })
 
   ngOnInit(): void {
-    if (this._search()) {
-      this.form.get('searchTerm')?.setValue(this._search(), { emitEvent: true });
-    }
-    if (this._tags()) {
-      this.form.get('tags')?.setValue(this._tags().split(this.SEPARATOR), { emitEvent: true });
-    }
+
+    this.queryParamsToForm();
 
     const values = Object.keys(this.form?.value)
       ?.map(key =>
@@ -96,5 +92,13 @@ export class MapSearchComponent implements OnInit {
       });
   }
 
+  private queryParamsToForm() {
+    if (this._search()) {
+      this.form.get('searchTerm')?.setValue(this._search(), { emitEvent: true });
+    }
+    if (this._tags()) {
+      this.form.get('tags')?.setValue(this._tags().split(this.SEPARATOR), { emitEvent: true });
+    }
+  }
 
 }

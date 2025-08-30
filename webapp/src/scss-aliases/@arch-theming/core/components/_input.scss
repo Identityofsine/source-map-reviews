@@ -1,6 +1,7 @@
 @use '../globals/variables' as pli;
 
 $input-height: 53px;
+$textarea-height: 120px;
 
 label.pli-input {}
 
@@ -26,6 +27,52 @@ input[type="search"] {
   background-color: pli.$gray-900;
 
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:focus {
+    border-color: pli.$blue-500;
+    border-width: 2px;
+    outline: none;
+  }
+
+  &:active {
+    border-color: pli.$gray-400;
+  }
+
+  &::placeholder {
+    font-weight: 300 !important;
+    color: pli.$gray-375;
+  }
+
+}
+
+textarea {
+  width: 100%;
+  height: $textarea-height;
+  box-sizing: border-box;
+  box-shadow: pli.$light-shadow-500;
+  font-size: .95rem;
+  font-weight: 400;
+  font-family: pli.$font-family-base;
+  padding: 8px 12px;
+  resize: none;
+
+  color: pli.$gray-100 !important;
+
+  border: 1px solid pli.$gray-750;
+  border-radius: 4px;
+  background-color: pli.$gray-900;
+
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &[disabled] {
+    &:focus {}
+
+    &:active {
+      border-color: transparent;
+      border-width: 1px;
+      outline: inherit
+    }
+  }
 
   &:focus {
     border-color: pli.$blue-500;

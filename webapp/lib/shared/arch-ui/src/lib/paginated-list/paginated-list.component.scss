@@ -17,6 +17,13 @@
     align-items: stretch;
     gap: 24px 16px;
   }
+
+  &.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
 }
 
 .no-items-message {
@@ -27,4 +34,4 @@
   background-color: $gray-100;
   border-radius: $border-radius;
   border: $border-width solid $gray-300;
-} 
+}

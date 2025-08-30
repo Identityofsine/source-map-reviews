@@ -3,6 +3,9 @@ version: '3'
 services:
   api:
     container_name: fofx-de_archive-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.local
     environment:
       - GO_ENV=development
       - URI=http://localhost:3030/

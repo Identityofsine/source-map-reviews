@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, ViewContainerRef } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
 import { MapReview } from '@arch-shared/types';
 import { AddButtonComponent } from '../lib-add-button/lib-add-button.component';
 import { AuthService } from '@arch-shared/auth';
 import { MapReviewComponent } from './lib-map-review/lib-map-review.component';
+import { MapReviewDetailsComponent } from './lib-map-review-details/lib-map-review-details.component';
+import { MapReviewDetailsFormService } from './lib-map-review-details/lib-map-review-details-form.service';
+import { ArchTextAreaComponent } from 'lib/shared/arch-ui/src/lib/text-area/text-area.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,13 +17,15 @@ import { MapReviewComponent } from './lib-map-review/lib-map-review.component';
     ArchContainer,
     MapReviewComponent,
     AddButtonComponent,
-  ],
+  ]
 })
 export class MapReviewsComponent {
 
   readonly authService = inject(AuthService);
+  readonly viewContainer = inject(ViewContainerRef);
 
   readonly reviews = input<MapReview[]>();
+  readonly mapName = input<string>();
   readonly onReviewClick = output<MapReview>();
 
   readonly isEmpty = computed(() => {
@@ -28,5 +33,19 @@ export class MapReviewsComponent {
   })
 
   readonly shouldShow = this.authService.isAuthenticatedSignal;
+
+
+  onAddClick() {
+    const containerRef = this.viewContainer.createComponent(MapReviewDetailsComponent)
+    containerRef.setInput('review', undefined);
+    containerRef.setInput('mapName', this.mapName()); // Set the map name if needed
+  }
+
+  onReviewClickHandler(review: MapReview) {
+    this.onReviewClick.emit(review);
+    const containerRef = this.viewContainer.createComponent(MapReviewDetailsComponent);
+    containerRef.setInput('review', review);
+    containerRef.setInput('mapName', this.mapName());
+  }
 
 }

@@ -7,6 +7,7 @@
       [itemsPerPage]="12"
       [showPageInput]="true"
       [showPageInfo]="true"
+      [loading]="search.isLoading()"
       layout="grid"
       [gridColumns]="'repeat(auto-fill, minmax(280px, 1fr))'">
       <ng-template #itemTemplate let-map>

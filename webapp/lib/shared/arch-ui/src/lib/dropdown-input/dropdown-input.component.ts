@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, forwardRef, input, signal, computed
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DropdownSelectedItemComponent } from '../dropdown-selected-item/dropdown-selected-item.component';
+import { EmptyResultComponent } from '../empty-result/empty-result.component';
 
 export interface DropdownItem {
   key: string;
@@ -60,10 +61,7 @@ export interface DropdownItem {
       <!-- Dropdown menu -->
       @if (showDropdown()) {
         <div class="dropdown-menu">
-          @if (filteredItems().length === 0 && !freeRange()) {
-            <div class="dropdown-no-items">No items available</div>
-          }
-
+         <arch-empty-result [items]="filteredItems()" />
           @for (item of filteredItems(); track item.key) {
             <div
               class="dropdown-item"
@@ -87,7 +85,10 @@ export interface DropdownItem {
     </div>
   `,
   styleUrls: ['./dropdown-input.component.scss'],
-  imports: [DropdownSelectedItemComponent],
+  imports: [
+    DropdownSelectedItemComponent,
+    EmptyResultComponent
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -173,7 +174,7 @@ export class ArchDropdownInputComponent implements ControlValueAccessor {
   onInput(event: Event): void {
     // Don't allow input in single select mode (readonly handles this, but double-check)
     if (this.singleSelect()) return;
-    
+
     const inputElement = event.target as HTMLInputElement;
     this.currentInput.set(inputElement.value);
     this.showDropdown.set(true);

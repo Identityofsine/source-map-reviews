@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavComponent } from './nav/nav.component';
+import { CurrentUserService } from 'lib/shared/auth/src/lib/current-user.service';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,13 @@ import { NavComponent } from './nav/nav.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+
+  readonly currentUserService = inject(CurrentUserService);
+
   title = 'webapp';
+
+  constructor() {
+    //load current user on app init
+    this.currentUserService.currentUser();
+  }
 }

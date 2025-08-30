@@ -1,0 +1,23 @@
+<arch-modal
+ [open]="true">
+
+  <div modal-title>
+    <h2>
+      @if (review()) {
+      shm^xy's Review
+      } @else {
+      Add Review
+      }
+    </h2>
+  </div>
+  <div modal-body>
+    <form [formGroup]="form">
+
+      <arch-text-area
+       formControlName="review"
+       [placeholder]="review() ? '' : 'Write your review'"
+       [readOnly]="!!review()"></arch-text-area>
+    </form>
+  </div>
+
+</arch-modal>

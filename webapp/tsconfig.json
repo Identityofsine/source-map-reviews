@@ -31,6 +31,9 @@
       ],
       "@shared/types": [
         "./lib/shared/types"
+      ],
+      "@shared/util": [
+        "./dist/shared/util"
       ]
     },
     "outDir": "./dist/out-tsc",

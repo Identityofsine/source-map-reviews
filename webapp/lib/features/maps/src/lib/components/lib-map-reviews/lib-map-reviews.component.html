@@ -18,13 +18,14 @@
       @for (review of reviews(); track review.mapReviewId) {
         <lib-map-review
           [review]="review"
-          (onReviewClick)="onReviewClick.emit($event)"
+          (onReviewClick)="onReviewClickHandler($event)"
         />
       }
     }
     <div class="map-reviews__absolute_add">
     <lib-add-button
       [shouldShow]="shouldShow()"
+      (click)="onAddClick()"
     >
     </lib-add-button>
   </div>
