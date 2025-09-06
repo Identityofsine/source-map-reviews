@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { AuthService } from "./auth.service";
-import { map, switchMap } from "rxjs";
+import { catchError, map, switchMap } from "rxjs";
 import { UserService } from "@arch-shared/data-source";
 import { awakeColdObservable } from "@arch-shared/util";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -17,6 +17,7 @@ export class CurrentUserService {
     switchMap(
       awakeColdObservable(this.userService.me.bind(this.userService))
     ),
+    catchError(() => [null]), // In case of error, return null (not authenticated)
     map(user => user || null) // Ensure we return null if user is not authenticated
   )
 

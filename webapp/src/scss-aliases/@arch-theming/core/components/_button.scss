@@ -8,7 +8,7 @@ button {
 
 // Example button styles using the theming system
 .btn {
-  padding: 7.5px map-get($spacers, 5);
+  padding: 4px map-get($spacers, 10);
   border: $border-width solid transparent;
   border-radius: $border-radius;
   font-size: $font-size-base;
@@ -21,13 +21,42 @@ button {
   transition: all 0.15s ease-in-out;
 
   &.btn-primary {
-    @include button-variant($white, $primary-color, $primary-color);
+    @include button-variant($black,
+      $white,
+      transparent,
+      1,
+      1,
+      $gray-700,
+      $gray-800,
+      transparent);
   }
 
   &.btn-secondary {
-    @include button-variant($white, transparent, $primary-color, 1.5px);
+    @include button-variant($white,
+      transparent,
+      $white,
+      1.5px,
+      1,
+      $gray-800,
+      transparent,
+      $gray-800 );
     font-weight: 400;
     color: $gray-800;
+  }
+
+  &.btn-danger {
+    @include button-variant($white, $red-500, transparent);
+  }
+
+  &.btn-confirm {
+    @include button-variant($white,
+      $blue-550,
+      transparent,
+      0px,
+      1,
+      $gray-700,
+      $gray-800,
+      transparent);
   }
 }
 

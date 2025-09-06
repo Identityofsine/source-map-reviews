@@ -17,6 +17,12 @@ export class ReviewsService {
     );
   }
 
+  saveReview(review: MapReview): Observable<MapReview> {
+    return this.http.post<MapReviewApi>(`${this.API_URL}/`, review).pipe(
+      map(r => this.populateReviewFromBackend(r))
+    );
+  }
+
   private populateReviewFromBackend(review: MapReviewApi): MapReview {
     return {
       ...review,

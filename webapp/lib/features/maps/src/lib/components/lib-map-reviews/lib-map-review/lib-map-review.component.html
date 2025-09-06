@@ -20,4 +20,15 @@
       {{ review().review }}
     </p>
   </div>
+  <div class="map-review__footer">
+    <button
+     class="wrapper"
+     (click)="$event.stopPropagation(); onReviewExpand.emit(review())">
+      <span class="map-review__likes">
+        See More
+      </span>
+      <arch-icon
+       src="/ui/right-chevron.svg" />
+    </button>
+  </div>
 </button>

@@ -1,0 +1,37 @@
+@use '@arch-theming/core' as pli;
+
+.map-review-input {
+  max-width: 300px;
+  width: 100%;
+  border: 1px solid pli.$gray-750;
+  border-radius: 4px;
+
+  .content {
+    padding: 12px;
+
+    h4 {
+      font-size: 18px !important;
+      font-weight: 500;
+      color: pli.$gray-700;
+      margin: 0;
+    }
+
+
+    .stars {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+
+      &__star {
+        font-size: 26px;
+        margin: 8px 0;
+
+        &.active {
+          --background-color: #{pli.$yellow-500};
+        }
+      }
+    }
+
+  }
+
+}

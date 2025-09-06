@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { MapReviewsComponent } from "../lib-map-reviews.component";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { MapImage, MapReview } from "@arch-shared/types";
 
 @Injectable({
@@ -12,9 +12,9 @@ export class MapReviewDetailsFormService {
 
   readonly form = this.fb.group({
     userId: [0],
-    mapName: [''],
-    review: [''],
-    stars: [0],
+    mapName: ['', [Validators.required]],
+    review: ['', [Validators.required]],
+    stars: [0, [Validators.required, Validators.min(1), Validators.max(5)]],
     images: [[] as MapImage[]],
   })
 
@@ -29,7 +29,6 @@ export class MapReviewDetailsFormService {
   }
 
   public populateFormWithEmptyReview(userId: number, mapName: string) {
-    console.log('Populating form with empty review', userId, mapName);
     this.form.patchValue({
       userId: userId,
       mapName: mapName,

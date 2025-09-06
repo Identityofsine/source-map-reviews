@@ -44,7 +44,13 @@ export class MapsComponent {
   readonly mapImages = computed(() => this.reviews()?.filter(review => review.images) ?? []);
 
   protected onReviewClick(review: MapReview): void {
-    this.currentReview.set(review);
+    if (review.images && review.images.length > 0) {
+      this.currentReview.set(review);
+    }
+  }
+
+  public reloadReviews(): void {
+    this._reviews.reload();
   }
 
 }

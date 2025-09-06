@@ -35,6 +35,13 @@
     }
   }
 
+  &__text {
+    max-height: 32px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
   &__subtitle {
     font-size: 0.7500rem;
     margin: 0;
@@ -52,6 +59,28 @@
     p {
       margin: 0;
       color: arch.$gray-400;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+
+
+    .wrapper {
+      display: flex;
+      gap: 8px;
+      --color: #{arch.$gray-600};
+      --background-color: var(--color);
+      color: var(--color);
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        --color: #{arch.$blue-500};
+      }
     }
   }
 }

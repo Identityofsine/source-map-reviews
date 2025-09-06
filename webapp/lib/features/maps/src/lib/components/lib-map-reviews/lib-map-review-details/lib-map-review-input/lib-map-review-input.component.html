@@ -1,0 +1,19 @@
+<div class="map-review-input">
+  <div class="content">
+    <h4>Rate Map:</h4>
+    <div class="stars">
+
+      @for (star of stars(); track star.idx) {
+      <button
+       class="stars__star"
+       [class.active]="star.status === 'star'"
+       (click)="setStars(star.idx + 1)">
+        <arch-icon
+         [class]="star.status === 'star' ? 'active' : ''"
+         src="/ui/star.svg" />
+      </button>
+      }
+
+    </div>
+  </div>
+</div>

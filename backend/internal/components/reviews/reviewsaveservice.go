@@ -53,9 +53,11 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 			return nil, routeexception.NewRouteError(dbErr, "Failed to check for existing review", "check-review-failed", dbErr.Code)
 		}
 
+		// fork to update if found
 		if existingReview != nil {
-			return nil, routeexception.NewRouteError(nil, "You already have a review for this map. Use update instead.", "review-already-exists", exception.CODE_BAD_REQUEST)
+			return UpdateReview(existingReview.MapReviewId, review, cookies)
 		}
+
 	}
 
 	// Map to database model and save

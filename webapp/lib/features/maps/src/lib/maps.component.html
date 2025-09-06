@@ -12,6 +12,7 @@
     <lib-map-reviews
     [mapName]="id()"
     [reviews]="reviews()"
+    (shouldReloadReviews)="reloadReviews()"
     (onReviewClick)="onReviewClick($event)"
     ></lib-map-reviews>
   </div>

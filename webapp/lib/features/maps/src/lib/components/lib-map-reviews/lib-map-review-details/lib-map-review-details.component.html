@@ -10,14 +10,30 @@
       }
     </h2>
   </div>
-  <div modal-body>
+  <div modal-body class="map-review-details">
     <form [formGroup]="form">
-
-      <arch-text-area
-       formControlName="review"
-       [placeholder]="review() ? '' : 'Write your review'"
-       [readOnly]="!!review()"></arch-text-area>
+      <div class="map-review-details__areatext">
+        <arch-text-area
+         class="review-text"
+         formControlName="review"
+         [placeholder]="review() ? '' : 'Write your review'"
+         [readOnly]="!isEditing()"></arch-text-area>
+      </div>
+      <lib-map-review-input
+        formControlName="stars"
+        [readOnly]="!isEditing()"></lib-map-review-input>
     </form>
+    <div class="map-review-button-row">
+    @if (!isReadOnly()) {
+      <button
+        class="map-review-details__submit btn btn-confirm"
+        (click)="onSubmit()"
+        [disabled]="form.invalid">
+          Save
+      </button>
+    }
+    </div>
+
   </div>
 
 </arch-modal>

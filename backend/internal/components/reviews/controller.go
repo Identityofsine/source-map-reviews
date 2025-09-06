@@ -26,6 +26,7 @@ func GetMapReviews(c *gin.Context) {
 
 }
 
+// POST /api/v1/reviews
 func SaveMapReview(c *gin.Context) {
 	var review MapReview
 	if err := c.ShouldBindJSON(&review); err != nil {

@@ -1,0 +1,9 @@
+.review-text {
+  textarea {
+    height: 100% !important;
+
+    &:disabled {
+      line-height: 1.5 !important;
+    }
+  }
+}
