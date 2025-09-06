@@ -3,3 +3,4 @@
  */
 
 export * from './lib/active-cold-observable.util';
+export * from './lib/username.pipe'

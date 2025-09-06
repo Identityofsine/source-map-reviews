@@ -20,6 +20,13 @@ export class UserService {
     return this.http.get<User>(`${this.API_URL}/me`)
   }
 
+  public getUsername(userId: number): Observable<string> {
+    return this.http.get<User>(`${this.API_URL}/${userId}`).pipe(
+      map(user => user?.details?.firstName || 'Unknown')
+    );
+  }
+
+
   // Special method for initial validation that bypasses auth interceptor
   public validateInitial(token: string): Observable<User> {
     return this.http.get<User>(`${this.API_URL}/me`, {

@@ -2,6 +2,7 @@
   &__list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
     padding: 32px;
     width: 100%;

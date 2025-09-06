@@ -35,6 +35,16 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 
 	review.ReviewerID = currentUser.ID
 
+	// This is a new review - check if user already has a review for this map
+	existingReview, dbErr := repository.GetMapReviewDBByMapNameAndReviewer(review.MapName, currentUser.ID)
+	if dbErr != nil {
+		return nil, routeexception.NewRouteError(dbErr, "Failed to check for existing review", "check-review-failed", dbErr.Code)
+	}
+
+	if existingReview != nil && review.MapReviewID == 0 {
+		review.MapReviewID = existingReview.MapReviewId // Set the ID to update
+	}
+
 	// Check if this is an update or insert
 	if review.MapReviewID != 0 {
 		// This is an update - verify the user owns this review
@@ -47,17 +57,10 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 			return nil, routeexception.NewRouteError(nil, "Cannot update review that doesn't belong to you", "unauthorized-update", exception.CODE_UNAUTHORIZED)
 		}
 	} else {
-		// This is a new review - check if user already has a review for this map
-		existingReview, dbErr := repository.GetMapReviewDBByMapNameAndReviewer(review.MapName, currentUser.ID)
-		if dbErr != nil {
-			return nil, routeexception.NewRouteError(dbErr, "Failed to check for existing review", "check-review-failed", dbErr.Code)
-		}
-
 		// fork to update if found
 		if existingReview != nil {
 			return UpdateReview(existingReview.MapReviewId, review, cookies)
 		}
-
 	}
 
 	// Map to database model and save

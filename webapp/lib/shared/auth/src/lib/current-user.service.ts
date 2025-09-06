@@ -17,7 +17,7 @@ export class CurrentUserService {
     switchMap(
       awakeColdObservable(this.userService.me.bind(this.userService))
     ),
-    catchError(() => [null]), // In case of error, return null (not authenticated)
+    catchError((): [null] => [null]), // In case of error, return null (not authenticated)
     map(user => user || null) // Ensure we return null if user is not authenticated
   )
 

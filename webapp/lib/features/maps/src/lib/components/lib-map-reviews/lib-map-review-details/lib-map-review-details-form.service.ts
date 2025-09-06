@@ -11,6 +11,7 @@ export class MapReviewDetailsFormService {
   readonly fb = inject(FormBuilder);
 
   readonly form = this.fb.group({
+    mapReviewId: [0],
     userId: [0],
     mapName: ['', [Validators.required]],
     review: ['', [Validators.required]],
@@ -20,6 +21,7 @@ export class MapReviewDetailsFormService {
 
   public populateFormWithMapReview(review: MapReview) {
     this.form.patchValue({
+      mapReviewId: review.mapReviewId,
       userId: review.userId,
       mapName: review.mapName,
       review: review.review,
