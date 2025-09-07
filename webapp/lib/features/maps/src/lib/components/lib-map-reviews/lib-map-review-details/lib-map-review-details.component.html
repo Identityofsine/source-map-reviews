@@ -4,7 +4,7 @@
   <div modal-title>
     <h2>
       @if (review()) {
-      shm^xy's Review
+      {{review().userId | username}}'s Review
       } @else {
       Add Review
       }

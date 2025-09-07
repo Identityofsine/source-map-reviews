@@ -4,7 +4,7 @@
     <div class="map-gallery-review__title">
       <p class="review-by">Image from Review</p>
       <div class="reviewer-name">
-        <span class="reviewer-name__text">shm^xy</span>
+        <span class="reviewer-name__text">{{review().userId | username}}</span>
         <span class="reviewer-name__date">{{review().updatedAt | date}}</span>
       </div>
     </div>

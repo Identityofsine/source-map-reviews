@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/identityofsine/fofx-go-gin-api-template/internal/constants/exception"
+	"github.com/identityofsine/fofx-go-gin-api-template/internal/types/routeexception"
 	"github.com/identityofsine/fofx-go-gin-api-template/pkg/cookies"
 )
 
@@ -46,11 +47,21 @@ func GetUserNameById(c *gin.Context) {
 
 	if user.Details != nil {
 		if user.Details.FirstName == "" {
-			c.JSON(404, "User has no first name set")
+			c.JSON(404, routeexception.NewRouteError(
+				nil,
+				"User has no details set",
+				"user-has-no-details",
+				exception.CODE_RESOURCE_NOT_FOUND,
+			))
 			return
 		}
 	} else {
-		c.JSON(404, "User has no details set")
+		c.JSON(404, routeexception.NewRouteError(
+			nil,
+			"User has no details set",
+			"user-has-no-details",
+			exception.CODE_RESOURCE_NOT_FOUND,
+		))
 		return
 	}
 

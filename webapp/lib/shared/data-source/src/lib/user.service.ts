@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, Injector } from "@angular/core";
 import { User } from "@arch-shared/types";
-import { map, Observable } from "rxjs";
+import { catchError, map, Observable, of } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,10 @@ export class UserService {
 
   public getUsername(userId: number): Observable<string> {
     return this.http.get<User>(`${this.API_URL}/${userId}`).pipe(
+      catchError((err: any) => {
+        // Catch all errors and return null, which will map to 'Unknown'
+        return of(null);
+      }),
       map(user => user?.details?.firstName || 'Unknown')
     );
   }

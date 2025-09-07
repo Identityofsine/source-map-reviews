@@ -1,4 +1,4 @@
-import { inject, Pipe, PipeTransform, OnDestroy } from '@angular/core';
+import { inject, Pipe, PipeTransform, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { UserService } from '@arch-shared/data-source';
 import { Subscription } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 export class UsernamePipe implements PipeTransform, OnDestroy {
 
   private readonly userService = inject(UserService);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly usernameCache = new Map<number, string>();
   private readonly subscriptions = new Map<number, Subscription>();
 
@@ -34,10 +35,12 @@ export class UsernamePipe implements PipeTransform, OnDestroy {
       next: (username) => {
         this.usernameCache.set(value, username || 'Unknown');
         this.subscriptions.delete(value);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.usernameCache.set(value, 'Unknown');
         this.subscriptions.delete(value);
+        this.cdr.markForCheck();
       }
     });
     

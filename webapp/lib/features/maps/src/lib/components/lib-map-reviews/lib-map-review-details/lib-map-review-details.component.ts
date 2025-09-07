@@ -9,6 +9,7 @@ import { MapReviewInputComponent } from './lib-map-review-input/lib-map-review-i
 import { ReviewsService } from 'lib/shared/data-source/src/lib/reviews.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { map, tap } from 'rxjs';
+import { UsernamePipe } from '@arch-shared/util';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +20,7 @@ import { map, tap } from 'rxjs';
     ReactiveFormsModule,
     ArchModalComponent,
     ArchTextAreaComponent,
+    UsernamePipe,
     MapReviewInputComponent
   ],
 })

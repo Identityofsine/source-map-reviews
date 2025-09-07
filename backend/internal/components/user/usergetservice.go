@@ -25,7 +25,7 @@ func GetUserByUserId(userId int64, fullDetails bool) (*User, routeexception.Rout
 		user = dbmapper.MapDbFields[UserDB, User](*userDb)
 	}
 
-	userDetailsDb, derr := GetUserDetailsByUserId(userId)
+	UserDetailDb, derr := GetUserDetailByUserId(userId)
 	if derr != nil {
 		if derr.Code == exception.CODE_RESOURCE_NOT_FOUND {
 			// No details found, but user exists - this is acceptable
@@ -36,15 +36,15 @@ func GetUserByUserId(userId int64, fullDetails bool) (*User, routeexception.Rout
 		}
 	}
 
-	userDetails := dbmapper.MapDbFields[UserDetailsDB, UserDetails](*userDetailsDb)
+	UserDetail := dbmapper.MapDbFields[UserDetailDB, UserDetails](*UserDetailDb)
 
 	if !fullDetails {
-		userDetails.Email = ""
-		userDetails.DateOfBirth = time.Now()
-		userDetails.LastName = ""
+		UserDetail.Email = ""
+		UserDetail.DateOfBirth = time.Now()
+		UserDetail.LastName = ""
 	}
 
-	user.Details = userDetails
+	user.Details = UserDetail
 
 	return user, nil
 
