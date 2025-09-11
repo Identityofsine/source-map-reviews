@@ -1,10 +1,27 @@
 @use '@arch-theming/core' as arch;
 
 .map-review-images-input {
+  position: relative;
   width: 512px;
   height: 183px;
   min-width: 256px;
   max-width: 512px;
   border: 1px solid arch.$gray-750;
   border-radius: 5px;
+}
+
+.empty-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  user-select: none;
+}
+
+.map-review-images-input__absolute_add {
+  position: absolute;
+  top: 0;
+  transform: translateY(-50%);
+  right: 32px;
 }

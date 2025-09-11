@@ -1,4 +1,15 @@
 <div class="map-review-images-input">
   <div class="map-review-images-input__images">
+    @if (images().length <= 0) {
+     <p class="empty-text">
+      No images added.
+      </p>
+      } @else {
+      }
+  </div>
+  <div class="map-review-images-input__absolute_add">
+    <lib-add-button
+     [shouldShow]="true">
+    </lib-add-button>
   </div>
 </div>
