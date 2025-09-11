@@ -19,9 +19,12 @@
          [placeholder]="review() ? '' : 'Write your review'"
          [readOnly]="!isEditing()"></arch-text-area>
       </div>
-      <lib-map-review-input
-        formControlName="stars"
-        [readOnly]="!isEditing()"></lib-map-review-input>
+      <div class="map-review-details__reviewimage">
+        <lib-map-review-input
+          formControlName="stars"
+          [readOnly]="!isEditing()"></lib-map-review-input>
+        <lib-map-review-images-input></lib-map-review-images-input>
+      </div>
     </form>
     <div class="map-review-button-row">
     @if (!isReadOnly()) {

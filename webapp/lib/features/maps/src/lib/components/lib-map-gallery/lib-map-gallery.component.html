@@ -23,7 +23,9 @@
       </p>
       @if (canAddImage()) {
         <button
-         class="map-gallery__add-image">
+         class="map-gallery__add-image"
+         (click)="openAddImage()"
+         >
           Add Image
         </button>
       }

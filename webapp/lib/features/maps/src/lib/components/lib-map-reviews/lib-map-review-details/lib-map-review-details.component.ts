@@ -10,6 +10,7 @@ import { ReviewsService } from 'lib/shared/data-source/src/lib/reviews.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { map, tap } from 'rxjs';
 import { UsernamePipe } from '@arch-shared/util';
+import { MapReviewImagesInputComponent } from './lib-map-review-images-input/lib-map-review-images-input.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,7 +22,8 @@ import { UsernamePipe } from '@arch-shared/util';
     ArchModalComponent,
     ArchTextAreaComponent,
     UsernamePipe,
-    MapReviewInputComponent
+    MapReviewInputComponent,
+    MapReviewImagesInputComponent,
   ],
 })
 export class MapReviewDetailsComponent {

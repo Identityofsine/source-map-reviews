@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, Injector } from "@angular/core";
 import { User } from "@arch-shared/types";
-import { catchError, map, Observable, of } from "rxjs";
+import { catchError, map, Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,12 @@ export class UserService {
 
   public getUsername(userId: number): Observable<string> {
     return this.http.get<User>(`${this.API_URL}/${userId}`).pipe(
-      catchError((err: any) => {
-        // Catch all errors and return null, which will map to 'Unknown'
-        return of(null);
+      catchError((err: any): Promise<Error> | Promise<any> => {
+        // only catch 404 errors, rethrow others
+        if (err.status === 404) {
+          return Promise.resolve([null]);
+        }
+        return Promise.reject(err);
       }),
       map(user => user?.details?.firstName || 'Unknown')
     );

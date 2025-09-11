@@ -1,0 +1,14 @@
+@use '@arch-theming/core' as arch;
+
+.map-review-images-input-thumbnail {
+  width: 207px;
+  height: 159px;
+  border-radius: 9px;
+  border: 1px solid arch.$blue-950;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

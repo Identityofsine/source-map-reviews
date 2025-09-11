@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, ViewContainerRef } from '@angular/core';
 import { ArchContainer } from '@arch-shared/arch-ui';
 import { MapImage, MapReview } from '@arch-shared/types';
 import { MapGalleryReviewComponent } from './lib-map-gallery-review/lib-map-gallery-review.component';
@@ -6,6 +6,7 @@ import { AuthService } from '@arch-shared/auth';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
+import { MapImageDetailsComponent } from '../lib-map-image-details/lib-map-image-details.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +22,7 @@ export class MapGalleryComponent {
 
   readonly http = inject(HttpClient);
   readonly externAuthService = inject(AuthService);
+  readonly containerRef = inject(ViewContainerRef);
 
   readonly selectedReview = input<MapReview | null>(null);
 
@@ -53,7 +55,6 @@ export class MapGalleryComponent {
 
     return reviewImages;
   });
-
 
   readonly isEmpty = computed(() => {
     return (this.allImages() ?? []).length <= 0;
@@ -114,6 +115,22 @@ export class MapGalleryComponent {
           }
         });
     })
+  }
+
+  public openAddImage() {
+    const view = this.containerRef.createComponent(MapImageDetailsComponent);
+    //view.setInput();
+    view.instance.shouldReloadImage.subscribe((res) => {
+      if (res) {
+        this.reloadImages();
+      }
+      view.destroy();
+    });
+  }
+
+  public reloadImages() {
+    const mapImages = this.imagesFromMapImages();
+    this.allImages$.next(mapImages);
   }
 
 

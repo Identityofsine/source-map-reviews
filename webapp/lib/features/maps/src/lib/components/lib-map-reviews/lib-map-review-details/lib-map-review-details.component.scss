@@ -7,6 +7,14 @@
 
   }
 
+
+  .map-review-details__reviewimage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 16px;
+
+  }
+
   .map-review-button-row {
     display: flex;
     justify-content: flex-end;
