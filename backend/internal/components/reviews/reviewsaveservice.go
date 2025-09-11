@@ -41,8 +41,8 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 		return nil, routeexception.NewRouteError(dbErr, "Failed to check for existing review", "check-review-failed", dbErr.Code)
 	}
 
-	if existingReview != nil && review.MapReviewID == 0 {
-		review.MapReviewID = existingReview.MapReviewId // Set the ID to update
+	if existingReview != nil {
+		return UpdateReview(existingReview.MapReviewId, &review, cookies)
 	}
 
 	// Check if this is an update or insert
@@ -55,11 +55,6 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 
 		if existingReview.ReviewerId != currentUser.ID {
 			return nil, routeexception.NewRouteError(nil, "Cannot update review that doesn't belong to you", "unauthorized-update", exception.CODE_UNAUTHORIZED)
-		}
-	} else {
-		// fork to update if found
-		if existingReview != nil {
-			return UpdateReview(existingReview.MapReviewId, review, cookies)
 		}
 	}
 
@@ -90,7 +85,7 @@ func SaveReview(review MapReview, cookies cookies.Cookies) (*MapReview, routeexc
 }
 
 // UpdateReview specifically handles updating an existing review
-func UpdateReview(reviewId int64, review MapReview, cookies cookies.Cookies) (*MapReview, routeexception.RouteError) {
+func UpdateReview(reviewId int64, review *MapReview, cookies cookies.Cookies) (*MapReview, routeexception.RouteError) {
 	currentUser, err := user.GetUserByCookies(&cookies)
 	if err != nil || currentUser == nil {
 		return nil, exception.BadRequest
@@ -117,7 +112,7 @@ func UpdateReview(reviewId int64, review MapReview, cookies cookies.Cookies) (*M
 	}
 
 	// Map to database model and save
-	mapped := dbmapper.MapDbFields[MapReview, repository.MapReviewDB](review)
+	mapped := dbmapper.MapDbFields[MapReview, repository.MapReviewDB](*review)
 	savedReview, dbErr := repository.SaveMapReviewDB(*mapped)
 	if dbErr != nil {
 		return nil, routeexception.NewRouteError(dbErr, "Failed to update review", "update-review-failed", dbErr.Code)
