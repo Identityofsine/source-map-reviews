@@ -11,3 +11,12 @@ export interface MapImage {
   imageId?: number;
   image?: Image;
 }
+
+export interface UploadImageResponse {
+  images: Image[];
+}
+
+export interface ImageForm {
+  json: string;
+  files: File[];
+}

@@ -5,11 +5,18 @@
       No images added.
       </p>
       } @else {
+      <div class="map-review-images-input__images-list">
+        @for (image of images(); track image.mapImageId) {
+        <lib-map-review-images-input-thumbnail
+         [mapImage]="image" />
+        }
+      </div>
       }
   </div>
   <div class="map-review-images-input__absolute_add">
     <lib-add-button
-     [shouldShow]="true">
+     [shouldShow]="true"
+     (click)="openAddImage()">
     </lib-add-button>
   </div>
 </div>

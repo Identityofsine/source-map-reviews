@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, ViewContainerRef } from '@angular/core';
 import { MapReviewImagesInputThumbnail } from './components/lib-map-review-images-input-image-thumbnail.component';
 import { AddButtonComponent } from '../../../lib-add-button/lib-add-button.component';
 import { MapImage } from '@arch-shared/types';
+import { MapImageDetailsComponent } from '../../../lib-map-image-details/lib-map-image-details.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,7 +12,10 @@ import { MapImage } from '@arch-shared/types';
   imports: [MapReviewImagesInputThumbnail, AddButtonComponent],
 })
 export class MapReviewImagesInputComponent {
+
+  readonly containerRef = inject(ViewContainerRef);
   readonly images = input<MapImage[]>([]);
+  readonly imageAdded = output<MapImage>();
 
 
   public openAddImage() {
@@ -19,7 +23,7 @@ export class MapReviewImagesInputComponent {
     //view.setInput();
     view.instance.shouldReloadImage.subscribe((res) => {
       if (res) {
-        this.reloadImages();
+        this.imageAdded.emit(res);
       }
       view.destroy();
     });

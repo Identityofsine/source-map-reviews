@@ -1,0 +1,19 @@
+@if (multiple()) {
+<input
+ type="file"
+ multiple
+ (change)="onFileSelected($event)"
+ style="display: none;" #input />
+<button class="btn btn-secondary" (click)="
+  input.click()
+  ">Upload File</button>
+} @else {
+<input
+ id="fileInput"
+ type="file"
+ (change)="onFileSelected($event)"
+ style="display: none;" #input />
+<button class="btn btn-secondary" (click)="
+  input.click()
+  ">Upload File</button>
+}

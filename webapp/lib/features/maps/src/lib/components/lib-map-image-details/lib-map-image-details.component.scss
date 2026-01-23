@@ -1,3 +1,61 @@
+@use '@arch-theming/core' as arch;
+
 :host {
   display: none;
+}
+
+.image-body-title {
+  h4 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    color: arch.$gray-650;
+  }
+
+}
+
+.add-screenshot {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.upload-image-container {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
+  align-items: center;
+  justify-content: center;
+  margin-top: 54px;
+
+
+  .upload-image {
+
+    span {
+      font-weight: 500 !important;
+    }
+  }
+
+  .upload-image-allowed-types {
+    font-size: 12px;
+    margin-top: 8px;
+    color: arch.$gray-650;
+    text-align: center;
+  }
+}
+
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 8px;
+}
+
+.upload-image-text {
+  margin-top: 16px;
+  color: arch.$gray-500;
 }

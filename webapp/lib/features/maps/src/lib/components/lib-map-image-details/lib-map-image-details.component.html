@@ -6,5 +6,48 @@
       Add Image
     </h2>
   </div>
+  <div modal-body>
+    <form class="add-image-form" [formGroup]="form">
+      <div class="add-screenshot">
+        <div class="image-body-title">
+          <h4>Add a Screenshot</h4>
+          <p>Drag & drop your image here, or click to browse your files.</p>
+        </div>
+        @if (this.fileName()) {
+        <div class="upload-image-text">
+          <span>Uploaded: {{ this.fileName() }}</span>
+        </div>
+        }
+        <div class="upload-image-container">
+          <file-upload
+           (fileSelected)="fileSelected($event)">
+          </file-upload>
+          <div class="upload-image-allowed-types">
+            <span>Accepted file types: .jpg, .png, .webp<br />Max size: 5MB</span>
+          </div>
+        </div>
+      </div>
+      <div class="add-comments">
+        <arch-text-area
+         label="Comments"
+         formControlName="description"
+         placeholder="Add any comments about this image...">
+        </arch-text-area>
+      </div>
+    </form>
+  </div>
+  <div modal-footer>
+    <div class="action-row">
+      <button
+       class="btn btn-secondary">
+        Cancel
+      </button>
+      <button
+       class="btn btn-confirm"
+       [disabled]="form.invalid">
+        Create
+      </button>
+    </div>
+  </div>
 
 </arch-modal>
