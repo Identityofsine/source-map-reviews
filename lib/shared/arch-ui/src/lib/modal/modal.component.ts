@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, input, linkedSignal, OnInit, output, Signal, TemplateRef, viewChild } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { IconComponent } from '../icon/icon.component';
@@ -32,7 +32,7 @@ import { IconComponent } from '../icon/icon.component';
   </ng-template>
   `,
   styleUrl: './modal.component.scss',
-  imports: [CommonModule, OverlayModule, IconComponent],
+  imports: [OverlayModule, IconComponent],
 })
 export class ArchModalComponent {
 
