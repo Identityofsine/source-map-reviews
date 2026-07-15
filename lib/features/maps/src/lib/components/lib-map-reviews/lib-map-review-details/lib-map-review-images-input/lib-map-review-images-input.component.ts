@@ -23,7 +23,6 @@ export class MapReviewImagesInputComponent {
     //view.setInput();
     view.instance.shouldReloadImage.subscribe((res) => {
       if (res) {
-        this.imageAdded.emit(res);
       }
       view.destroy();
     });

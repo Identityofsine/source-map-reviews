@@ -1,4 +1,4 @@
-import { MapImage } from "./images.interface";
+import { MapImage } from "./gen.types";
 
 interface MapReviewGeneric<D> {
   mapReviewId?: number;
@@ -12,6 +12,4 @@ interface MapReviewGeneric<D> {
 }
 
 export interface MapReviewApi extends MapReviewGeneric<string> { }
-
-export interface MapReview extends MapReviewGeneric<Date> { }
 

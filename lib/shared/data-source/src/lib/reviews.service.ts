@@ -12,22 +12,20 @@ export class ReviewsService {
   readonly API_URL = `/api/reviews`
 
   getReviews(mapName: string): Observable<MapReview[]> {
-    return this.http.get<MapReviewApi[]>(`${this.API_URL}/${mapName}`).pipe(
+    return this.http.get<MapReview[]>(`${this.API_URL}/${mapName}`).pipe(
       map(reviews => reviews.map(review => this.populateReviewFromBackend(review)))
     );
   }
 
   saveReview(review: MapReview): Observable<MapReview> {
-    return this.http.post<MapReviewApi>(`${this.API_URL}/`, review).pipe(
+    return this.http.post<MapReview>(`${this.API_URL}/`, review).pipe(
       map(r => this.populateReviewFromBackend(r))
     );
   }
 
-  private populateReviewFromBackend(review: MapReviewApi): MapReview {
+  private populateReviewFromBackend(review: MapReview): MapReview {
     return {
       ...review,
-      createdAt: new Date(review.createdAt),
-      updatedAt: new Date(review.updatedAt)
     };
   }
 

@@ -21,12 +21,6 @@ export class MapReviewDetailsFormService {
 
   public populateFormWithMapReview(review: MapReview) {
     this.form.patchValue({
-      mapReviewId: review.mapReviewId,
-      userId: review.userId,
-      mapName: review.mapName,
-      review: review.review,
-      stars: review.stars,
-      images: review.images,
     });
   }
 

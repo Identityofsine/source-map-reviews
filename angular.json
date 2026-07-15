@@ -41,7 +41,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/cyan-orange.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
@@ -412,6 +411,58 @@
               "zone.js",
               "zone.js/testing"
             ]
+          }
+        }
+      }
+    },
+    "test": {
+      "projectType": "library",
+      "root": "lib/test",
+      "sourceRoot": "lib/test/src",
+      "prefix": "arch",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/test/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "lib/test/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "lib/test/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "@shared/lookups": {
+      "projectType": "library",
+      "root": "lib/shared/lookups",
+      "sourceRoot": "lib/shared/lookups/src",
+      "prefix": "arch",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/shared/lookups/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "lib/shared/lookups/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "lib/shared/lookups/tsconfig.spec.json"
           }
         }
       }

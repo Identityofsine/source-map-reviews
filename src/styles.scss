@@ -1,4 +1,5 @@
 @use '@arch-theming/core' as arch;
+@import "tailwindcss";
 /* You can add global styles to this file, and also import other style files */
 
 :root {
@@ -41,5 +42,12 @@ p.empty-text {
   color: arch.$gray-675;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

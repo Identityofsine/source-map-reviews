@@ -1,42 +1,44 @@
-import { Component, computed, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Component, computed, effect, inject, untracked } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ArchTextInputComponent, ArchDropdownInputComponent, DropdownItem } from '@arch-shared/arch-ui';
 import { MapSearchFormService } from '../../map-search-form.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MapsService } from '@arch-shared/data-source';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormField } from "@angular/forms/signals";
+import { SelectModule } from "primeng/select";
+import { TagLkApi } from '@arch-shared/types';
 
 @Component({
   selector: 'arch-map-search-query',
   template: `
     <div class="map-search-query" [formGroup]="form">
-      <div class="search-controls">
-        <div class="search-input-group">
-          <arch-text-input
-            formControlName="searchTerm"
-            label="Search Maps"
-            placeholder="Enter map name or description..."
-          />
+      <form>
+        <div class="search-controls items-center">
+          <div class="search-input-group">
+            <input type="text" pInputText [formField]="form.searchTerm" placeholder="Search maps..." />
+          </div>
+          <div class="tags-input-group w-full h-[53px] ">
+            <p-select 
+              [options]="tags()"
+              class="w-full h-full items-center"
+              [formField]="form.tags"
+              optionLabel="tagDescription"
+              optionValue="tagLk"
+              placeholder="Select tags"
+            />
+          </div>
         </div>
-
-        <div class="tags-input-group">
-          <arch-dropdown-input
-            [items]="tagsLks.value()"
-            itemKey="tagLk"
-            itemValue="tagLk"
-            formControlName="tags"
-            label="Tags"
-            placeholder="Select or add tags..."
-            [freeRange]="true"
-          />
-        </div>
-      </div>
+      </form>
     </div>
   `,
   styleUrls: ['./lib-map-search-query.component.scss'],
   imports: [
     ReactiveFormsModule,
-    ArchTextInputComponent,
-    ArchDropdownInputComponent,
+    FormsModule,
+    InputTextModule,
+    FormField,
+    SelectModule,
   ],
   standalone: true,
 })
@@ -46,8 +48,20 @@ export class LibMapSearchQueryComponent {
   readonly form = this.formService.form;
 
   readonly tagsLks = rxResource({
-    loader: () => this.mapsService.getTags(),
+    stream: () => this.mapsService.getTags(),
   });
 
-  readonly tags = computed(() => this.tagsLks.value() ?? []);
+  readonly tags = computed(() => [{
+    tagLk: 'defuse',
+    tagDescription: 'Defuse',
+  }] as TagLkApi[]);
+
+  constructor() {
+    effect(() => {
+      const tags = this.tags();
+      untracked(() => {
+        this.form.tags().value.set(tags.map(tag => tag.tagLk));
+      })
+    })
+  }
 }

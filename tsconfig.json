@@ -4,6 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@arch-feature/*": [
         "./lib/features/*/src"
@@ -28,6 +29,9 @@
       ],
       "@shared/data-source": [
         "./lib/shared/data-source"
+      ],
+      "@shared/lookups": [
+        "./dist/shared/lookups"
       ],
       "@shared/types": [
         "./lib/shared/types"
@@ -57,5 +61,19 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": false
-  }
+  },
+  "references": [
+    {
+      "path": "./lib/test/tsconfig.lib.json"
+    },
+    {
+      "path": "./lib/test/tsconfig.spec.json"
+    },
+    {
+      "path": "./lib/shared/lookups/tsconfig.lib.json"
+    },
+    {
+      "path": "./lib/shared/lookups/tsconfig.spec.json"
+    }
+  ]
 }

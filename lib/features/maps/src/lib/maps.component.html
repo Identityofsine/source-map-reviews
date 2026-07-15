@@ -1,5 +1,6 @@
 <div class="map">
   @if (map()) {
+  @let mapObj = map();
   <lib-map-header
    [mapName]="map().mapName"
    [mapTags]="map().mapTags" />

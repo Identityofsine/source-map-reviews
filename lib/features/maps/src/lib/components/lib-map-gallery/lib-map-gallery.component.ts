@@ -49,7 +49,7 @@ export class MapGalleryComponent {
 
     for (let i = 0; i < allImages.length; i++) {
       const image = allImages[i];
-      const review = mapImages.find(review => review.images.some(img => img.imageId === image.imageId));
+      const review = mapImages.find(review => review.images.some(img => img.mapImageId === image.mapImageId));
       reviewImages.push(review ?? null);
     }
 
@@ -69,7 +69,7 @@ export class MapGalleryComponent {
   })
 
   readonly currentImagePath = computed(() => {
-    return this.currentImage()?.image?.imagePath;
+    return this.currentImage().imagePath;
   });
 
   readonly currentIndex = signal(0);
@@ -82,7 +82,8 @@ export class MapGalleryComponent {
         this.currentIndex.set(0);
         return;
       }
-      const idx = this.allImages()?.findIndex(i => i.mapReviewId === curReview.mapReviewId) ?? 0;
+      //const idx = this.allImages()?.findIndex(i => i.mapReviewId === curReview.mapReviewId) ?? 0;
+      const idx = 0;
       this.currentIndex.set(idx);
     })
 
@@ -102,16 +103,12 @@ export class MapGalleryComponent {
           if (blob.status === 200) {
             const newArray = [
               {
-                image: {
-                  imageId: -1,
-                  imagePath: `/api/images/${mapName}.jpg`,
-                  caption: 'Fetched from gamebanana',
-                },
+                imageId: -1,
+                imagePath: `/api/images/${mapName}.jpg`,
               },
               ...mapImages
-            ]
+            ] as MapImage[];
             this.allImages$.next(newArray);
-            console.log('Fetched images from gamebanana', newArray);
           }
         });
     })

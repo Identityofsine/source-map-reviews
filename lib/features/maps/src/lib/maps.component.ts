@@ -1,10 +1,9 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MapsService } from '@arch-shared/data-source';
+import { MapsService, ReviewsService } from '@arch-shared/data-source';
 import { MapHeaderComponent } from './components/lib-map-header/lib-map-header.component';
 import { MapGalleryComponent } from './components/lib-map-gallery/lib-map-gallery.component';
 import { MapReviewsComponent } from './components/lib-map-reviews/lib-map-reviews.component';
-import { ReviewsService } from 'lib/shared/data-source/src/lib/reviews.service';
 import { MapReview } from '@arch-shared/types';
 
 @Component({
@@ -26,13 +25,13 @@ export class MapsComponent {
   readonly id = input.required<string>();
 
   private readonly _map = rxResource({
-    request: () => ({ id: this.id() }),
-    loader: ({ request }) => this.mapService.getMap(request.id),
+    params: () => ({ id: this.id() }),
+    stream: ({ params }) => this.mapService.getMap(params.id),
   });
 
   private readonly _reviews = rxResource({
-    request: () => ({ id: this.id() }),
-    loader: ({ request }) => this.reviewsService.getReviews(request.id),
+    params: () => ({ id: this.id() }),
+    stream: ({ params }) => this.reviewsService.getReviews(params.id),
   });
 
 

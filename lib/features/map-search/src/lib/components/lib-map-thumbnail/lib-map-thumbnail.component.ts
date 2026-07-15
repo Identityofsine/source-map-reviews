@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MapTagsComponent } from '@arch-feature/maps';
 import { AuthService } from '@arch-shared/auth';
 import { MapSearchFormService } from '../../map-search-form.service';
+import { getShowcaseMapImage } from '@arch-shared/util';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,15 +25,15 @@ export class MapThumbnailComponent {
   readonly map = input<Map>();
 
   readonly mapName = computed(() => {
-    return this.map()?.mapName || '';
+    return this.map()?.name || '';
   });
 
   readonly mapTags = computed(() => {
-    return this.map().mapTags || [];
+    return this.map().tags || [];
   })
 
   readonly mapImage = computed(() => {
-    return this.map()?.thumbnail.imagePath || ''
+    return getShowcaseMapImage(this.map().mapImage)
   })
 
   readonly isAuthenticated = this.authService.isAuthenticatedSignal;
@@ -46,7 +47,7 @@ export class MapThumbnailComponent {
   }
 
   onTagClick(tag: MapTag) {
-    this.formService.form.get('tags')?.setValue(
+    this.formService.form.tags().value.set(
       [tag.tagName]
     )
   }

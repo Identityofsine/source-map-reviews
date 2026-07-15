@@ -4,14 +4,6 @@ export interface Image {
   caption?: string;
 }
 
-export interface MapImage {
-  mapReviewId?: number;
-  mapReviewImageId?: number;
-  mapImageId?: number;
-  imageId?: number;
-  image?: Image;
-}
-
 export interface UploadImageResponse {
   images: Image[];
 }

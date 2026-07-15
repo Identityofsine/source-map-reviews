@@ -1,26 +1,25 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { FormBuilder } from "@angular/forms";
+import { form, } from '@angular/forms/signals';
+
+export type MapSearchForm = {
+  searchTerm: string;
+  tags: string[];
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapSearchFormService {
 
-  readonly fb = inject(FormBuilder);
+  readonly form = form(signal<MapSearchForm>({
+    searchTerm: '',
+    tags: [] as string[],
+  }));
 
-  readonly form = this.fb.group({
-    searchTerm: [''],
-    tags: [[] as string[]]
-  });
+  readonly searchTerm = this.form['searchTerm']
 
-  readonly searchTerm = toSignal(
-    this.form?.get('searchTerm')!.valueChanges
-  );
-
-  readonly tags = toSignal(
-    this.form?.get('tags')!.valueChanges
-  );
+  readonly tags = this.form['tags']
 
 
 
