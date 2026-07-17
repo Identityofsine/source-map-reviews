@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Map, MapApi, MapSearchForm, TagLk } from '../../../types/src';
-import { catchError, from, map, Observable, OperatorFunction, skipUntil, switchMap } from 'rxjs';
+import { catchError, filter, from, map, Observable, OperatorFunction, skipUntil, switchMap, take } from 'rxjs';
 import { LookupCacheService } from './lookups.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -50,15 +50,12 @@ export class MapsService {
   private waitForLookups<T>(): OperatorFunction<T, T> {
     return switchMap((og) => {
       return this.loading$.pipe(
-        skipUntil(this.loading$.pipe(map(loading => !loading))),
-        map(loading => {
-          if (loading) {
-            return null;
-          }
-          return og;
-        })
-      )
-    })
+        skipUntil(this.loading$.pipe(filter(loading => loading === true))),
+        filter(loading => loading === false),
+        take(1),
+        map(() => og)
+      );
+    });
   }
 
   private populateMapFromBackend(map: Map): MapApi {
