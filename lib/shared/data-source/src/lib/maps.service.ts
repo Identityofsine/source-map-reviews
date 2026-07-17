@@ -50,7 +50,6 @@ export class MapsService {
   private waitForLookups<T>(): OperatorFunction<T, T> {
     return switchMap((og) => {
       return this.loading$.pipe(
-        skipUntil(this.loading$.pipe(filter(loading => loading === true))),
         filter(loading => loading === false),
         take(1),
         map(() => og)
