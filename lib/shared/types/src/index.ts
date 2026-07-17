@@ -2,6 +2,7 @@
  * Public API Surface of types
  */
 
+export * from './lib/lookup.types'
 export * from './lib/users.interface'
 export * from './lib/gen.types';
 export * from './lib/maps.interface'

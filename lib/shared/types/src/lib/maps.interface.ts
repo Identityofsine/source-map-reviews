@@ -1,4 +1,6 @@
+import { Map } from "./gen.types";
 import { Image } from "./images.interface";
+import { MapCategoryLk } from "./lookup.types";
 
 export interface MapGeneric<D> {
   mapName?: string;
@@ -36,3 +38,7 @@ export interface TagLkApi extends GenericTagLk<string> {
 
 export interface TagLk extends GenericTagLk<Date> {
 }
+
+export type MapApi = {
+  categories?: MapCategoryLk[];
+} & Omit<Map, 'categories'>

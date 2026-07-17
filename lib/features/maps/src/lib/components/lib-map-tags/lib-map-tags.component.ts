@@ -3,6 +3,7 @@ import { MapTag } from '@arch-shared/types';
 import { MapTagComponent } from '../lib-map-tag/lib-map-tag.component';
 import { AddButtonComponent } from '../lib-add-button/lib-add-button.component';
 import { MapTagsRemainingComponent } from '../lib-map-tag-more/lib-map-tag-more.component';
+import { MapCategoryLk } from 'lib/shared/types/src/lib/lookup.types';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +18,7 @@ import { MapTagsRemainingComponent } from '../lib-map-tag-more/lib-map-tag-more.
 })
 export class MapTagsComponent implements OnDestroy {
 
-  readonly tags = input<MapTag[]>();
+  readonly categories = input<MapCategoryLk[]>();
   readonly shouldShowAddButton = input<boolean>(false);
   readonly tagClick = output<MapTag>();
   readonly remainingTagsClick = output<MapTag[]>();
@@ -25,19 +26,19 @@ export class MapTagsComponent implements OnDestroy {
   readonly container = viewChild<ElementRef<HTMLElement>>('container');
 
   readonly isEmpty = computed(() => {
-    return !this.tags() || this.tags()!.length === 0;
+    return !this.categories() || this.categories()!.length === 0;
   });
 
   readonly visibleTagsCount = signal(0);
-  
+
   readonly visibleTags = computed(() => {
-    const tags = this.tags() || [];
+    const tags = this.categories() || [];
     const count = this.visibleTagsCount();
     return tags.slice(0, count);
   });
 
   readonly remainingTags = computed(() => {
-    const tags = this.tags() || [];
+    const tags = this.categories() || [];
     const count = this.visibleTagsCount();
     return tags.slice(count);
   });
@@ -56,7 +57,7 @@ export class MapTagsComponent implements OnDestroy {
     });
 
     effect(() => {
-      const tags = this.tags();
+      const tags = this.categories();
       if (tags) {
         this.visibleTagsCount.set(tags.length);
         setTimeout(() => this.adjustVisibleTags(), 50);
@@ -83,32 +84,32 @@ export class MapTagsComponent implements OnDestroy {
 
   private async adjustVisibleTags(): Promise<void> {
     const containerEl = this.container()?.nativeElement;
-    const tags = this.tags();
-    
+    const tags = this.categories();
+
     if (!containerEl || !tags?.length || this.isAdjusting) return;
-    
+
     this.isAdjusting = true;
 
     try {
       // Start with all tags
       let count = tags.length;
       this.visibleTagsCount.set(count);
-      
+
       // Wait for initial DOM update
       await this.waitForDOMUpdate();
-      
+
       // If no overflow with all tags, we're done
       if (!this.hasOverflow(containerEl)) {
         return;
       }
-      
+
       // Reduce one by one with proper timing
       while (count > 0 && this.hasOverflow(containerEl)) {
         count--;
         this.visibleTagsCount.set(count);
         await this.waitForDOMUpdate();
       }
-      
+
     } finally {
       this.isAdjusting = false;
     }

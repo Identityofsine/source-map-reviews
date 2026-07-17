@@ -67,10 +67,9 @@ export class MapReviewInputComponent implements ControlValueAccessor, OnInit {
   ngOnInit() {
     this.ngControl = this.injector.get(NgControl);
     if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this;
       this.ngControl.valueChanges?.pipe(
         tap(value => this.value$.next(value || 0)),
-      )
+      ).subscribe();
     }
   }
 

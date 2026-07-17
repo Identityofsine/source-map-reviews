@@ -1,11 +1,7 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { form, } from '@angular/forms/signals';
-
-export type MapSearchForm = {
-  searchTerm: string;
-  tags: string[];
-}
+import { MapSearchForm } from "@arch-shared/types";
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +10,14 @@ export class MapSearchFormService {
 
   readonly form = form(signal<MapSearchForm>({
     searchTerm: '',
-    tags: [] as string[],
+    categories: [] as string[],
+    onlyShowNotReviewed: false,
+    onlyShowReviewed: false,
   }));
 
   readonly searchTerm = this.form['searchTerm']
 
-  readonly tags = this.form['tags']
+  readonly categories = this.form['categories']
 
 
 

@@ -1,8 +1,8 @@
-@if (tag() && tag()?.tagName) {
+@if (category() && category()?.shortDescription) {
 <button
   class="map-thumbnail__item"
   (click)="onTagClick($event)"
 >
-  <span class="map-thumbnail__item-name">{{ tag()?.tagName }}</span>
+  <span class="map-thumbnail__item-name">{{ category()?.shortDescription }}</span>
 </button>
 }

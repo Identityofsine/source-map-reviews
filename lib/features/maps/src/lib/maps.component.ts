@@ -1,6 +1,6 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, resource, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MapsService, ReviewsService } from '@arch-shared/data-source';
+import { LookupCacheService, MapsService } from '@arch-shared/data-source';
 import { MapHeaderComponent } from './components/lib-map-header/lib-map-header.component';
 import { MapGalleryComponent } from './components/lib-map-gallery/lib-map-gallery.component';
 import { MapReviewsComponent } from './components/lib-map-reviews/lib-map-reviews.component';
@@ -18,9 +18,8 @@ import { MapReview } from '@arch-shared/types';
 })
 export class MapsComponent {
 
-  //DI
   readonly mapService = inject(MapsService);
-  readonly reviewsService = inject(ReviewsService);
+  readonly lookupsService = inject(LookupCacheService)
 
   readonly id = input.required<string>();
 
@@ -29,18 +28,19 @@ export class MapsComponent {
     stream: ({ params }) => this.mapService.getMap(params.id),
   });
 
-  private readonly _reviews = rxResource({
-    params: () => ({ id: this.id() }),
-    stream: ({ params }) => this.reviewsService.getReviews(params.id),
-  });
-
+  readonly categoryLks = this.lookupsService.getLookup('mapCategoryByLk');
 
   readonly map = this._map.value;
-  readonly reviews = this._reviews.value;
+  readonly reviews = computed(() => this._map.value()?.mapReview ?? []);
+
+
+  readonly categories = computed(() => {
+    return this.map().categories;
+  })
 
   readonly currentReview = signal<MapReview | null>(null);
 
-  readonly mapImages = computed(() => this.reviews()?.filter(review => review.images) ?? []);
+  readonly mapImages = computed(() => this.reviews().filter(review => review.images) ?? []);
 
   protected onReviewClick(review: MapReview): void {
     if (review.images && review.images.length > 0) {
@@ -49,7 +49,7 @@ export class MapsComponent {
   }
 
   public reloadReviews(): void {
-    this._reviews.reload();
+    this._map.reload();
   }
 
 }

@@ -1,7 +1,7 @@
 <div class="map__tags" #container>
-  @for (tag of visibleTags(); track tag.tagName) {
+  @for (category of categories(); track category.lkMapCategory) {
     <lib-map-tag
-     [tag]="tag"
+     [category]="category"
      class="map-thumbnail__item"
      (tagClick)="tagClick.emit(tag)"
      />

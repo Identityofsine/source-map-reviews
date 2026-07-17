@@ -30,9 +30,6 @@
       "@shared/data-source": [
         "./lib/shared/data-source"
       ],
-      "@shared/lookups": [
-        "./dist/shared/lookups"
-      ],
       "@shared/types": [
         "./lib/shared/types"
       ],
@@ -68,12 +65,6 @@
     },
     {
       "path": "./lib/test/tsconfig.spec.json"
-    },
-    {
-      "path": "./lib/shared/lookups/tsconfig.lib.json"
-    },
-    {
-      "path": "./lib/shared/lookups/tsconfig.spec.json"
     }
   ]
 }

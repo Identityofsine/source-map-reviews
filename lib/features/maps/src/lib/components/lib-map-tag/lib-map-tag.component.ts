@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MapTag } from '@arch-shared/types';
+import { MapCategoryLk } from 'lib/shared/types/src/lib/lookup.types';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,13 +11,13 @@ import { MapTag } from '@arch-shared/types';
 })
 export class MapTagComponent {
 
-  readonly tag = input<MapTag>();
-  readonly tagClick = output<MapTag>();
+  readonly category = input<MapCategoryLk>();
+  readonly categoryClick = output<MapCategoryLk>();
 
-  onTagClick($event: MouseEvent) {
+  onCategoryClick($event: MouseEvent) {
     $event.preventDefault();
     $event.stopPropagation();
-    this.tagClick.emit(this.tag());
+    this.categoryClick.emit(this.category());
   }
 
 }

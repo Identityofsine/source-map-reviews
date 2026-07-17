@@ -1,0 +1,20 @@
+<div class="map-search-query" [formGroup]="form">
+  <form>
+    <div class="search-controls items-center">
+      <div class="search-input-group">
+        <input type="text" pInputText [formField]="form.searchTerm" placeholder="Search maps..." />
+      </div>
+      <div class="tags-input-group w-full h-[53px] ">
+        <p-select 
+          [options]="tags()"
+          [multiple]="true"
+          class="w-full h-full items-center"
+          [formField]="form.categories"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select tags"
+        />
+      </div>
+    </div>
+  </form>
+</div>

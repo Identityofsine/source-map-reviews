@@ -7,7 +7,6 @@ import { CookieInterceptor } from '../../lib/shared/data-source/src/lib/intercep
 import { ErrorInterceptor } from '../../lib/shared/data-source/src/lib/interceptors/ErrorInterceptor';
 import { AuthInterceptor } from 'lib/shared/data-source/src/lib/interceptors/AuthInterceptor';
 import Aura from '@primeuix/themes/aura';
-import { LookupsService } from '@arch-shared/lookups';
 
 export const appConfig: ApplicationConfig = {
   providers: [

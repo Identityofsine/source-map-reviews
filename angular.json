@@ -440,32 +440,6 @@
           }
         }
       }
-    },
-    "@shared/lookups": {
-      "projectType": "library",
-      "root": "lib/shared/lookups",
-      "sourceRoot": "lib/shared/lookups/src",
-      "prefix": "arch",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "configurations": {
-            "production": {
-              "tsConfig": "lib/shared/lookups/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "lib/shared/lookups/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "lib/shared/lookups/tsconfig.spec.json"
-          }
-        }
-      }
     }
   },
   "schematics": {

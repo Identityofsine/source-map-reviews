@@ -225,6 +225,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/maps/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a map by its ID */
+        get: operations["getMapById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/buildinfo/info": {
         parameters: {
             query?: never;
@@ -410,8 +427,8 @@ export interface components {
         MapSearchForm: {
             /** @description Search term for maps */
             searchTerm?: string;
-            /** @description Tags to search by */
-            tags?: string[];
+            /** @description Categories to search by */
+            categories?: string[];
             /** @description Only show maps that are reviewed */
             onlyShowReviewed?: boolean;
             /** @description Only show maps that are not reviewed */
@@ -440,8 +457,8 @@ export interface components {
             name?: string;
             /** @description Game link associated with the map */
             gameLk?: string;
-            /** @description A list of tags lookups associated with the map */
-            tags?: string[];
+            /** @description A list of categories lookups associated with the map */
+            categories?: string[];
             /** @description Map images associated with the map */
             mapImage?: components["schemas"]["MapImage"][];
             /** @description Map reviews associated with the map */
@@ -855,6 +872,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["User"];
+                };
+            };
+        };
+    };
+    getMapById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Map"];
                 };
             };
         };

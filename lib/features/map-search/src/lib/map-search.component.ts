@@ -7,7 +7,7 @@ import { MapThumbnailComponent } from './components/lib-map-thumbnail/lib-map-th
 import { LibMapSearchQueryComponent } from './components/lib-map-search-query/lib-map-search-query.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, of, startWith } from 'rxjs';
-import { MapSearchForm, MapSearchFormService } from './map-search-form.service';
+import { MapSearchFormService } from './map-search-form.service';
 import { MessageModule } from 'primeng/message';
 
 @Component({
@@ -70,13 +70,13 @@ export class MapSearchComponent implements OnInit {
 
     toObservable(computed(() => this.form().value()), { injector: this.injector })
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(({ searchTerm, tags }) => {
+      .subscribe(({ searchTerm, categories }) => {
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: {
             _search: searchTerm || null,
-            _tags: Array.isArray(tags) && tags.length > 0
-              ? tags.join(this.SEPARATOR)
+            _tags: Array.isArray(categories) && categories.length > 0
+              ? categories.join(this.SEPARATOR)
               : null,
           },
           queryParamsHandling: 'merge',
@@ -88,7 +88,7 @@ export class MapSearchComponent implements OnInit {
       this.form.searchTerm().value.set(this._search());
     }
     if (this._tags()) {
-      this.form.tags().value.set(this._tags().split(this.SEPARATOR));
+      this.form.categories().value.set(this._tags().split(this.SEPARATOR));
     }
   }
 

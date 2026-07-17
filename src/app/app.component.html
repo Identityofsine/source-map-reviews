@@ -1,5 +1,8 @@
-<app-nav />
-<main>
-  <router-outlet />
-
-</main>
+@if (lookupsLoading()) {
+  loading...
+} @else {
+  <app-nav />
+  <main>
+    <router-outlet />
+  </main>
+}

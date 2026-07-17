@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { Map, MapTag } from '@arch-shared/types';
+import { Map, MapApi, MapTag } from '@arch-shared/types';
 import { Router } from '@angular/router';
 import { MapTagsComponent } from '@arch-feature/maps';
 import { AuthService } from '@arch-shared/auth';
@@ -22,14 +22,14 @@ export class MapThumbnailComponent {
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
 
-  readonly map = input<Map>();
+  readonly map = input<MapApi>();
 
   readonly mapName = computed(() => {
     return this.map()?.name || '';
   });
 
   readonly mapTags = computed(() => {
-    return this.map().tags || [];
+    return this.map().categories || [];
   })
 
   readonly mapImage = computed(() => {
@@ -47,7 +47,7 @@ export class MapThumbnailComponent {
   }
 
   onTagClick(tag: MapTag) {
-    this.formService.form.tags().value.set(
+    this.formService.form.categories().value.set(
       [tag.tagName]
     )
   }
